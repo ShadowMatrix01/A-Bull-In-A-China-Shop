@@ -31,5 +31,8 @@ The following controls are available for your usage (COMPUTER, WASD CONFIG ONLY)
 'ENTER': Will move the game along, only when prompted.
 'SHIFT': Will allow you to outrun the bull, with a limit of 3 uses with a maximum of 3 seconds per use. NOT YET IMPLEMENTED.
 
+WARNING: Not all mechanics of this game are specified. This is by design in order to give you a chance to improvise through trial and error. 
+It would be counter productive to do so, just focus on using the controls optimally for best results.
 You will now be taken to a screen where you will choose how many items you think you can bring back. You will only get 6 seconds per item, SO PLAN ACCORDINGLY.
+
 Press 'SPACE' to continue.

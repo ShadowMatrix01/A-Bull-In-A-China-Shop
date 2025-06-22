@@ -1,0 +1,10 @@
+While the overwhelming majority of this code was written by me through trial and error using the pygame documentation, I would like to personally give a huge thank you to the following YouTube creators for specific parts:
+
+Clear Code-https://www.youtube.com/watch?v=AY9MnQ4x3zk&t=10153s&ab_channel=ClearCode
+(Sprite Animation Logic)
+
+Goodgis-https://www.youtube.com/watch?v=H09PmP5tsy8&list=PLYubU2Im289asGBdZNBNCl7PSu64f3Ubu&ab_channel=Goodgis
+(Understanding the basics of pygame and game development)
+
+DaFluffyPotato-https://www.youtube.com/watch?v=lTxaran0Cig&list=PLYubU2Im289asGBdZNBNCl7PSu64f3Ubu&index=8&ab_channel=DaFluffyPotato
+(Making my game an executable using PyInstaller)

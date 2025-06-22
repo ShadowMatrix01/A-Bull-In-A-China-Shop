@@ -1,0 +1,33 @@
+https://www.reddit.com/r/pygame/comments/enougf/adding_a_countdown_timer_to_a_game/
+Original By User: bonnie_
+
+import time
+import pygame
+pygame.init()
+
+timer_font = pygame.font.Font("04B_19__.ttf", 38)
+timer_sec = 60
+timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
+
+# USEREVENTS are just integers
+# you can only have like 31 of them or something arbitrarily low
+timer = pygame.USEREVENT + 1                                                
+pygame.time.set_timer(timer, 1000)    # sets timer with USEREVENT and delay in milliseconds
+
+running = True
+while running:
+    screen.fill((0, 0, 0))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == timer:    # checks for timer event
+            if timer_sec > 0:
+                timer_sec -= 1
+                timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
+            else:
+                pygame.time.set_timer(timer, 0)    # turns off timer event
+
+# add another "if timer_sec > 0" here if you want the timer to disappear after reaching 0
+    screen.blit(timer_text, (300, 20))
+    pygame.display.update()

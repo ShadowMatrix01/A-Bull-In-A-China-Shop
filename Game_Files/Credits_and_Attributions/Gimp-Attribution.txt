@@ -1,3 +1,6 @@
+Drawing Software Used For Assets: GNU IMAGE MANIPULATION PROGRAM (GIMP) V 3.04
+
+OPTIONAL ATTRIBUTION:
 GIMP is distributed under terms of General Public License v3 and later. In a nutshell, this means:
 
 You are free to use GIMP, for any purpose
