@@ -1,5 +1,5 @@
 <h1>Author: Jhan Gomez <br>
-<h1>Date: 06-21-2025, 7:55 PM EST  <br>
+<h1>Date: 06-21-2025, 9:22 PM EST  <br>
 <h1>Version (Pre-Release): 1.0.0  <br>
 <h1>Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 <h1>DONE: Bull movement across the x axis, bull drawing, sort of(loot spawning and respawning logic), points accumulated.  <br>
@@ -16,3 +16,5 @@
 <h2>Animation for background needed!  <br>
 <h2>Game over screen, for 6/22!  <br>
 <h2> Fixed loot spawning to not go off screen.
+<h2> HAZARD: WATER PIPES ON THE BOTTOM WILL SHOOT OUU WATER PROJECTILES FROM BOTTOM TO TOP, IF THE PLAYER TOUCHES IT, THE WILL GET 1 LIFE REDUCED (TOTAL 3). Gravity from bottom to top, and drawing said pipes.
+<h1>[TOOL] A freeze in place, freezes everything except for the player and the loot, but only for 3 seconds. Make sound play when pipe is about to blast out water

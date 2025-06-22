@@ -23,12 +23,12 @@ SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
 screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #The dimensions are now set to be the displays dimensions.
 game_active=True #This boolean allows pausing for when the player either wins or looses.
 clock=pygame.time.Clock() #Allows a consistent frame rate in my game.
-font=pygame.font.Font('Font/Arcade_Font.ttf', 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_2=pygame.font.Font('Font/Arcade_Font.ttf', 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-player_256=pygame.image.load('Assets/bull_256.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+font=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_2=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+player_256=pygame.image.load('Game_Files/Assets/bull_256.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 100)) #Works regardless of screen size chosen.
 #shop=pygame.image.load('').convert_alpha() 
-loot=pygame.image.load('Assets/gold_coin_test_2.png').convert_alpha() #Test coin object is within the public domain.
+loot=pygame.image.load('Game_Files/Assets/gold_coin_test_2.png').convert_alpha() #Test coin object is within the public domain.
 goal=0 #Goal is set to be a default of 0
 goal_input = "" #Gets the users desired score
 player_speed=0 #Default player speed is set to 0.
@@ -40,13 +40,13 @@ player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the 
 player_current_location=player_hitbox.topleft #top and left are combined to get an accurate x and y location for the player.
 loot_last_seen=pygame.time.get_ticks() #Stores the last time the loot was seen.
 loot_respawn_cooldown=random.randint(0,5000) #A cooldown of between 3 and 5 seconds is made.
-loot_x_pos=random.randint(100,1005) #Default x value range for normal items
-loot_y_pos=random.randint(95,550) #Default y valur range for normal items.
+loot_x_pos=random.randint(300,1005) #Default x value range for normal items
+loot_y_pos=random.randint(300,550) #Default y valur range for normal items.
 loot_hitbox=loot.get_rect(topleft=(loot_x_pos, loot_y_pos)) #The loot is placed at the randomly generated x and y positions.
 points=0 #Points counter, default is 0.
 points_text=font.render("Points: 0 ", True, "White") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
-bull=pygame.image.load('Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
+bull=pygame.image.load('Game_Files/Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
 bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT + 100)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_x=bull_hitbox.left #The bull x location is set to be wherever the bulls left rect position is.
@@ -185,8 +185,8 @@ while main_game: #Handles the game loop.
      screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
      screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
      if current_time - loot_last_seen >= loot_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
-         loot_x_pos=random.randint(100,1005) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
-         loot_y_pos=random.randint(95,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+         loot_x_pos=random.randint(300,1005) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+         loot_y_pos=random.randint(300,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
          loot_hitbox.topleft=(loot_x_pos, loot_y_pos) #Moves the loot to the x and y positions that were randomly generated.
          loot_last_seen=current_time #the time that the loot was last seen is now the current time
          loot_respawn_cooldown=random.randint(0,5000) #Loot cooldown is restarted
