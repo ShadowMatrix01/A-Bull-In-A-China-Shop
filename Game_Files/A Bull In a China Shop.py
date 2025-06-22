@@ -1,0 +1,227 @@
+#Author: Jhan Gomez
+#Date:06-21-2025, 7:55 PM EST
+#Version: 1.0.0
+#Purpose: To make a fun game in pygame that also demsotrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.
+#DONE: Bull movement across the x axis, bull drawing, loot spawning and despawning logic, points accumulated.
+#To-Draw, draw shopkeeper, store, loot, the three phases, enviormental hazards
+#To-Do and IDEAS:
+#NEED TO ESTABLISH WHERE THE GROUND WILL BE AND DRAW ACCORDINGLY.
+#Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the loot before the time runs out
+#HAZARD: Maybe, if you arent careful, and say you get accidentally covered by red cape, he charges towards you for 3 seconds!
+#If the bull collides with the loot, he takes it, and you have 3 seconds to get it back from him, which you can do by jumping on him!
+#If they run out of time and do not get the loot back safely, between 2 to 3 minutes, they get a game over screen showing their final score.
+#After everything is done, consider adding hazards such as falling debris, pool of water across the x axis (if you collide with it you move slower and so does the bull!), paint, etc
+#Animation for background needed!
+#Game over screen, for 6/22!
+#Bull will be much slower going up, but as a result, will have a faster cooldown! He must also move down slower.
+import pygame #Pygame library is imported in.
+from sys import exit #Exit is imported from the os.
+import random #Random module imported in.
+pygame.init() #Pygame is initialized.
+SCREEN_WIDTH=1920 #Screen width is set to be 1920
+SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
+screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #The dimensions are now set to be the displays dimensions.
+game_active=True #This boolean allows pausing for when the player either wins or looses.
+clock=pygame.time.Clock() #Allows a consistent frame rate in my game.
+font=pygame.font.Font('Font/Arcade_Font.ttf', 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_2=pygame.font.Font('Font/Arcade_Font.ttf', 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+player_256=pygame.image.load('Assets/bull_256.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 100)) #Works regardless of screen size chosen.
+#shop=pygame.image.load('').convert_alpha() 
+loot=pygame.image.load('Assets/gold_coin_test_2.png').convert_alpha() #Test coin object is within the public domain.
+goal=0 #Goal is set to be a default of 0
+goal_input = "" #Gets the users desired score
+player_speed=0 #Default player speed is set to 0.
+player_gravity=0 #Player gravity is set to 0.
+special_speed_counter=3 #Allows the player to use a special dash for a total of 3 times.
+starting_pos=player_hitbox.y #The starting pos of the player is set to the initial y location of the player.
+player_x=player_hitbox.left #To make the bull chase the player down.
+player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the player down.
+player_current_location=player_hitbox.topleft #top and left are combined to get an accurate x and y location for the player.
+loot_last_seen=pygame.time.get_ticks() #Stores the last time the loot was seen.
+loot_respawn_cooldown=random.randint(0,5000) #A cooldown of between 3 and 5 seconds is made.
+loot_x_pos=random.randint(100,1005) #Default x value range for normal items
+loot_y_pos=random.randint(95,550) #Default y valur range for normal items.
+loot_hitbox=loot.get_rect(topleft=(loot_x_pos, loot_y_pos)) #The loot is placed at the randomly generated x and y positions.
+points=0 #Points counter, default is 0.
+points_text=font.render("Points: 0 ", True, "White") #At the beggining, the score is 0 and that is displayed on the screen.
+points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
+bull=pygame.image.load('Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
+bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT + 100)) #Bull is placed at specific location on the screen.
+bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
+bull_x=bull_hitbox.left #The bull x location is set to be wherever the bulls left rect position is.
+bull_y=bull_hitbox.top #The bull's y lpcation is set ot be wherever the top of the rect is.
+bull_current_location=bull_hitbox.topleft #Top and left are combined to get the bulls current location.
+bull_last_seen=pygame.time.get_ticks() #the last time the bull was seen is set to this time.
+bull_movement_cooldown=random.randint(1000,3000) #The default cooldown 
+bull_speed=0 #The default bull speed is set to 0.
+bull_gravity=0 #The default bull gravity is set to 0.
+inner_loop_x=False #inner_loop_x is set to false as a default, but will be changed later.
+inner_loop_y=False #Same as above, but for the y axis.
+bull_charging=False #The bull is by default not charging so this is set to false.
+main_game=False #The main game is set to false as a default.
+splash_screen=True #The splash screen is true by default.
+while splash_screen: #While the splash screen is true, this runs.
+   goal_display = font.render(f"Set Goal - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
+   goal_display_parameters=goal_display.get_rect(topleft=(300,100)) #The goal the user inputs is put into a rect.
+   goal_display_2 = font_2.render("Press enter to start the game!", True, "Green") #The goal being inputted is continously updated on the screen.
+   goal_display_parameters_2=goal_display_2.get_rect(topleft=(375,700)) #The goal the user inputs is put into a rect. 
+   screen.fill((0, 0, 0)) #background filled with black
+   screen.blit(goal_display,  goal_display_parameters)  # Positions score on the scrren.
+   screen.blit(goal_display_2, goal_display_parameters_2)
+   pygame.display.update() #Screen is updated to show the score
+   for event in pygame.event.get(): #All events are handled, such as kbm input, mouse, etc.
+     if event.type==pygame.QUIT: #If the player quits the game.
+         pygame.quit() #Pygame quits the game.
+         quit() #prevents weird issue where even if the game quit, the code still ran.
+     keys=pygame.key.get_pressed() #Necessary for when multiple keys are pressed
+     if event.type==pygame.KEYDOWN: #Should allow the user to see what the controls are and the objective.
+         if event.unicode.isdigit() and len(goal_input) < 7:  #If the inputted key is a digit and is smaller than a million this will run.
+            goal_input += event.unicode  # Adds the digit to string
+         elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
+            goal_input = goal_input[:-1]  # Allows deletion, copilot given.
+         elif event.key==pygame.K_RETURN and not goal_input=="": #They are ready to play the game.
+            #goal_set = True 
+            goal=int(goal_input) #Converts the goal string to an int for a later comparison.
+            splash_screen=False #The spalsh screen is false.
+            main_game=True #The main game can now run.
+   pygame.display.update() #Screen is refreshed.
+while main_game: #Handles the game loop.
+  player_x=player_hitbox.left #Its accurately getting the location!
+  player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the player down.
+  player_current_location=player_hitbox.topleft #Updates the players location continously.
+  print("Current position of player: " + str(player_current_location)) #for debugging purposes.
+  for event in pygame.event.get(): #All events are handled, such as kbm input, mouse, etc.
+      if event.type==pygame.QUIT: #If the player quits the game.
+         pygame.quit() #Pygame quits the game.
+         quit() #prevents weird issue where even if the game quit, the code still ran.
+      if game_active: #If the game is active this will
+         keys=pygame.key.get_pressed() #Always remember this! Also, error was that events must be handled within the event loop!
+         if event.type==pygame.KEYDOWN: #If the player pushes a keydown, this will be handled.
+            if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
+               pygame.quit() #Pygame quits the game.
+               quit() #Quit ends the execution of the program.
+            if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #This is where get pressed comes into play, because event key can only...
+               #register one event at a time.
+               player_speed = -30
+            if event.key==pygame.K_w or event.key==pygame.K_SPACE or event.key==pygame.K_UP: #If the key pressed is w or space or up, this happens.
+               player_gravity = -20 #Player gravity is set to -20, which is tied to the y movement.
+            if event.key==pygame.K_s or event.key==pygame.K_DOWN: #If the s or down is pressed this will run.
+               player_gravity = +30 #Player gravity is set to 30, which is  also tied to the y movement.
+            if event.key==pygame.K_a or event.key==pygame.K_LEFT: #If the key pressed is a or left this will happen.
+               player_speed= -10 #player speed is set to -10, which is tied to the x axis.
+            if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user presses d or right this will run.
+               player_speed= 10 #player speed is set to 10, which is tied to the x axis.
+         if event.type == pygame.KEYUP: #Deals with horizontal movement across the x axis from L to R.
+            if event.key==pygame.K_a or event.key==pygame.K_LEFT: #If the player presses a or left, this will run.
+               player_speed=0 #Player speed set to 0 to stop movement.
+            if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user lets of the d or right key this will run.
+               player_speed=0 #Player speed set to 0 to stop movement.
+      else: #If the game is not active, this will run.
+         keys=pygame.key.get_pressed() #Always remember this! Also, error was that events must be handled within the event loop!
+         if event.type==pygame.KEYDOWN: #If a button is pressed, this will be checked.
+            if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
+               pygame.quit() #Pygame quits the game.
+               quit() #Quit ends the execution of the program.
+            elif event.key==pygame.K_RETURN or event.key==pygame.K_KP_ENTER: #If enter is pressed this will run.
+               game_active=True #The gane is set to active.
+               points_text=font.render("Points: 0 ", True, "White") #Points are reset to 0.
+               player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
+               bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT + 100)) #Bull is placed at specific location on the screen.
+               bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
+               bull_movement_cooldown = random.randint(1000, 3000) #The cooldwon is reset.
+               bull_speed = 0 #The bulls speed is set to 0
+               bull_gravity = 0 #The bulls gravity is set to 0
+               inner_loop_x = False # Innerr_loop_x is set to false.
+  if game_active: #If the game is active this will run.
+     def points_system(): #This function handles how points will be distributed.
+        global points #Without this, cannot reach points and update variable accordingly.
+        loot_hitbox.y=10000 #Since assets cannot despwan, it is instead moved out of sight from the player.
+        print("They have collided!") #Debuggin tool
+        points+=10 #10 points are added to the users score.
+        print(points) #points are printed in the console to debug.
+        return str(points) #Points MUST be returned as str because Python will not accept an integer for the text font.
+     def bull_lock_on(): #A function call bull_lock_on handles thee charging of the bull
+         global bull_speed #the bull speed is now modified using the global keyword.
+         global bull_gravity #the bull gravity is now modified using the global keyword.
+         global bull_movement_cooldown #the bull movement cooldown is now modified using the global keyword.
+         global bull_last_seen #When the bull is last seen, is modified using the global keyword.
+         global inner_loop_x #This is why movement wasn't happening, because I had failed to modify the inner_loop!
+         global inner_loop_y #inner loop y is now accesible
+         global bull_charging #bull charging flag is now accesible
+         bull_dice_roll=random.randint(0,1) #Chooses between 0 and 1 to avoid weird movement that caused the bull to move in a circle.
+         if bull_dice_roll==0: #If the bull dice roll is 0
+            inner_loop_x=True #The inner loop for x movement is set to true.
+            bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
+            bull_movement_cooldown=random.randint(1000,3000) #A cooldown of between 0 and 3 seconds is made.
+         else: #Otherwise, this happens
+            inner_loop_y=True #inner loop y is set to true, which allows the bull to chase the player up and down.
+            bull_charging=True #Bull charging is set to true. Which prevents janky movement.
+            bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
+            bull_movement_cooldown=random.randint(1000,3000) #A cooldown of between 3 and 5 seconds is made.
+     if player_hitbox.y <= 0: #If the player tries to go out of bounds for the y axis this happens.
+        player_gravity=0 #Player gravity is set to 0.
+     if player_hitbox.x <= 0: # If the player attempts to move outside of the screen's left x axis, this happens.
+        player_speed=0 #Player speed is set to 0;.
+        player_hitbox.x=1 #Puts the player back on the screen.
+     if player_hitbox.colliderect(loot_hitbox): #If the player and the loot collide, these statements will run.
+        score=points_system() #Score variable is a ssigned to the points returned
+        points_text=font.render("Points " + score, True, "White") #A rect object that contains the updated score is made.
+        points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
+        if int(score) >= goal: #A score to win will be determined. For now, it is set to 10.
+           game_active=False #The game is paused
+           points=0 #Points are reset
+     current_time=pygame.time.get_ticks() #The current time in milliseconds is obtained.
+     player_gravity += 1  #Player gravity increases by 1 every time to make the player go down after the have moved up in the air
+     player_hitbox.y += player_gravity #The player will now move down the y axis thanks to the gravity preset.
+     if player_hitbox.bottom >= starting_pos: #If the players is higher than the starting position than they must have the ground limit to prevent clipping on the way down.
+        player_hitbox.bottom = starting_pos #Sets the ground to where the player started
+        player_gravity = 0 # Resets the gravity to prevent the player from clipping.
+     if bull_hitbox.bottom >= bull_starting_pos:#If the bull  is higher than the starting position than the bull must have the ground limit to prevent clipping on the way down.
+        bull_hitbox.bottom = bull_starting_pos #Sets the ground to where the bull started
+        bull_gravity= 0 # Resets the gravity to prevent the bull from clipping.
+     player_hitbox.x+=player_speed #The player will move alongside the x axis left to right according to the player speed.
+     screen.fill((0, 0, 0)) #Screen is filled with black to prevent trailing effect.
+     screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
+     screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
+     if current_time - loot_last_seen >= loot_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
+         loot_x_pos=random.randint(100,1005) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+         loot_y_pos=random.randint(95,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+         loot_hitbox.topleft=(loot_x_pos, loot_y_pos) #Moves the loot to the x and y positions that were randomly generated.
+         loot_last_seen=current_time #the time that the loot was last seen is now the current time
+         loot_respawn_cooldown=random.randint(0,5000) #Loot cooldown is restarted
+     if not bull_charging and current_time - bull_last_seen >= bull_movement_cooldown: #If the bull has not moved in a certain amount of time and the bull is not currently charging this will run.
+        bull_lock_on() #Calls the bull lock on function.
+     if inner_loop_x: #If the inner loop is true, this will run.
+        if bull_hitbox.x < player_hitbox.x: #If the bull is in a position left of the player, it must move right.
+           bull_hitbox.x += 17  # Moves the bull to the right of the screen.
+        elif bull_hitbox.x > player_hitbox.x: #If the bull is to the right of the player, it must move to the left.
+             bull_hitbox.x -= 17 # Moves the bull to the left of the player.
+        else: #Otherwise, if the bull is neither to the left or right of the player, then it is assumed that the bull and the player are the same x location.
+              inner_loop_x = False  #Bull does not need to move, so inner_loop boolean is set to false.
+              inner_loop_y = True #The inner loop y is set to true to make the bull follow the player across the y axis
+             # points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
+     if inner_loop_y: #If the inner loop is true, this will run.
+        if bull_hitbox.y < player_hitbox.y :#If the bull is higher than the player, then it must be brought down.
+             bull_hitbox.y += 25 # Moves the bull to the bottom of the screen
+        elif bull_hitbox.y > player_hitbox.y: #If the bull is to the bottom of the player, it must move up.
+             bull_hitbox.y -= 32 # Moves the bull to the top of the screen.
+        else: #Otherwise, if the bull is neither to the left or right of the player, then it is assumed that the bull and the player are the same y location.
+              inner_loop_y = False  #Bull does not need to move, so inner_loop boolean is set to false.
+              bull_charging=False #Bull charging is set to false, which means the cooldown can work properly now.
+     if bull_hitbox.colliderect(loot_hitbox) and points >= 20: #if the bull collides with the loot, this will happen.
+        loot_hitbox.y=10000 # The loot will move out the way
+        points-=20 #The points get reduced by 20.
+        points_text=font_2.render(f"Bull Got Item -20 POINTS! New Points: {points}", True, "RED") #Removes the points and displays on screen
+        points_text_box=points_text.get_rect(topleft=(300,200)) #The goal the user inputs is put into a rect. 
+        print("The bull got this item!") #For debug purposes.
+     bull_gravity+=1 #Brings the bull back to the ground.
+     bull_hitbox.y+=bull_gravity #Bull moves accordingly to the increasing gravity.
+     screen.blit(loot, loot_hitbox) #Loot is drawn on the screen.
+     screen.blit(points_text, points_text_box) #points are displayed on the screen.
+     pygame.display.update() #Screen is refreshed
+     clock.tick(60) #Frame rate is set to a max of 60.
+   
+
+
+

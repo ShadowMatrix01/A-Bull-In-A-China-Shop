@@ -1,0 +1,35 @@
+The-Main-Story:
+
+In the wealthy and affluent virgo shops, a wild bull has appeared!
+This bull is causing several million dollars worth of damage, and someone has to stop him!
+Unfortunately, nobody, including animal control or the police want to get involved.
+However, you happen to be driving around in your car, when it breaks down.
+You know you can't afford the repairs, and that's when the owner sees you!
+
+He makes you a deal! For every piece of jewelry and coins you obtain, you will get 10000 dollars! However, if the owner doesn't hear back from you in a bit, he will send a rescue team to take you out regardless of how much loot you have as a legal and safety precaution.
+
+How hard can this be?
+
+Soon enough, you realize you might have bitten more than you can chew...
+
+Will you fare well against the bull?! Its time to see in this game of 'A Bull In A China Shop'!
+
+Press 'W' to continue.
+
+The Controls:
+The following controls are available for your usage (COMPUTER, WASD CONFIG ONLY):
+'ESCAPE': Quits the game.
+'W': Moves the player upwards.
+'A': Moves the player leftwards.
+'S': Moves the player downwards.
+'D': Moves the player rightwards.
+'SPACE': Moves the player upwards.
+'UP': Moves the player upwards.
+'LEFT': Moves the player leftwards.
+'DOWN': Moves the player downwards.
+'RIGHT': Moves the player rightwards.
+'ENTER': Will move the game along, only when prompted.
+'SHIFT': Will allow you to outrun the bull, with a limit of 3 uses with a maximum of 3 seconds per use. NOT YET IMPLEMENTED.
+
+You will now be taken to a screen where you will choose how many items you think you can bring back. You will only get 6 seconds per item, SO PLAN ACCORDINGLY.
+Press 'SPACE' to continue.
