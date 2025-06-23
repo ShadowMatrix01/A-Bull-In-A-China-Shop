@@ -1,8 +1,8 @@
 #Author: Jhan Gomez <br>
-#Date: 06-22-2025, 2:00 PM EST  <br>
-#Version (Pre-Release): 1.0.1  <br>
+#Date: 06-23-2025, 2:20 PM EST  <br>
+#Version (Pre-Release): 1.0.2  <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
-#DONE: Bull movement across the x axis, bull drawing, sort of(item spawning and respawning logic), points accumulated.  <br>
+#DONE: Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary.  <br>
 #To-Draw, draw shopkeeper, store, item, the three phases, and environmental hazards, item spawn, story, ground, restart loop, splash screen. <br>
 #To-Do and IDEAS:  <br>
 #Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out  <br>
@@ -11,9 +11,10 @@
 #If they run out of time and do not get the item back safely, 6 seconds per 1 item, they get a game over screen showing their final score.  <br>
 #After everything is done, consider adding hazards such as falling debris, pool of water across the x axis (if you collide with it you move slower and so does the bull!), paint, etc  <br>
 #Animation for background needed!  <br>
-#Game over screen, for 6/22!  <br>
+# Laid ground work for game_over screen.  <br>
 # Fixed item spawning to not go off screen.
-# HAZARD: WATER PIPES ON THE BOTTOM WILL SHOOT OUU WATER PROJECTILES FROM BOTTOM TO TOP, IF THE PLAYER TOUCHES IT, THE WILL GET 1 LIFE REDUCED (TOTAL 3). Gravity from bottom to top, and drawing said pipes.
+# Fixed transparency on image, had to change starting y position
+# HAZARD: WATER PIPES ON THE BOTTOM WILL SHOOT OUT WATER PROJECTILES FROM BOTTOM TO TOP, IF THE PLAYER TOUCHES IT, THE WILL GET 1 LIFE REDUCED (TOTAL 3). Gravity from bottom to top, and drawing said pipes.
 #[TOOL] A freeze in place, freezes everything except for the player and the item, but only for 3 seconds. Make sound play when pipe is about to blast out water
 import pygame #Pygame library is imported in.
 from sys import exit #Exit is imported from the os.
@@ -29,13 +30,13 @@ font_2=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 50) #Karmatic Arcade 
 font_3=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 75) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 
 #Sprites for animationms
-player_walking_1=pygame.image.load('Game_Files/Assets/bull_256.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
-player_walking_2=pygame.image.load('Game_Files/Assets/bull_256.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_1=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_2=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_walking=[player_walking_1, player_walking_2] #Has two sprites, can be changed.
 player_walking_index=0 #Allows one of the above indexes to be selected to animate
 player_256=player_walking[player_walking_index] #The sprite chosen is the one at the specified index position within the array.
-player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 100)) #Works regardless of screen size chosen.
-player_jumping=pygame.image.load('Game_Files/Assets/bull_256.png').convert_alpha() #Jumping animation for player.
+player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 75)) #Works regardless of screen size chosen.
+player_jumping=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Jumping animation for player.
 def player_sprites(): #Function for sprites, based of https://www.youtube.com/watch?v=AY9MnQ4x3zk&t=10153s&ab_channel=ClearCode
     global player_256, player_walking_index #player_256 and player_walking_index must be declared at globally.
     if player_hitbox.bottom < starting_pos: #If the player is above a certain y position, then the jumpinh animation must be drawn.
@@ -66,7 +67,7 @@ points=0 #Points counter, default is 0.
 points_text=font.render("Points: 0 ", True, "White") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
 bull=pygame.image.load('Game_Files/Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
-bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT + 100)) #Bull is placed at specific location on the screen.
+bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT-75)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_x=bull_hitbox.left #The bull x location is set to be wherever the bulls left rect position is.
 bull_y=bull_hitbox.top #The bull's y lpcation is set ot be wherever the top of the rect is.
@@ -81,6 +82,7 @@ bull_charging=False #The bull is by default not charging so this is set to false
 main_game=False #The main game is set to false as a default.
 splash_screen=True #The splash screen is true by default.
 goal_stored=0 #The goal stored is 0 by default.
+game_over=False #The game is not over by default.
 while splash_screen: #While the splash screen is true, this runs.
    goal_display = font.render(f"Set Goal - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
    goal_display_parameters=goal_display.get_rect(topleft=(300,100)) #The goal the user inputs is put into a rect.
@@ -140,7 +142,7 @@ while main_game: #Handles the game loop.
                player_speed=0 #Player speed set to 0 to stop movement.
             if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user lets of the d or right key this will run.
                player_speed=0 #Player speed set to 0 to stop movement.
-      else: #If the game is not active, this will run.
+      elif (not game_active and not game_over): #If the game is not active, and it is not a game over this will run.
          goal_display = font_3.render(f"Set A New Goal - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
          goal_display_parameters=goal_display.get_rect(topleft=(300,100)) #The goal the user inputs is put into a rect.
          goal_display_2 = font_2.render("Press enter to start the game!", True, "Green") #Prompts the user to continue the game.
@@ -166,7 +168,7 @@ while main_game: #Handles the game loop.
                player_speed=0 #Prevents left over horizontal movement.
                points_text=font.render("Points: 0 ", True, "White") #Points are reset to 0.
                player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
-               bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT + 100)) #Bull is placed at specific location on the screen.
+               bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
                bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
                bull_movement_cooldown = random.randint(1000, 3000) #The cooldwon is reset.
                bull_speed = 0 #The bulls speed is set to 0
@@ -175,6 +177,9 @@ while main_game: #Handles the game loop.
                goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                game_active=True #Game active is set to true.
                goal_stored=goal #goal stored is the new input.
+      else: #Otherwise, if the game is not active and the game_over flag is true, this must run
+          screen.fill((0,0,255)) #Screen filled with blue as test.
+          pygame.display.update() #Screen is refreshed.
   if game_active: #If the game is active this will run.
      def points_system(): #This function handles how points will be distributed.
         global points #Without this, cannot reach points and update variable accordingly.
@@ -203,9 +208,9 @@ while main_game: #Handles the game loop.
             bull_movement_cooldown=random.randint(1000,3000) #A cooldown of between 3 and 5 seconds is made.
      if player_hitbox.y <= 0: #If the player tries to go out of bounds for the y axis this happens.
         player_gravity=0 #Player gravity is set to 0.
-     if player_hitbox.x <= 0: # If the player attempts to move outside of the screen's left x axis, this happens.
+     if player_hitbox.x <= 191: # If the player attempts to move outside of the screen's left x axis, this happens.
         player_speed=0 #Player speed is set to 0;.
-        player_hitbox.x=1 #Puts the player back on the screen.
+        player_hitbox.x=192 #Puts the player back on the screen.
      if player_hitbox.colliderect(item_hitbox): #If the player and the item collide, these statements will run.
         score=points_system() #Score variable is a ssigned to the points returned
         points_text=font.render("Points " + score, True, "White") #A rect object that contains the updated score is made.
@@ -230,7 +235,6 @@ while main_game: #Handles the game loop.
         bull_gravity= 0 # Resets the gravity to prevent the bull from clipping.
      player_hitbox.x+=player_speed #The player will move alongside the x axis left to right according to the player speed.
      screen.fill((0, 0, 0)) #Screen is filled with black to prevent trailing effect.
-     player_sprites() #Sprites for player are called.
      screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
      screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
      if current_time - item_last_seen >= item_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
@@ -264,8 +268,12 @@ while main_game: #Handles the game loop.
         points_text=font_2.render(f"Bull Got Item...-20 POINTS!", True, "RED") #Removes the points and displays on screen
         points_text_box=points_text.get_rect(topleft=(300,200)) #The goal the user inputs is put into a rect. 
         print("The bull got this item!") #For debug purposes.
+     #if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player its over.
+       # game_active=False #The game is no longer active.
+       # game_over=True #The game over flag is set to true.
      bull_gravity+=1 #Brings the bull back to the ground.
      bull_hitbox.y+=bull_gravity #Bull moves accordingly to the increasing gravity.
+     player_sprites()
      screen.blit(item, item_hitbox) #item is drawn on the screen.
      screen.blit(points_text, points_text_box) #points are displayed on the screen.
      pygame.display.update() #Screen is refreshed
