@@ -1,9 +1,9 @@
 #Author: Jhan Gomez <br>
-#Date: 06-23-2025, 2:20 PM EST  <br>
-#Version (Pre-Release): 1.0.2  <br>
+#Date: 06-23-2025, 8:40 PM EST  <br>
+#Version (Pre-Release): 1.0.3  <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
-#DONE: Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary.  <br>
-#To-Draw, draw shopkeeper, store, item, the three phases, and environmental hazards, item spawn, story, ground, restart loop, splash screen. <br>
+#DONE: Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumpinmg.  <br>
+#To-Draw: store, item, the three phases, and environmental hazards, item spawn, story, ground, restart loop, splash screen, player when moving. <br>
 #To-Do and IDEAS:  <br>
 #Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out  <br>
 #HAZARD: Maybe, if you aren't careful, and say you get accidentally covered by red cape, he charges towards you for 3 seconds!  <br>
@@ -36,7 +36,7 @@ player_walking=[player_walking_1, player_walking_2] #Has two sprites, can be cha
 player_walking_index=0 #Allows one of the above indexes to be selected to animate
 player_256=player_walking[player_walking_index] #The sprite chosen is the one at the specified index position within the array.
 player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 75)) #Works regardless of screen size chosen.
-player_jumping=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Jumping animation for player.
+player_jumping=pygame.image.load('Game_Files/Assets/player_jumping.png').convert_alpha() #Jumping animation for player.
 def player_sprites(): #Function for sprites, based of https://www.youtube.com/watch?v=AY9MnQ4x3zk&t=10153s&ab_channel=ClearCode
     global player_256, player_walking_index #player_256 and player_walking_index must be declared at globally.
     if player_hitbox.bottom < starting_pos: #If the player is above a certain y position, then the jumpinh animation must be drawn.
@@ -60,7 +60,7 @@ player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the 
 player_current_location=player_hitbox.topleft #top and left are combined to get an accurate x and y location for the player.
 item_last_seen=pygame.time.get_ticks() #Stores the last time the item was seen.
 item_respawn_cooldown=random.randint(2000,5000) #A cooldown of between 3 and 5 seconds is made.
-item_x_pos=random.randint(300,1005) #Default x value range for normal items
+item_x_pos=random.randint(300,1581) #Default x value range for normal items
 item_y_pos=random.randint(300,550) #Default y valur range for normal items.
 item_hitbox=item.get_rect(topleft=(item_x_pos, item_y_pos)) #The item is placed at the randomly generated x and y positions.
 points=0 #Points counter, default is 0.
@@ -73,7 +73,7 @@ bull_x=bull_hitbox.left #The bull x location is set to be wherever the bulls lef
 bull_y=bull_hitbox.top #The bull's y lpcation is set ot be wherever the top of the rect is.
 bull_current_location=bull_hitbox.topleft #Top and left are combined to get the bulls current location.
 bull_last_seen=pygame.time.get_ticks() #the last time the bull was seen is set to this time.
-bull_movement_cooldown=random.randint(1000,3000) #The default cooldown 
+bull_movement_cooldown=random.randint(1000,2000) #The default cooldown 
 bull_speed=0 #The default bull speed is set to 0.
 bull_gravity=0 #The default bull gravity is set to 0.
 inner_loop_x=False #inner_loop_x is set to false as a default, but will be changed later.
@@ -130,7 +130,7 @@ while main_game: #Handles the game loop.
             if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #Same as above but for right movement.
                player_speed = +30 #Player moves way faster than the bull to the right.
             if event.key==pygame.K_w or event.key==pygame.K_SPACE or event.key==pygame.K_UP: #If the key pressed is w or space or up, this happens.
-               player_gravity = -20 #Player gravity is set to -20, which is tied to the y movement.
+               player_gravity = -23 #Player gravity is set to -23, which is tied to the y movement.
             if event.key==pygame.K_s or event.key==pygame.K_DOWN: #If the s or down is pressed this will run.
                player_gravity = +30 #Player gravity is set to 30, which is  also tied to the y movement.
             if event.key==pygame.K_a or event.key==pygame.K_LEFT: #If the key pressed is a or left this will happen.
@@ -170,7 +170,7 @@ while main_game: #Handles the game loop.
                player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
                bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
-               bull_movement_cooldown = random.randint(1000, 3000) #The cooldwon is reset.
+               bull_movement_cooldown = random.randint(1000, 2000) #The cooldwon is reset.
                bull_speed = 0 #The bulls speed is set to 0
                bull_gravity = 0 #The bulls gravity is set to 0
                inner_loop_x = False # Innerr_loop_x is set to false.
@@ -200,12 +200,12 @@ while main_game: #Handles the game loop.
          if bull_dice_roll==0: #If the bull dice roll is 0
             inner_loop_x=True #The inner loop for x movement is set to true.
             bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
-            bull_movement_cooldown=random.randint(1000,3000) #A cooldown of between 0 and 3 seconds is made.
+            bull_movement_cooldown=random.randint(1000,2000) #A cooldown of between 1 and 2 seconds is made.
          else: #Otherwise, this happens
             inner_loop_y=True #inner loop y is set to true, which allows the bull to chase the player up and down.
             bull_charging=True #Bull charging is set to true. Which prevents janky movement.
             bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
-            bull_movement_cooldown=random.randint(1000,3000) #A cooldown of between 3 and 5 seconds is made.
+            bull_movement_cooldown=random.randint(1000,2000) #A cooldown of between 1 and 2 seconds is made.
      if player_hitbox.y <= 0: #If the player tries to go out of bounds for the y axis this happens.
         player_gravity=0 #Player gravity is set to 0.
      if player_hitbox.x <= 191: # If the player attempts to move outside of the screen's left x axis, this happens.
@@ -238,7 +238,7 @@ while main_game: #Handles the game loop.
      screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
      screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
      if current_time - item_last_seen >= item_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
-            item_x_pos=random.randint(200,1005) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+            item_x_pos=random.randint(200,1581) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
             item_y_pos=random.randint(200,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
             item_hitbox.topleft=(item_x_pos, item_y_pos) #Moves the item to the x and y positions that were randomly generated.
             item_last_seen=current_time #the time that the item was last seen is now the current time
@@ -256,7 +256,7 @@ while main_game: #Handles the game loop.
              # points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
      if inner_loop_y: #If the inner loop is true, this will run.
         if bull_hitbox.y < player_hitbox.y :#If the bull is higher than the player, then it must be brought down.
-             bull_hitbox.y += 25 # Moves the bull to the bottom of the screen
+             bull_hitbox.y += 25 # Moves the bull to the bottom of the screen 25 is default
         elif bull_hitbox.y > player_hitbox.y: #If the bull is to the bottom of the player, it must move up.
              bull_hitbox.y -= 32 # Moves the bull to the top of the screen.
         else: #Otherwise, if the bull is neither to the left or right of the player, then it is assumed that the bull and the player are the same y location.
@@ -273,7 +273,7 @@ while main_game: #Handles the game loop.
        # game_over=True #The game over flag is set to true.
      bull_gravity+=1 #Brings the bull back to the ground.
      bull_hitbox.y+=bull_gravity #Bull moves accordingly to the increasing gravity.
-     player_sprites()
+     player_sprites() #Sprites for player function called.
      screen.blit(item, item_hitbox) #item is drawn on the screen.
      screen.blit(points_text, points_text_box) #points are displayed on the screen.
      pygame.display.update() #Screen is refreshed
