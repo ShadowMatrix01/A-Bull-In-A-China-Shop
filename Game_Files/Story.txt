@@ -35,6 +35,11 @@ The following controls are available for your usage (COMPUTER, WASD CONFIG ONLY)
 
 NOTE: Not all mechanics of this game are specified. This is by design in order to give you a chance to improvise through trial and error. 
 It would be counter productive to do so, just focus on using the controls optimally for best results.
-You will now be taken to a screen where you will choose how many items you think you can bring back. You will only get 6 seconds per item, SO PLAN ACCORDINGLY.
+You will now be taken to a screen where you will choose how many items you think you can bring back. PLAN ACCORDINGLY.
 
 Press 'SPACE' to continue.
+
+IF SUCCESFUL:
+If the player got less than 1000 points, he will be thankful for your efforts yet urge you to get more for a bigger payday.
+If the player got less than 5000 points, he will be grateful, and say it is satisfactory.
+If the player gets more than 10000 points, he will be shocked and make you the vice president of the company for you efforts. (The best ending)
