@@ -1,8 +1,9 @@
 #Author: Jhan Gomez <br>
-#Date: 06-28-2025, 10:00 PM EST  <br>
-#Version (Pre-Release): 1.0.5  <br>
+#Date: 07-01-2025, 8:15 PM EST  <br>
+#Version (Pre-Release): 1.0.6 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
-#DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds <br>
+#DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
+#Fully complete bull and item logic.
 #To-Draw: store, item, the three phases, and environmental hazards, item spawn, story, ground, splash screen, player when moving. <br>
 #To-Do and IDEAS:  <br>
 #Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out  <br>
@@ -125,7 +126,21 @@ score=0 #Score is by default set to 0.
 set_score=False #This flag determines whether or not the user can input the score
 time_keep=True #this flag determines whether the timer is active, useful for when game over or mission accomplished.
 mixer.init() #Needed for music and sfx later on.
-
+#projectile=pygame.image.load("Game_Files/Assets/Danger.png").convert_alpha()
+#warning=pygame.image.load("Game_Files/Assets/Warning.png").convert_alpha()
+warning_active=False # A flag used to see if the warning is active is made.
+warn_window=5000 #The user will get 5 seconds to react to the projectile
+warning_x=0 #Warning x is initally set to 0.
+warning_y=0 #Warning y is initially set to 0.
+projectile_x=warning_x #projectile x is set to warning x.
+projectile_y=warning_y #Projectile y is set to warning y.
+#projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y))
+#warning_location=warning.get_rect(topleft=(warning_x, warning_y))
+projectile_active=False #This flag is used to see if the projectile should be launched.
+projectile_last_seen=pygame.time.get_ticks() #A timer is used to see when the projectile was last seen.
+projectile_cooldown=random.randint(5000,10000) #A cooldown determines how much time should pass before the projectile is shown on the screen.
+warning_last_seen=pygame.time.get_ticks() #used to see when the warning was last seen.
+warning_checked=0 #Warning checked is used to check the time once, against the warn window.
 #Reworked, allows for story to be drawn in.
 while splash_screen: #While the splash screen is true, this runs.
    for event in pygame.event.get(): #The events are gathered using this for loop.
@@ -238,7 +253,7 @@ while main_game: #Handles the game loop.
             elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
                goal_input = goal_input[:-1]  # Allows deletion, copilot given.
             elif event.key==pygame.K_RETURN and not goal_input=="": #They are ready to play the game.
-               score=0 #Score is set to 0
+               score=0 #Score is set to 0 
                player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
                player_speed=0 #Prevents left over horizontal movement.
                points_text=font_2.render("Points: 0 ", True, "White") #Points are reset to 0.
@@ -255,7 +270,16 @@ while main_game: #Handles the game loop.
                goal_stored=goal #goal stored is the new input.
                starting_time=pygame.time.get_ticks() #Resets the timer.
                starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
-               time_keep=True
+               time_keep=True #The timer can be used.
+               projectile_last_seen=pygame.time.get_ticks() #Projectile timer for last seen is set when the game starts.
+               warning_active=False #The warning is not active to prevent carryover from the previous session.
+               projectile_active=False #The projectile is also not active for the same reason.
+               warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
+               warning_y=random.randint(starting_pos - 540, SCREEN_HEIGHT-360) #A random y for the warning is chosen.
+               projectile_x=warning_x #Projectile x is set to the value of warning x.
+               projectile_y=warning_y #Projectile y is set to the value of warning y.
+               #projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y))
+               warning_checked=0 #Warning checked is set to 0.
       else: #This took an extremely long time to figure out, but I cracked it after two days.
                #Literally, just draw the game over screen here instead of using a function and if the user presses enter then set the game_over flag to false which
                #would trigger the above code to run.
@@ -265,10 +289,10 @@ while main_game: #Handles the game loop.
                score_game_over_text=font_2.render(score_game_over, True, "Red") # The score of the last attempt will be drawn using this.
                score_game_over_text_rect=score_game_over_text.get_rect(topleft=(130,200)) #Last atttempt score will be drawn at this location.
                total_time_text=font_2.render(total_time, True, "Red") #The final time is shown on the screen.
-               total_time_text_rect=total_time_text.get_rect(topleft=(1375,200))
+               total_time_text_rect=total_time_text.get_rect(topleft=(1375,200)) #Sets the location of the final time.
                screen.blit(game_over_screen, game_over_draw) #Game over screen is drawn.
                screen.blit(score_game_over_text, score_game_over_text_rect) #The players last score is drawn to the screen.
-               screen.blit(total_time_text, total_time_text_rect)
+               screen.blit(total_time_text, total_time_text_rect) #Shows the final time on the screen.
                pygame.display.update() #Screen is refreshed.
                if event.type==pygame.KEYDOWN: #If a button is pressed, this will be checked.
                   if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
@@ -342,12 +366,28 @@ while main_game: #Handles the game loop.
      screen.fill((0, 0, 0)) #Screen is filled with black to prevent trailing effect.
      screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
      screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
+
+     #YOU MUST FIGURE OUT HOW TO AVOID THE ITEMS FROM SPAWNING WHERE THE BULL IS, SO YOU MUST CHECK THAT THE item and bull hitbox .left and .right do not intersect otherwise it would be very unfair for the player.
      if current_time - item_last_seen >= item_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
-            item_x_pos=random.randint(200,1581) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
-            item_y_pos=random.randint(200,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
-            item_hitbox.topleft=(item_x_pos, item_y_pos) #Moves the item to the x and y positions that were randomly generated.
-            item_last_seen=current_time #the time that the item was last seen is now the current time
-            item_respawn_cooldown=random.randint(2000,5000) #item cooldown is restarted
+        while True: #This loop will continously generate x and y value  for the item until there is no overlap with the bull.
+               item_x_pos=random.randint(200,1581) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+               item_y_pos=random.randint(200,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+               item_hitbox.topleft = (item_x_pos, item_y_pos) #The item will be drawn at this location.
+               if item_hitbox.right < bull_hitbox.left: #If the item is to the left of the bull this will be allowed.
+                  print("item is to the left of the bull") #For debug purposes.
+                  print("Bull left: " + str(bull_hitbox.left) + " and item right: " + str(item_hitbox.right)) #Debugging tool.
+                  item_last_seen = current_time #Item last seen is set to the current time.
+                  item_respawn_cooldown = random.randint(2000, 5000) #The cooldown is restarted.
+                  break #Loop is broken.
+               elif item_hitbox.left > bull_hitbox.right:  #If the item is to the right of the bull this will be allowed.
+                  print("item is to the right of the bull")  #Debug 
+                  print("Bull right: " + str(bull_hitbox.right) +  " item left: " + str(item_hitbox.left)) #Debug
+                  item_last_seen = current_time #The item last seen timer is set to the current time.
+                  item_respawn_cooldown = random.randint(2000, 5000) #The cooldown is restarted.
+                  break #Loop breaks.
+               else: #Otherwise, the loop must continue.
+                  #Debug tool.
+                  print("Not good to spawn here. Bull left: " + str(bull_hitbox.left) + " and item left: " + str(item_hitbox.left) + "/n Bull right: " + str(bull_hitbox.right) +  " item right: " + str(item_hitbox.right))
      if current_time - water_puddle_last_seen >= water_puddle_cooldown: #if the water cooldown period is exceeded this will run.
         water_possible_locations=[0, 393] #Allows a better way to put the water hazrd on screen.
         water_location_select=random.choice(water_possible_locations)
@@ -385,8 +425,8 @@ while main_game: #Handles the game loop.
               bull_charging=False #Bull charging is set to false, which means the cooldown can work properly now.
      if bull_hitbox.colliderect(item_hitbox) and points >= 20: #if the bull collides with the item, this will happen.
         item_hitbox.y=10000 # The item will move out the way
-        points-=10 #The points get reduced by 10.
-        points_text=font_2.render(f"Bull Got Item...-10 POINTS!", True, "RED") #Removes the points and displays on screen
+        points-=20 #The points get reduced by 20.
+        points_text=font_2.render(f"Bull Got Item...-20 POINTS!", True, "RED") #Removes the points and displays on screen
         points_text_box=points_text.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect. 
         print("The bull got this item!") #For debug purposes.
      if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player this will happen.
@@ -420,12 +460,44 @@ while main_game: #Handles the game loop.
      time_message_textbox=time_message.get_rect(topleft=(1160,0))
      if time_keep: #as long as the timer is set to ne true, this will run.
         seconds=int((pygame.time.get_ticks() - starting_time_secs)/1000) #The seconds are stored seperately to allow a reset of the seconds, but not the minutes.
-        if seconds > 60:#To prevent the seconds from ticking up again.
+        if seconds >= 60:#To prevent the seconds from ticking up again.
            starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
-        current_time=font_2.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'White') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
+        current_time_disp=font_2.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'White') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
         total_time=str(int((pygame.time.get_ticks() - starting_time)/60000)) + " M " + str(seconds) + " S" #The total time is stored, which is useful for the game over and mission accomplished screens.
-        current_time_textbox=current_time.get_rect(topleft=(1160,60)) #places the timer on the specific location on screen.
-        screen.blit(current_time, current_time_textbox) #The time is shown on the screen.
+        current_time_textbox=current_time_disp.get_rect(topleft=(1160,60)) #places the timer on the specific location on screen.
+        screen.blit(current_time_disp, current_time_textbox) #The time is shown on the screen.
+     if current_time - projectile_last_seen > projectile_cooldown: #FINALLY, AFTER A WHOLE 3 DAYS, THIS WORKS! Timer used to determined if projectile ready to be shown.
+        #warning_location=warning.get_rect(topleft=(warning_x, warning_y)) # A warning is ready to be shown at this location.
+        #The issue was that warning x was getting reassigned even wit the projectile active boolean set to false.
+        #This caused the projectile to be drawn on the screen twice incorrectly.
+        warning_active=True #Flag that the warning is active is set to true.
+     if warning_active: #If the warning is active this will run.
+        #screen.blit(warning, warning_location) #Warning drawn on this location on the screen.
+        warning_checked+=1 #Warning checked gets 1 added, this allows the time to be checked precisely ONCE!
+        if warning_checked > 0 and warning_checked < 2: #Provided warning checked is greater than 0 and less than two, this will run.
+           print("Comparison reached") #Prints that the comparison was reached
+           warning_last_seen=pygame.time.get_ticks() #Time checked precisely once rather than having to reset it.
+           warning_x=0 #Warning_x is also set to 0 precisely once, which prevents an issue whre the x would constantly be set to 0
+           #which prevented the comparison later to not work.
+           print(str(warning_last_seen) + " was last seen at this time.") #For debug purposes.
+        if current_time - warning_last_seen > warn_window: #If the warning has passed 5 seconds, the projectile can now be shown.
+            projectile_active=True #Projectile active is now set to true.
+            #print("projectile can now be shown.")
+     if projectile_active: #If the projectile_active is true, this can run.
+        warning_active=False #The warning is no loner active
+        projectile_x+=15 #Projectile will move across the x axis at this rate.
+        #if projectile_x <= 1920: #If the proectile is not off the screen, this can run.
+            #projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Projectile is placed at this location.
+            #screen.blit(projectile, projectile_location) #Projectile drawn at this location.
+        #else: #If the projectile is off the screen this will run.
+            #projectile_active=False #Projectile active is set to false.
+            #print("The projectle is now deactived.") #For debug
+            #projectile_last_seen=current_time #Projectile last seen is set to current time.
+            #warning_y=random.randint(starting_pos - 540, SCREEN_HEIGHT-360) #The warning's y location is set to a random location, this also serves as the y location for the projectile.
+            #projectile_x=warning_x #Projectile x location is set to the warning's x location.
+            #projectile_y=warning_y #Projectile's y location is set to the warning's y location.
+            #projectile_cooldown=random.randint(5000,10000) #The cooldown is reset.
+            #  warning_checked=0 #Warning checked is equal to 0.
      bull_gravity+=1 #Brings the bull back to the ground.
      bull_hitbox.y+=bull_gravity #Bull moves accordingly to the increasing gravity.
      player_sprites() #Sprites for player function called.

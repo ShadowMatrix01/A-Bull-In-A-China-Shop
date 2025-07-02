@@ -1,9 +1,10 @@
 <h1>Author: Jhan Gomez <br>
-<h1>Date: 06-28-2025, 10:00 PM EST  <br>
-<h1>Version (Pre-Release): 1.0.5  <br>
+<h1>Date: 07-01-2025, 8:15 PM EST  <br>
+<h1>Version (Pre-Release): 1.0.6  <br>
 <h1>Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 <h1>DONE: Controls Screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player jumping, partially(game over screen), reset, windows scaling set to 100%, bgm (select), out_of_bounds <br>
-<h1>To-Draw, draw player moving sprites, store, items, the three phases, and environmental hazards , story, ground, splash screen. <br>
+<h1>Fully complete bull and item logic.
+<h1>To-Draw, draw player moving sprites, store, items, the three phases, and environmental hazards , story, ground, splash screen, warning and projectile code. <br>
 <h1>To-Do and IDEAS:  <br>
 <h2> ~Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out~ (SCRAPPED)  <br>
 <h2> DIFFERENT NOW: INSTEAD OF COUNTDOWW, TIMER COUNTS UP SO THE GOAL IS TO BEAT YOUR OWN RECORD!Save high score + time and name to file. <br>
