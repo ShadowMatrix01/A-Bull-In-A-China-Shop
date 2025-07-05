@@ -1,23 +1,17 @@
 #Author: Jhan Gomez <br>
-#Date: 07-01-2025, 8:15 PM EST  <br>
-#Version (Pre-Release): 1.0.6 <br>
+#Date: 07-05-2025, 4:00 PM EST  <br>
+#Version (Pre-Release): 1.0.7 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic.
-#To-Draw: store, item, the three phases, and environmental hazards, item spawn, story, ground, splash screen, player when moving. <br>
-#To-Do and IDEAS:  <br>
-#Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out  <br>
-#HAZARD: Maybe, if you aren't careful, and say you get accidentally covered by red cape, he charges towards you for 3 seconds!  <br>
-#If the bull collides with the item, he takes it, and you have 3 seconds to get it back from him, which you can do by jumping on him!  <br>
-#If they run out of time and do not get the item back safely, 6 seconds per 1 item, they get a game over screen showing their final score.  <br>
-#After everything is done, consider adding hazards such as falling debris, pool of water across the x axis (if you collide with it you move slower and so does the bull!), paint, etc  <br>
+#Item and enviroemental hazard, splash screen, ground.
+#To-Draw: store, player when moving. <br>
+#To-Do and IDEAS:  <br> 
+#Save high score + time and name to file.
 #Animation for background needed!  <br>
 # Laid ground work for game_over screen.  <br>
 # Fixed item spawning to not go off screen.
 # Fixed transparency on image, had to change starting y position
-# HAZARD: WATER PIPES ON THE BOTTOM WILL SHOOT OUT WATER PROJECTILES FROM BOTTOM TO TOP, IF THE PLAYER TOUCHES IT, THE WILL GET 1 LIFE REDUCED (TOTAL 3). Gravity from bottom to top, and drawing said pipes.
-# [TOOL] A freeze in place, freezes everything except for the player and the item, but only for 3 seconds. Make sound play when pipe is about to blast out water
-
 # DIFFERENT NOW: INSTEAD OF COUNTDOWW, TIMER COUNTS UP SO THE GOAL IS TO BEAT YOUR OWN RECORD!
 #Save high score + time and name to file.
 
@@ -36,27 +30,46 @@ import random #Random module imported in.
 pygame.init() #Pygame is initialized.
 SCREEN_WIDTH=1920 #Screen width is set to be 1920
 SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
-return_pressed=0
+return_pressed=0 #Determines how many times return was pressed.
 screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #The dimensions are now set to be the displays dimensions.
-game_active=True #This boolean allows pausing for when the player either wins or looses.
+game_active=False #This boolean allows pausing for when the player either wins or looses.
 clock=pygame.time.Clock() #Allows a consistent frame rate in my game.
 font=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 font_2=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 font_3=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 75) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_4=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 40) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_5=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 20) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 starting_time=pygame.time.get_ticks() #Used for the timer.
 starting_time_secs=pygame.time.get_ticks() #Used for the timer in seconds.
 #Sprites for animationms
 controls=pygame.image.load('Game_Files/Assets/Controls_KBM.png').convert_alpha() #Screen showing the controls is loaded in.
 controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
+disclaimer=pygame.image.load('Game_Files/Assets/disclaimer.png').convert_alpha() #Loads the disclaimer in.
+disclaimer_location=disclaimer.get_rect(topleft=(0,0)) #Puts the disclaimer on screen.
 player_walking_1=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_walking_2=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_walking=[player_walking_1, player_walking_2] #Has two sprites, can be changed.
 player_walking_index=0 #Allows one of the above indexes to be selected to animate
 player_256=player_walking[player_walking_index] #The sprite chosen is the one at the specified index position within the array.
-player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 75)) #Works regardless of screen size chosen.
+player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 45)) #Works regardless of screen size chosen.
 player_jumping=pygame.image.load('Game_Files/Assets/player_jumping.png').convert_alpha() #Jumping animation for player.
-
+shop=pygame.image.load('Game_Files/Assets/jewel-shop-not-finished.png').convert_alpha() #Loads the shops background in.
+shop_location=shop.get_rect(topleft=(0,0)) #Puts the shop at this location.
 #Add special loot, cooldown, current time, add final time to game over screen, mechanics at a glance.
+
+#Frames for background splash screen.
+frame_1=pygame.image.load("Game_Files/Assets/Story/FRAME_1.png").convert_alpha()
+frame_2=pygame.image.load("Game_Files/Assets/Story/FRAME_2.png").convert_alpha()
+frame_3=pygame.image.load("Game_Files/Assets/Story/FRAME_3.png").convert_alpha()
+frame_4=pygame.image.load("Game_Files/Assets/Story/FRAME_4.png").convert_alpha()
+frame_5=pygame.image.load("Game_Files/Assets/Story/FRAME_5.png").convert_alpha()
+frame_6=pygame.image.load("Game_Files/Assets/Story/FRAME_6.png").convert_alpha()
+frame_7=pygame.image.load("Game_Files/Assets/Story/FRAME_7.png").convert_alpha()
+frame_8=pygame.image.load("Game_Files/Assets/Story/FRAME_8.png").convert_alpha()
+background_rolling=[frame_1, frame_2, frame_3, frame_4, frame_5, frame_6, frame_7, frame_8] # I need a totaminimum  of 16 for smooth animation.
+background_index=0 #The index for which frame to pick is set to 0.
+background=background_rolling[background_index] #The background is set to be the index position of the background index withing the background rolling list.
+background_location=background.get_rect(topleft=(0,0)) #Draws the background at this location.
 #Sprites for player!
 def player_sprites(): #Function for sprites, based of https://www.youtube.com/watch?v=AY9MnQ4x3zk&t=10153s&ab_channel=ClearCode
     global player_256, player_walking_index #player_256 and player_walking_index must be declared at globally.
@@ -69,9 +82,8 @@ def player_sprites(): #Function for sprites, based of https://www.youtube.com/wa
        player_256=player_walking[int(player_walking_index)] #The loop restarts   
 game_over_screen=pygame.image.load('Game_Files/Assets/Game_Over.png').convert_alpha() #Game over screen loaded in when drawn.
 game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
-
 #Assets and Locations
-item=pygame.image.load('Game_Files/Assets/Necklace.png').convert_alpha() #Necklace asset loaded in.
+item=pygame.image.load('Game_Files/Assets/Necklace-2.png').convert_alpha() #Necklace asset loaded in.
 goal=0 #Goal is set to be a default of 0
 goal_input = "" #Gets the users desired score
 player_speed=0 #Default player speed is set to 0.
@@ -84,13 +96,13 @@ player_current_location=player_hitbox.topleft #top and left are combined to get 
 item_last_seen=pygame.time.get_ticks() #Stores the last time the item was seen.
 item_respawn_cooldown=random.randint(2000,5000) #A cooldown of between 3 and 5 seconds is made.
 item_x_pos=random.randint(300,1581) #Default x value range for normal items
-item_y_pos=random.randint(300,550) #Default y valur range for normal items.
+item_y_pos=random.randint(500,600) #Default y valur range for normal items.
 item_hitbox=item.get_rect(topleft=(item_x_pos, item_y_pos)) #The item is placed at the randomly generated x and y positions.
 points=0 #Points counter, default is 0.
-points_text=font_2.render("Points: 0 ", True, "White") #At the beggining, the score is 0 and that is displayed on the screen.
+points_text=font_2.render("Points: 0 ", True, "Black") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
 bull=pygame.image.load('Game_Files/Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
-bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-75)) #Bull is placed at specific location on the screen.
+bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-45)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_x=bull_hitbox.left #The bull x location is set to be wherever the bulls left rect position is.
 bull_y=bull_hitbox.top #The bull's y lpcation is set ot be wherever the top of the rect is.
@@ -106,43 +118,73 @@ main_game=False #The main game is set to false as a default.
 splash_screen=True #The splash screen is true by default.
 goal_stored=0 #The goal stored is 0 by default.
 game_over=False #The game is not over by default.
-total_time=""
+total_time="" #Stores the total time used, blank by default.
 #Water puddle hazard and drawing on screen.
 water_puddle=pygame.image.load('Game_Files/Assets/water-test.png').convert_alpha() #Picture loaded in as water_puddle
-water_puddle_2=pygame.image.load('Game_Files/Assets/water-test-2.png').convert_alpha()
+water_puddle_2=pygame.image.load('Game_Files/Assets/water-test-2.png').convert_alpha() #Loads in a second water puddle.
 water_possible_locations=[0, 393] #Possible locations for the water puddle.
 water_possible_locations_2=[785, SCREEN_WIDTH-350] #Possible locations for the water puddle.
 water_location_select=random.choice(water_possible_locations) #Selects a location to choose from for the water.
 water_location_select_2=random.choice(water_possible_locations_2)
 water_puddle_x=water_location_select #Water puddle can appear at these locations at the x axis 
-water_puddle_y=starting_pos - 100 #Water puddle y is always set to this locations
+water_puddle_y=starting_pos - 110 #Water puddle y is always set to this locations
 water_puddle_location=water_puddle.get_rect(topleft=(water_puddle_x, water_puddle_y)) #The water hazard is drawn at this location.
 water_puddle_x_2=water_location_select_2 #Water puddle can appear at these locations at the x axis 
-water_puddle_y_2=starting_pos - 100 #Water puddle y is always set to this locations
+water_puddle_y_2=starting_pos - 110 #Water puddle y is always set to this locations
 water_puddle_location_2=water_puddle.get_rect(topleft=(water_puddle_x_2, water_puddle_y_2)) #The water hazard is drawn at this location.
 water_puddle_cooldown=random.randint(5000,10000) #The water hazard will be redrawn every 5 to 10 seconds.
 water_puddle_last_seen=pygame.time.get_ticks() #Will check when the water puddle was last seen.
 score=0 #Score is by default set to 0.
 set_score=False #This flag determines whether or not the user can input the score
-time_keep=True #this flag determines whether the timer is active, useful for when game over or mission accomplished.
+time_keep=False #this flag determines whether the timer is active, useful for when game over or mission accomplished.
 mixer.init() #Needed for music and sfx later on.
-#projectile=pygame.image.load("Game_Files/Assets/Danger.png").convert_alpha()
-#warning=pygame.image.load("Game_Files/Assets/Warning.png").convert_alpha()
+projectile=pygame.image.load("Game_Files/Assets/Danger.png").convert_alpha() #Loads in the projectile image.
+warning=pygame.image.load("Game_Files/Assets/Warning.png").convert_alpha() #Loads in the warning image.
 warning_active=False # A flag used to see if the warning is active is made.
 warn_window=5000 #The user will get 5 seconds to react to the projectile
 warning_x=0 #Warning x is initally set to 0.
-warning_y=0 #Warning y is initially set to 0.
+warning_y=random.randint(0,450) #Warning y is initially set to 0.
 projectile_x=warning_x #projectile x is set to warning x.
 projectile_y=warning_y #Projectile y is set to warning y.
-#projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y))
-#warning_location=warning.get_rect(topleft=(warning_x, warning_y))
+projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Puts the projectile at the location of projectile x and projectile y.
+warning_location=warning.get_rect(topleft=(warning_x, warning_y)) #Warning is set to the location of warning x and warning y.
 projectile_active=False #This flag is used to see if the projectile should be launched.
 projectile_last_seen=pygame.time.get_ticks() #A timer is used to see when the projectile was last seen.
-projectile_cooldown=random.randint(5000,10000) #A cooldown determines how much time should pass before the projectile is shown on the screen.
+projectile_cooldown=random.randint(5000,7000) #A cooldown determines how much time should pass before the projectile is shown on the screen.
 warning_last_seen=pygame.time.get_ticks() #used to see when the warning was last seen.
 warning_checked=0 #Warning checked is used to check the time once, against the warn window.
 #Reworked, allows for story to be drawn in.
+special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
+special_location=special.get_rect(topleft=(475,0)) #Draws the amount of dashes to the screen.
+py_made=pygame.image.load('Game_Files/Assets/pygame_powered.png').convert_alpha() # loads pygame powered image
+py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image on screen.
+def screen_to_take_you_to(): #A function handles which screen is drawn.
+      global set_score #set score is set at the global level.
+      global background, background_index #background and backround_index also declared  globally.
+      if return_pressed < 1: #If return pressed is less than 0, then this will run.
+         screen.fill((0,0,0)) #Screen filled with black
+         screen.blit(py_made, py_location) #pygame screen drawn to the screen.
+      elif return_pressed==1: #If return pressed is equal to 1, then this will run.
+         screen.fill((0,0,0)) #Screen filled with black to get rid of previous input.
+         screen.blit(disclaimer,disclaimer_location) #Disclaimer drawn to screen.
+         mixer.music.load("Game_Files/AudioSFX/fsm-team-escp-downtown-walk.mp3") #Music loaded in, will play on the next screen.
+         mixer.music.play(-1) #Loops the track.
+      elif return_pressed==2: #If the enter key is pressed once, then this will run.
+         background_index += 0.01  # A scroll across the frames will be applied using the index.
+         if background_index >= len(background_rolling): # if the index is greater than the amount of frames, then it must be reset.
+            background_index = 0 #Index reset.
+         background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
+         background_location = background.get_rect(topleft=(0, 0)) #background placed at this locatiom.
+         screen.blit(background, background_location) #Background is drawn.
+      elif return_pressed==3: #If the enter key is pressed twice, this will be drawn.
+         screen.fill((255,255,255)) #Clears screen of previous screen.
+         screen.blit(controls, controls_location) #The controls are displayed on the screen.
+      elif return_pressed==4: #Otherwise, this will run.
+         set_score=True #set score is set to true.
+      pygame.display.update() #Screen is refreshed.
+
 while splash_screen: #While the splash screen is true, this runs.
+   screen_to_take_you_to() #Nice, I figured out how to make the splash screen story work, simply by seperating the drawing logic into a function that detects how many times the enter button has been pressed.
    for event in pygame.event.get(): #The events are gathered using this for loop.
       if event.type==pygame.QUIT: #If the player presses the 'X' key, then the game will stop running.
          pygame.quit()#Pygame quits
@@ -154,17 +196,7 @@ while splash_screen: #While the splash screen is true, this runs.
             quit() #Python shuts down.
          if event.key==pygame.K_RETURN: #if the enter key is pressed, then return pressed will go by one which will handle which story sequence to show.
             return_pressed+=1 #Everytime enter is pressed, it will go up by one.
-            screen_to_take_you_to() #Nice, I figured out how to make the splash screen story work, simply by seperating the drawing logic into a function that detects how many times the enter button has been pressed.
    
-   def screen_to_take_you_to(): #A function handles which screen is drawn.
-      global set_score #set score is set at the global level.
-      if return_pressed==1: #If the enter key is pressed once, then this will run.
-         screen.fill((255,255,255)) #Placeholder
-      elif return_pressed==2: #If the enter key is pressed twice, this will be drawn.
-         screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      else: #Otherwise, this will run.
-         set_score=True #set score is set to true.
-   pygame.display.update() #Screen is refreshed.
    
    if set_score: #if set score is set to true, this will run.
          goal_display = font.render(f"Set Goal - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
@@ -173,7 +205,7 @@ while splash_screen: #While the splash screen is true, this runs.
          goal_display_parameters_2=goal_display_2.get_rect(topleft=(375,700)) #The goal the user inputs is put into a rect. 
          screen.fill((0, 0, 0)) #background filled with black
          screen.blit(goal_display,  goal_display_parameters)  # Positions score on the scrren.
-         screen.blit(goal_display_2, goal_display_parameters_2)
+         screen.blit(goal_display_2, goal_display_parameters_2) #Draws the text to start the game.
          pygame.display.update() #Screen is updated to show the score
          for event in pygame.event.get(): #All events are handled, such as kbm input, mouse, etc.
             if event.type==pygame.QUIT: #If the player quits the game.
@@ -189,12 +221,15 @@ while splash_screen: #While the splash screen is true, this runs.
                   elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
                      goal_input = goal_input[:-1]  # Allows deletion, copilot given.
                   elif event.key==pygame.K_RETURN and not goal_input=="": #They are ready to play the game.
+                     mixer.music.stop() #Stops the track.
                      goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                      splash_screen=False #The spalsh screen is false.
                      set_score=False #set score is set to false
                      main_game=True #The main game can now run.
                      goal_stored=goal #The new goal stored is the goal the user inputted.
-   
+                     starting_time=pygame.time.get_ticks() #Resets the timer.
+                     starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
+                     game_active=True #the game is active.
 while main_game: #Handles the game loop.
   player_x=player_hitbox.left #Its accurately getting the location!
   player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the player down.
@@ -210,17 +245,22 @@ while main_game: #Handles the game loop.
             if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
                pygame.quit() #Pygame quits the game.
                quit() #Quit ends the execution of the program.
-            if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #This is where get pressed comes into play, because event key can only...
-               #register one event at a time.
-               player_speed = -30 #Player moves way faster than the bull to the left.
-               special_speed_counter-=1 #One of the special dashes is removed from the user.
-            if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #Same as above but for right movement.
-               player_speed = +30 #Player moves way faster than the bull to the right.
-               special_speed_counter-=1  #One of the special dashes is removed from the user.
+            if special_speed_counter > 0: #Had to be seperated to prevent issue where the dashes got reduced by two due to interference between key pressed (which runs every frame) and keydown which would only run once when the key is initially pressed.
+                  if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]): #This is where get pressed comes into play, because event key can only...
+                     #register one event at a time.
+                     player_speed = -30 #Player moves way faster than the bull to the left.
+                     special_speed_counter=special_speed_counter-1 #One of the special dashes is removed from the user.
+                     special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black')  #Dashes remaining is rerendered.
+                     special_location=special.get_rect(topleft=(475,0)) #Dashes are drawn at this location.
+                  elif (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #Same as above but for right movement.
+                     special_speed_counter=special_speed_counter-1 #One of the special dashes is removed from the user.
+                     player_speed = +30 #Player moves way faster than the bull to the right.
+                     special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Dashes remaining is rerendered.
+                     special_location=special.get_rect(topleft=(475,0)) #Dashes are drawn at this location.
             if event.key==pygame.K_w or event.key==pygame.K_SPACE or event.key==pygame.K_UP: #If the key pressed is w or space or up, this happens.
-               player_gravity = -23 #Player gravity is set to -23, which is tied to the y movement.
+               player_gravity = -26 #Player gravity is set to -26, which is tied to the y movement.
             if event.key==pygame.K_s or event.key==pygame.K_DOWN: #If the s or down is pressed this will run.
-               player_gravity = +30 #Player gravity is set to 30, which is  also tied to the y movement.
+               player_gravity = +33 #Player gravity is set to 30, which is  also tied to the y movement.
             if event.key==pygame.K_a or event.key==pygame.K_LEFT: #If the key pressed is a or left this will happen.
                player_speed= -10 #player speed is set to -10, which is tied to the x axis.
             if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user presses d or right this will run.
@@ -256,8 +296,8 @@ while main_game: #Handles the game loop.
                score=0 #Score is set to 0 
                player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
                player_speed=0 #Prevents left over horizontal movement.
-               points_text=font_2.render("Points: 0 ", True, "White") #Points are reset to 0.
-               points_text_box=points_text.get_rect(topleft=(0,0))
+               points_text=font_2.render("Points: 0 ", True, "Black") #Points are reset to 0.
+               points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
                player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
                bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
@@ -275,11 +315,14 @@ while main_game: #Handles the game loop.
                warning_active=False #The warning is not active to prevent carryover from the previous session.
                projectile_active=False #The projectile is also not active for the same reason.
                warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
-               warning_y=random.randint(starting_pos - 540, SCREEN_HEIGHT-360) #A random y for the warning is chosen.
+               warning_y=random.randint(0, 450) #A random y for the warning is chosen.
                projectile_x=warning_x #Projectile x is set to the value of warning x.
                projectile_y=warning_y #Projectile y is set to the value of warning y.
-               #projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y))
+               projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Sets the projectile at this location.
                warning_checked=0 #Warning checked is set to 0.
+               special_speed_counter=3 #Player gets 3 dashes.
+               special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
+               special_location=special.get_rect(topleft=(475,0)) #Dashes drawn at this location.
       else: #This took an extremely long time to figure out, but I cracked it after two days.
                #Literally, just draw the game over screen here instead of using a function and if the user presses enter then set the game_over flag to false which
                #would trigger the above code to run.
@@ -303,6 +346,7 @@ while main_game: #Handles the game loop.
                      game_over=False #Game over is no longer false
                      mixer.music.stop() #Stops the music from playing.
   if game_active: #If the game is active this will run.
+     time_keep=True #The timer is true.
      def points_system(): #This function handles how points will be distributed.
         global points #Without this, cannot reach points and update variable accordingly.
         item_hitbox.y=10000 #Since assets cannot despwan, it is instead moved out of sight from the player.
@@ -318,8 +362,8 @@ while main_game: #Handles the game loop.
          global inner_loop_x #This is why movement wasn't happening, because I had failed to modify the inner_loop!
          global inner_loop_y #inner loop y is now accesible
          global bull_charging #bull charging flag is now accesible
-         bull_dice_roll=random.randint(0,1) #Chooses between 0 and 1 to avoid weird movement that caused the bull to move in a circle.
-         if bull_dice_roll==0: #If the bull dice roll is 0
+         bull_dice_roll=random.randint(0,5) #Chooses between 0 and 1 to avoid weird movement that caused the bull to move in a circle.
+         if bull_dice_roll < 4: #If the bull dice roll is less than 4, this will run. Reworked to force the bull to chase the player more.
             inner_loop_x=True #The inner loop for x movement is set to true.
             bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
             bull_movement_cooldown=random.randint(1000,2000) #A cooldown of between 1 and 2 seconds is made.
@@ -341,7 +385,7 @@ while main_game: #Handles the game loop.
         player_hitbox.x=1849 #Player is put at this x location.
      if player_hitbox.colliderect(item_hitbox): #If the player and the item collide, these statements will run.
         score=points_system() #Score variable is a ssigned to the points returned
-        points_text=font_2.render("Points " + score, True, "White") #A rect object that contains the updated score is made.
+        points_text=font_2.render("Points " + score, True, "Black") #A rect object that contains the updated score is made.
         points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
         if int(score) >= goal: #A score to win will be determined. For now, it is set to 10.
            print(total_time) #For debugging purposes.
@@ -364,14 +408,13 @@ while main_game: #Handles the game loop.
         bull_gravity= 0 # Resets the gravity to prevent the bull from clipping.
      player_hitbox.x+=player_speed #The player will move alongside the x axis left to right according to the player speed.
      screen.fill((0, 0, 0)) #Screen is filled with black to prevent trailing effect.
+     screen.blit(shop, shop_location) #Draws the shop before anything else.
      screen.blit(player_256, player_hitbox) #Player drawn onto the screen.
      screen.blit(bull, bull_hitbox) #The bull is drawn on the screen.
-
-     #YOU MUST FIGURE OUT HOW TO AVOID THE ITEMS FROM SPAWNING WHERE THE BULL IS, SO YOU MUST CHECK THAT THE item and bull hitbox .left and .right do not intersect otherwise it would be very unfair for the player.
      if current_time - item_last_seen >= item_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
         while True: #This loop will continously generate x and y value  for the item until there is no overlap with the bull.
                item_x_pos=random.randint(200,1581) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
-               item_y_pos=random.randint(200,550) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
+               item_y_pos=random.randint(500,600) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
                item_hitbox.topleft = (item_x_pos, item_y_pos) #The item will be drawn at this location.
                if item_hitbox.right < bull_hitbox.left: #If the item is to the left of the bull this will be allowed.
                   print("item is to the left of the bull") #For debug purposes.
@@ -390,43 +433,42 @@ while main_game: #Handles the game loop.
                   print("Not good to spawn here. Bull left: " + str(bull_hitbox.left) + " and item left: " + str(item_hitbox.left) + "/n Bull right: " + str(bull_hitbox.right) +  " item right: " + str(item_hitbox.right))
      if current_time - water_puddle_last_seen >= water_puddle_cooldown: #if the water cooldown period is exceeded this will run.
         water_possible_locations=[0, 393] #Allows a better way to put the water hazrd on screen.
-        water_location_select=random.choice(water_possible_locations)
+        water_location_select=random.choice(water_possible_locations) #Chooses a random place to place the water puddle across the x axis.
         water_puddle_last_seen=current_time #The water puddle hazard would last be seen at that time.
         water_puddle_x=water_location_select#Water puddle_x is tthen set to be at this location. Default 100 to SCREEB_WIDTH  - 350 #REWORKED FOR BETTER LOGIC
-        water_puddle_y=starting_pos - 100 #Water puddle y location is set.
+        water_puddle_y=starting_pos - 110 #Water puddle y location is set.
         water_puddle_location.topleft=(water_puddle_x, water_puddle_y) #Water puddle is drawn at this location.
         water_possible_locations_2=[785, SCREEN_WIDTH-350] #The water puddle facing right can be at these locations.
         water_location_select_2=random.choice(water_possible_locations_2) #A random choice is made to select the location to draw the water.
         water_puddle_x_2=water_location_select_2 #The water puddles x location is the one that was randomly chosen.
-        water_puddle_y_2=starting_pos-100 #Water puddle's y location is set here.
+        water_puddle_y_2=starting_pos-110 #Water puddle's y location is set here.
         water_puddle_location_2.topleft=(water_puddle_x_2, water_puddle_y_2) #The water puddle will be drawn at this location.
         print(water_puddle_x) #For debug purposes.
         water_puddle_cooldown=random.randint(5000,10000) #Water puddle cooldown is reset.
      if not bull_charging and current_time - bull_last_seen >= bull_movement_cooldown: #If the bull has not moved in a certain amount of time and the bull is not currently charging this will run.
         bull_lock_on() #Calls the bull lock on function.
      if inner_loop_x: #If the inner loop is true, this will run.
-        if bull_hitbox.x < player_hitbox.x: #If the bull is in a position left of the player, it must move right.
+        if bull_hitbox.right < player_hitbox.left: #If the bull is in a position left of the player, it must move right.
            bull_speed=17 #Bull speed is set to 17.
            bull_hitbox.x += bull_speed  # Moves the bull to the right of the screen.
-        elif bull_hitbox.x > player_hitbox.x: #If the bull is to the right of the player, it must move to the left.
+        elif bull_hitbox.left > player_hitbox.right: #If the bull is to the right of the player, it must move to the left.
              bull_speed=17 #Bull speed is set to 17.
              bull_hitbox.x -= bull_speed # Moves the bull to the left of the player.
         else: #Otherwise, if the bull is neither to the left or right of the player, then it is assumed that the bull and the player are the same x location.
               inner_loop_x = False  #Bull does not need to move, so inner_loop boolean is set to false.
               inner_loop_y = True #The inner loop y is set to true to make the bull follow the player across the y axis
-             # points_text_box=points_text.get_rect(topleft=(600, 100)) #Sets the points location on the screen.
      if inner_loop_y: #If the inner loop is true, this will run.
-        if bull_hitbox.y < player_hitbox.y :#If the bull is higher than the player, then it must be brought down.
+        if bull_hitbox.bottom < player_hitbox.top :#If the bull is higher than the player, then it must be brought down.
              bull_hitbox.y += 25 # Moves the bull to the bottom of the screen 25 is default
-        elif bull_hitbox.y > player_hitbox.y: #If the bull is to the bottom of the player, it must move up.
-             bull_hitbox.y -= 32 # Moves the bull to the top of the screen.
+        elif bull_hitbox.top > player_hitbox.bottom: #If the bull is to the bottom of the player, it must move up.
+             bull_hitbox.y -= 35 # Moves the bull to the top of the screen.
         else: #Otherwise, if the bull is neither to the left or right of the player, then it is assumed that the bull and the player are the same y location.
               inner_loop_y = False  #Bull does not need to move, so inner_loop boolean is set to false.
               bull_charging=False #Bull charging is set to false, which means the cooldown can work properly now.
      if bull_hitbox.colliderect(item_hitbox) and points >= 20: #if the bull collides with the item, this will happen.
         item_hitbox.y=10000 # The item will move out the way
         points-=20 #The points get reduced by 20.
-        points_text=font_2.render(f"Bull Got Item...-20 POINTS!", True, "RED") #Removes the points and displays on screen
+        points_text=font_5.render(f"Bull Got Item...-20 POINTS!", True, "RED") #Removes the points and displays on screen
         points_text_box=points_text.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect. 
         print("The bull got this item!") #For debug purposes.
      if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player this will happen.
@@ -456,23 +498,26 @@ while main_game: #Handles the game loop.
         elif (keys[pygame.K_d]) or (keys[pygame.K_RIGHT]): #If right or d is pressed, then the player speed will be adjusted in this way.
            player_speed=5 #Player speed is reduced.
            print("Water hazard, moving right.") #Debug purposes.
-     time_message=font_2.render("Stopwatch in Minutes", 'True', 'White')
-     time_message_textbox=time_message.get_rect(topleft=(1160,0))
+     time_message=font_2.render("Stopwatch in Minutes", 'True', 'Black') #Stopwwatch messaged rendered.
+     time_message_textbox=time_message.get_rect(topleft=(1160,0)) #Stopwtach messaged placed at this location.
      if time_keep: #as long as the timer is set to ne true, this will run.
         seconds=int((pygame.time.get_ticks() - starting_time_secs)/1000) #The seconds are stored seperately to allow a reset of the seconds, but not the minutes.
         if seconds >= 60:#To prevent the seconds from ticking up again.
            starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
-        current_time_disp=font_2.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'White') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
+           special_speed_counter+=1 #The player gets one dash added for every minute they survive
+           special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #the new amount of dashes is placed on the screen.
+           special_location=special.get_rect(topleft=(475,0)) #New dashes placed at this location.
+        current_time_disp=font_2.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'Black') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
         total_time=str(int((pygame.time.get_ticks() - starting_time)/60000)) + " M " + str(seconds) + " S" #The total time is stored, which is useful for the game over and mission accomplished screens.
         current_time_textbox=current_time_disp.get_rect(topleft=(1160,60)) #places the timer on the specific location on screen.
         screen.blit(current_time_disp, current_time_textbox) #The time is shown on the screen.
      if current_time - projectile_last_seen > projectile_cooldown: #FINALLY, AFTER A WHOLE 3 DAYS, THIS WORKS! Timer used to determined if projectile ready to be shown.
-        #warning_location=warning.get_rect(topleft=(warning_x, warning_y)) # A warning is ready to be shown at this location.
+        warning_location=warning.get_rect(topleft=(warning_x, warning_y)) # A warning is ready to be shown at this location.
         #The issue was that warning x was getting reassigned even wit the projectile active boolean set to false.
         #This caused the projectile to be drawn on the screen twice incorrectly.
         warning_active=True #Flag that the warning is active is set to true.
      if warning_active: #If the warning is active this will run.
-        #screen.blit(warning, warning_location) #Warning drawn on this location on the screen.
+        screen.blit(warning, warning_location) #Warning drawn on this location on the screen.
         warning_checked+=1 #Warning checked gets 1 added, this allows the time to be checked precisely ONCE!
         if warning_checked > 0 and warning_checked < 2: #Provided warning checked is greater than 0 and less than two, this will run.
            print("Comparison reached") #Prints that the comparison was reached
@@ -482,22 +527,36 @@ while main_game: #Handles the game loop.
            print(str(warning_last_seen) + " was last seen at this time.") #For debug purposes.
         if current_time - warning_last_seen > warn_window: #If the warning has passed 5 seconds, the projectile can now be shown.
             projectile_active=True #Projectile active is now set to true.
-            #print("projectile can now be shown.")
+            print("projectile can now be shown.")
      if projectile_active: #If the projectile_active is true, this can run.
         warning_active=False #The warning is no loner active
-        projectile_x+=15 #Projectile will move across the x axis at this rate.
-        #if projectile_x <= 1920: #If the proectile is not off the screen, this can run.
-            #projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Projectile is placed at this location.
-            #screen.blit(projectile, projectile_location) #Projectile drawn at this location.
-        #else: #If the projectile is off the screen this will run.
-            #projectile_active=False #Projectile active is set to false.
-            #print("The projectle is now deactived.") #For debug
-            #projectile_last_seen=current_time #Projectile last seen is set to current time.
-            #warning_y=random.randint(starting_pos - 540, SCREEN_HEIGHT-360) #The warning's y location is set to a random location, this also serves as the y location for the projectile.
-            #projectile_x=warning_x #Projectile x location is set to the warning's x location.
-            #projectile_y=warning_y #Projectile's y location is set to the warning's y location.
-            #projectile_cooldown=random.randint(5000,10000) #The cooldown is reset.
-            #  warning_checked=0 #Warning checked is equal to 0.
+        projectile_x+=35 #Projectile will move across the x axis at this rate.
+        if projectile_x <= 1920: #If the proectile is not off the screen, this can run.
+            projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Projectile is placed at this location.
+            screen.blit(projectile, projectile_location) #Projectile drawn at this location.
+            if player_hitbox.colliderect(projectile_location): #If the player collides with the projectile this will happen.
+                  projectile_x=2000 #Projectile is moved off the screen.
+                  player_hitbox.y+=SCREEN_WIDTH #Will stun the player to where they immediately fall to the ground.
+                  if points >= 50: #If the player has more than 50 points, then this will run.
+                     points-=50 #50 points are deducted from the player
+                     points_text=font_4.render(f"You got hit by the laser! -50 POINTS!", True, "RED") #Removes the points and displays on screen
+                     points_text_box=points_text.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect. 
+                  else: #Otherwise, its over.
+                     mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+                     mixer.music.play(-1) #Plays the music loaded in.
+                     game_active=False #The game is no longer active.
+                     game_over=True #game over is set to true.
+                     fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #fake event is made.
+                     pygame.event.post(fake_event) #Tells the event handler that this key was pressed
+        else: #If the projectile is off the screen this will run.
+            projectile_active=False #Projectile active is set to false.
+            print("The projectle is now deactived.") #For debug
+            projectile_last_seen=current_time #Projectile last seen is set to current time.
+            warning_y=random.randint(0, 450) #The warning's y location is set to a random location, this also serves as the y location for the projectile.
+            projectile_x=warning_x #Projectile x location is set to the warning's x location.
+            projectile_y=warning_y #Projectile's y location is set to the warning's y location.
+            projectile_cooldown=random.randint(5000,7000) #The cooldown is reset.
+            warning_checked=0 #Warning checked is equal to 0.
      bull_gravity+=1 #Brings the bull back to the ground.
      bull_hitbox.y+=bull_gravity #Bull moves accordingly to the increasing gravity.
      player_sprites() #Sprites for player function called.
@@ -506,7 +565,7 @@ while main_game: #Handles the game loop.
      screen.blit(water_puddle_2, water_puddle_location_2) #The water puddle facing right is drawn on screen.
      screen.blit(points_text, points_text_box) #points are displayed on the screen.
      screen.blit(time_message, time_message_textbox) #The timer is displayed on screen.
-     #screen.blit(current_time, current_time_textbox) #The time is shown on the screen.
+     screen.blit(special, special_location) #The dashes are drawn on screen.
      pygame.display.update() #Screen is refreshed
      clock.tick(60) #Frame rate is set to a max of 60.
    

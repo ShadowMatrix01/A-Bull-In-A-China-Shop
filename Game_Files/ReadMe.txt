@@ -1,18 +1,16 @@
 <h1>Author: Jhan Gomez <br>
-<h1>Date: 07-01-2025, 8:15 PM EST  <br>
-<h1>Version (Pre-Release): 1.0.6  <br>
+<h1>Date: 07-05-2025, 4:00 PM EST  <br>
+<h1>Version (Pre-Release): 1.0.7 <br>
 <h1>Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
-<h1>DONE: Controls Screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player jumping, partially(game over screen), reset, windows scaling set to 100%, bgm (select), out_of_bounds <br>
-<h1>Fully complete bull and item logic.
-<h1>To-Draw, draw player moving sprites, store, items, the three phases, and environmental hazards , story, ground, splash screen, warning and projectile code. <br>
-<h1>To-Do and IDEAS:  <br>
-<h2> ~Every 20 seconds, a third of the shop gets destroyed, which is why you must get all of the item before the time runs out~ (SCRAPPED)  <br>
-<h2> DIFFERENT NOW: INSTEAD OF COUNTDOWW, TIMER COUNTS UP SO THE GOAL IS TO BEAT YOUR OWN RECORD!Save high score + time and name to file. <br>
-<h2>HAZARD: Maybe, if you aren't careful, and say you get accidentally covered by red cape, he charges towards you for 3 seconds!  <br>
-<h2>If the bull collides with the item, he takes it, and you have 3 seconds to get it back from him, which you can do by jumping on him!  <br>
-<h2 >~If they run out of time and do not get the item back safely, 6 seconds per 1 item, they get a game over screen showing their final score.~ (REWORKED, NOW ITS BASED ON HITS NOT TIME!)  <br>
-<h2>After everything is done, consider adding hazards such as falling debris, pool of water across the x axis (if you collide with it you move slower and so does the bull!), paint, etc  <br>
+<h1>DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
+<h2>Fully complete bull and item logic.
+<h2>Item and enviroemental hazard, splash screen, ground.
+<h1>To-Draw: store, player when moving. <br>
+<h1>To-Do and IDEAS:  <br> 
+<h2>Save high score + time and name to file.
+<h2>Animation for background needed!  <br>
+<h2> Laid ground work for game_over screen.  <br>
 <h2> Fixed item spawning to not go off screen.
 <h2> Fixed transparency on image, had to change starting y position
-<h2> HAZARD: WATER PIPES ON THE BOTTOM WILL SHOOT OUT WATER PROJECTILES FROM BOTTOM TO TOP, IF THE PLAYER TOUCHES IT, THE WILL GET 1 LIFE REDUCED (TOTAL 3). Gravity from bottom to top, and drawing said pipes.
-<h1>[TOOL] A freeze in place, freezes everything except for the player and the item, but only for 3 seconds. Make sound play when pipe is about to blast out water
+<h2> DIFFERENT NOW: INSTEAD OF COUNTDOWW, TIMER COUNTS UP SO THE GOAL IS TO BEAT YOUR OWN RECORD!
+<h2>Save high score + time and name to file.
