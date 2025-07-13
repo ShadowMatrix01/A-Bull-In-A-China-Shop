@@ -1,0 +1,3 @@
+Lines Size: 19
+Tree gap to ground: 10
+Sun: X: 1615, Y: 0
