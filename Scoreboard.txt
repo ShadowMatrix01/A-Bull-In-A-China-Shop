@@ -1,0 +1,14 @@
+This is an Internal Scoreboard, not a global one.
+The scores here are meant for you to compare yourself and
+your close friends.
+IMPORTANT: YOU MUST CLOSE THE SCOREBOARD FOR POINT INPUT
+TO WORK!!!
+Use the scroll wheel to navigate the scores list, thank you. -Jhan
+
+
+Name- TEST
+Date - 07/19/25
+Obtained Minimum Score-100
+Final Score- 100
+Final Time: 0 Minutes and 33 Seconds. 
+RESULT: MISSION SUCCESS!

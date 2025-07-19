@@ -1,6 +1,6 @@
 #Author: Jhan Gomez <br>
-#Date: 07-13-2025, 12:40 PM EST  <br>
-#Version (Pre-Release): 1.0.8 <br>
+#Date: 07-19-2025, 2:10 PM EST  <br>
+#Version (Pre-Release): 1.0.9 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over
@@ -8,7 +8,7 @@
 #To-Draw: player when moving. <br>
 #To-Do and IDEAS:  <br> 
 #Story sequence needed, aswell as mission accomplished screen. Potentially, down the line, will add second mode where you get a certain amount of time
-#to get the items, sort of like the original vision.
+#to get the items, sort of like the original vision. This mode will be a countdown where you can get unlimited items in a certain time frame, with a 1 minute, 5 minute, 15 minute, etc modes.
 
 
 #For water hazard.
@@ -41,18 +41,18 @@ font_6=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 35) #Karmatic Arcade 
 starting_time=pygame.time.get_ticks() #Used for the timer.
 starting_time_secs=pygame.time.get_ticks() #Used for the timer in seconds.
 #Sprites for animationms
-controls=pygame.image.load('Game_Files/Assets/Controls_KBM.png').convert_alpha() #Screen showing the controls is loaded in.
+controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM.png').convert_alpha() #Screen showing the controls is loaded in.
 controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
-disclaimer=pygame.image.load('Game_Files/Assets/disclaimer.png').convert_alpha() #Loads the disclaimer in.
+disclaimer=pygame.image.load('Game_Files/Assets/Stage/disclaimer.png').convert_alpha() #Loads the disclaimer in.
 disclaimer_location=disclaimer.get_rect(topleft=(0,0)) #Puts the disclaimer on screen.
-player_walking_1=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
-player_walking_2=pygame.image.load('Game_Files/Assets/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_1=pygame.image.load('Game_Files/Assets/Humans/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_2=pygame.image.load('Game_Files/Assets/Humans/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_walking=[player_walking_1, player_walking_2] #Has two sprites, can be changed.
 player_walking_index=0 #Allows one of the above indexes to be selected to animate
 player_256=player_walking[player_walking_index] #The sprite chosen is the one at the specified index position within the array.
 player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 45)) #Works regardless of screen size chosen.
-player_jumping=pygame.image.load('Game_Files/Assets/player_jumping.png').convert_alpha() #Jumping animation for player.
-shop=pygame.image.load('Game_Files/Assets/jewel-shop.png').convert_alpha() #Loads the shops background in.
+player_jumping=pygame.image.load('Game_Files/Assets/Humans/player_jumping.png').convert_alpha() #Jumping animation for player.
+shop=pygame.image.load('Game_Files/Assets/Stage/jewel-shop.png').convert_alpha() #Loads the shops background in.
 shop_location=shop.get_rect(topleft=(0,0)) #Puts the shop at this location.
 #Add special loot, cooldown, current time, add final time to game over screen, mechanics at a glance.
 
@@ -100,8 +100,52 @@ frame_40=pygame.image.load("Game_Files/Assets/Story/FRAME_40.png").convert_alpha
 frame_41=pygame.image.load("Game_Files/Assets/Story/FRAME_41.png").convert_alpha()
 frame_42=pygame.image.load("Game_Files/Assets/Story/FRAME_42.png").convert_alpha()
 frame_43=pygame.image.load("Game_Files/Assets/Story/FRAME_43.png").convert_alpha()
-pic_1=pygame.image.load("Game_Files/Assets/CC_BY_NA_SA_4_enter.png").convert_alpha()
-pic_2=pygame.image.load("Game_Files/Assets/CC_BY_NA_SA_4_no_enter.png").convert_alpha()
+pic_1=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_enter.png").convert_alpha()
+pic_2=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_no_enter.png").convert_alpha()
+breakdown_1=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-1.png").convert_alpha()
+breakdown_2=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-2.png").convert_alpha()
+breakdown_3=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-3.png").convert_alpha()
+breakdown_4=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-4.png").convert_alpha()
+breakdown_5=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-5.png").convert_alpha()
+breakdown_6=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-6.png").convert_alpha()
+breakdown_7=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-7.png").convert_alpha()
+breakdown_8=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-8.png").convert_alpha()
+breakdown_9=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-9.png").convert_alpha()
+breakdown_10=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-10.png").convert_alpha()
+breakdown_11=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-11.png").convert_alpha()
+breakdown_12=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-12.png").convert_alpha()
+breakdown_13=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-13.png").convert_alpha()
+breakdown_14=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-14.png").convert_alpha()
+breakdown_15=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-15.png").convert_alpha()
+breakdown_16=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-16.png").convert_alpha()
+breakdown_17=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-17.png").convert_alpha()
+breakdown_18=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-18.png").convert_alpha()
+breakdown_19=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-19.png").convert_alpha()
+breakdown_20=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-20.png").convert_alpha()
+breakdown_21=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-21.png").convert_alpha()
+breakdown_22=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-22.png").convert_alpha()
+breakdown_23=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-23.png").convert_alpha()
+breakdown_24=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-24.png").convert_alpha()
+breakdown_25=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-25.png").convert_alpha()
+breakdown_26=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-26.png").convert_alpha()
+breakdown_27=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-27.png").convert_alpha()
+breakdown_28=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28.png").convert_alpha()
+breakdown_29=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28-No-Text.png").convert_alpha()
+breakdown_30=pygame.image.load("Game_Files/Assets/Story/new-breakdown.png").convert_alpha()
+ominous_1=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance.png").convert_alpha()
+ominous_2=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-2.png").convert_alpha()
+ominous_3=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-3.png").convert_alpha()
+ominous_4=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-4.png").convert_alpha()
+ominous_5=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-5.png").convert_alpha()
+ominous_6=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-6.png").convert_alpha()
+ominous_7=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-7.png").convert_alpha()
+ominous_8=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-8.png").convert_alpha()
+ominous_9=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-9.png").convert_alpha()
+ominous_10=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-10.png").convert_alpha()
+ominous_11=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-11.png").convert_alpha()
+ominous_12=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-12.png").convert_alpha()
+ominous_13=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-13.png").convert_alpha()
+ominous_14=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-14.png").convert_alpha()
 background_rolling=[frame_1, frame_2, frame_3, 
                     frame_4, frame_5, frame_6, 
                     frame_7, frame_8, frame_9, 
@@ -123,10 +167,31 @@ flashing_rolling=[pic_1, pic_2] #Contains the pictures for the CC BY NA SA 4 Dis
 flashing_index=0 #Contains the index for the disclaimer cc.
 flashing=flashing_rolling[flashing_index] #Picks which picture to display depending on the index.
 flashing_location=flashing.get_rect(topleft=(0,0)) #Displays the CC disclaimer on the screen.
+breakdown_rolling=[breakdown_1, breakdown_2, breakdown_3, breakdown_4, 
+                   breakdown_5, breakdown_6, breakdown_7, breakdown_8, 
+                   breakdown_9, breakdown_10, breakdown_11,breakdown_12, 
+                   breakdown_13, breakdown_14, breakdown_15, breakdown_16, 
+                   breakdown_17, breakdown_18, breakdown_19, breakdown_20, breakdown_21,
+                   breakdown_22, breakdown_23, breakdown_24, breakdown_25, 
+                   breakdown_26, breakdown_27, breakdown_28]
+breakdown_index=0 #The index for which frame to pick is set to 0.
+breakdown=breakdown_rolling[breakdown_index] #The background is set to be the index position of the breakdown index within the breakdown rolling list.
+breakdown_location=breakdown.get_rect(topleft=(0,0)) #Draws the background at this locatio
+breakdown_warning_rolling=[breakdown_28, breakdown_29] #Contains the pictures for the breakdown warning.
+breakdown_warning_index=0  #The index for which frame to pick is set to 0.
+breakdown_warning=breakdown_warning_rolling[breakdown_warning_index] #The background is set to be the index position of the breakdown warning index within the breakdown warning rolling list.
+breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #Draws the background at this locatio
+bull_first_appearance_rolling=[ominous_1, ominous_2, ominous_3, ominous_4,
+                               ominous_5, ominous_6, ominous_7, ominous_8,
+                               ominous_9, ominous_10, ominous_11, ominous_12,
+                               ominous_13, ominous_14]
+bull_first_appearance_index=0 #The index for which frame to pick is set to 0.
+bull_first_appearance=bull_first_appearance_rolling[bull_first_appearance_index] #picks an image to display
+bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #Places the image on the screen.
 def leaderboard_function(): #A function to display scores of users.
       root = Tk() #Root is set to the main window where everything else will be attached
       root.title("A Bull In A China Shop") #A title is set for the program.
-      with open ("Leaderboard.txt", "r") as file: #Opens the leaderboard file.
+      with open ("Scoreboard.txt", "r") as file: #Opens the scoreboard file.
          scores=file.read() #Reads the text from the file with the appropriate line spacing.
       frame = ttk.Frame(root) #A frame is made using the .Frame method and will be attached to root.
       frame.pack(fill=BOTH, expand=True, padx=10, pady=10) #This frame will fill from both left and right, will expand if necessaring and will have x and y spacing of 10.
@@ -147,10 +212,10 @@ def player_sprites(): #Function for sprites, based of https://www.youtube.com/wa
        if player_walking_index >= len(player_walking): #Prevents an out of bounds exception.
           player_walking_index=0 #Index is reset to 0.
        player_256=player_walking[int(player_walking_index)] #The loop restarts   
-game_over_screen=pygame.image.load('Game_Files/Assets/Game_Over.png').convert_alpha() #Game over screen loaded in when drawn.
+game_over_screen=pygame.image.load('Game_Files/Assets/Stage/Game_Over.png').convert_alpha() #Game over screen loaded in when drawn.
 game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
 #Assets and Locations
-item=pygame.image.load('Game_Files/Assets/Necklace-2.png').convert_alpha() #Necklace asset loaded in.
+item=pygame.image.load('Game_Files/Assets/Interactable/Necklace-2.png').convert_alpha() #Necklace asset loaded in.
 goal=0 #Goal is set to be a default of 0
 goal_input = "" #Gets the users desired score
 player_speed=0 #Default player speed is set to 0.
@@ -165,7 +230,7 @@ item_hitbox=item.get_rect(topleft=(item_x_pos, item_y_pos)) #The item is placed 
 points=0 #Points counter, default is 0.
 points_text=font_2.render("Points: 0 ", True, "Black") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-bull=pygame.image.load('Game_Files/Assets/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
+bull=pygame.image.load('Game_Files/Assets/Bull/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
 bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-45)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_last_seen=pygame.time.get_ticks() #the last time the bull was seen is set to this time.
@@ -183,8 +248,8 @@ total_time="" #Stores the total time used, blank by default.
 set_name=False #Set name is set to false by default.
 #Water puddle hazard and drawing on screen.
 animation_active=True #Flag to handle the animation of the splash screen.
-water_puddle=pygame.image.load('Game_Files/Assets/water-test.png').convert_alpha() #Picture loaded in as water_puddle
-water_puddle_2=pygame.image.load('Game_Files/Assets/water-test-2.png').convert_alpha() #Loads in a second water puddle.
+water_puddle=pygame.image.load('Game_Files/Assets/Interactable/water-test.png').convert_alpha() #Picture loaded in as water_puddle
+water_puddle_2=pygame.image.load('Game_Files/Assets/Interactable/water-test-2.png').convert_alpha() #Loads in a second water puddle.
 water_possible_locations=[0, 393] #Possible locations for the water puddle.
 water_possible_locations_2=[785, SCREEN_WIDTH-350] #Possible locations for the water puddle.
 water_location_select=random.choice(water_possible_locations) #Selects a location to choose from for the water.
@@ -201,8 +266,8 @@ score=0 #Score is by default set to 0.
 set_score=False #This flag determines whether or not the user can input the score
 time_keep=False #this flag determines whether the timer is active, useful for when game over or mission accomplished.
 mixer.init() #Needed for music and sfx later on.
-projectile=pygame.image.load("Game_Files/Assets/Danger.png").convert_alpha() #Loads in the projectile image.
-warning=pygame.image.load("Game_Files/Assets/Warning.png").convert_alpha() #Loads in the warning image.
+projectile=pygame.image.load("Game_Files/Assets/Interactable/Danger.png").convert_alpha() #Loads in the projectile image.
+warning=pygame.image.load("Game_Files/Assets/Interactable/Warning.png").convert_alpha() #Loads in the warning image.
 warning_active=False # A flag used to see if the warning is active is made.
 warn_window=5000 #The user will get 5 seconds to react to the projectile
 warning_x=0 #Warning x is initally set to 0.
@@ -219,21 +284,21 @@ warning_checked=0 #Warning checked is used to check the time once, against the w
 #Reworked, allows for story to be drawn in.
 special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
 special_location=special.get_rect(topleft=(475,0)) #Draws the amount of dashes to the screen.
-py_made=pygame.image.load('Game_Files/Assets/pygame_powered.png').convert_alpha() # loads pygame powered image
+py_made=pygame.image.load('Game_Files/Assets/Stage/pygame_powered.png').convert_alpha() # loads pygame powered image
 py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image on screen.
 name_input="" #Stores the user's name.
 attempted_score="" #Stores the user's attempted score.
 success=False #By default, the user did not succeed.
 def screen_to_take_you_to(): #A function handles which screen is drawn.
-      global set_name, controls, controls_location #set score is set at the global level.
-      global background, background_index, flashing_index, flashing #background, background_index, flashing, and flashing index also declared  globally.
+      global set_name, controls, controls_location, breakdown_location, breakdown_warning_location, breakdown_warning, breakdown_warning_index #set score is set at the global level.
+      global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
          screen.fill((0,0,0)) #Screen filled with black
          screen.blit(py_made, py_location) #pygame screen drawn to the screen.
       elif return_pressed==1: #If return pressed is equal to 1, then this will run.
          screen.fill((0,0,0)) #Screen filled with black to get rid of previous input.
          screen.blit(disclaimer,disclaimer_location) #Disclaimer drawn to screen.
-      elif return_pressed==2: #If return pressed is equal to 1, then this will run.
+      elif return_pressed==2: #If return pressed is equal to two, then this will run.
          flashing_index+=0.005 #Flashes the CC BY NA SA 4 disclaimer text.
          if flashing_index >= len(flashing_rolling): #If the index goes over the length of the list, this will happen.
              flashing_index=0 #Flashing index is set to 0.
@@ -242,23 +307,44 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
          screen.blit(flashing, flashing_location) #Draws the disclaimer on the screen.
          mixer.music.load("Game_Files/AudioSFX/fsm-team-escp-downtown-walk.mp3") #Music loaded in, will play on the next screen.
          mixer.music.play(-1) #Loops the track.
-      elif return_pressed==3: #If the enter key is pressed once, then this will run.
+      elif return_pressed==3: #If the enter key is pressed thrice, then this will run.
          #mixer.music.play(-1) #Loops the track.
          background_index += 0.07  # A scroll across the frames will be applied using the index.
          if background_index >= len(background_rolling): # if the index is greater than the amount of frames, then it must be reset.
             background_index = 0 #Index reset.
          background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
-         background_location = background.get_rect(topleft=(0, 0)) #background placed at this locatiom.
+         background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
          screen.blit(background, background_location) #Background is drawn.
-      elif return_pressed==4: #If the enter key is pressed twice, this will be drawn.
+      elif return_pressed==4: #If the enter key is pressed 4 times, then this will run.
+          breakdown_index+=0.04 #Breakdown index goes up bu this number.
+          if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
+             breakdown_index=27 #Index set to 27.
+          breakdown = breakdown_rolling[int(breakdown_index)] #The background is set to the frame chosen using the list.
+          breakdown_location=breakdown.get_rect(topleft=(0,0)) 
+          screen.blit(breakdown, breakdown_location) #Background is drawn.
+      elif return_pressed==5: #If enter is pressed 5 times, this will run.
+          bull_first_appearance_index+=0.025  # A scroll across the frames will be applied using the index.
+          if bull_first_appearance_index >= len(bull_first_appearance_rolling): # if the index is greater than the amount of frames, then it must be reset.
+              bull_first_appearance_index=13 #Index set to 13.
+          bull_first_appearance=bull_first_appearance_rolling[int(bull_first_appearance_index)] #The background is set to the frame chosen using the list.
+          bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #background placed at this location.
+          screen.blit(bull_first_appearance, bull_first_appearance_location)
+      elif return_pressed==6: #If enter is pressed 6 times, this will run.
+          breakdown_warning_index+=0.005 # A scroll across the frames will be applied using the index.
+          if breakdown_warning_index >= len(breakdown_warning_rolling): # if the index is greater than the amount of frames, then it must be reset.
+              breakdown_warning_index=0 #Index reset.
+          breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
+          breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
+          screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
+      elif return_pressed==7: #If the enter key is pressed twice, this will be drawn.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==5: #If return pressed is 5 then this will happen.
+      elif return_pressed==8: #If enter pressed is 5 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
-         controls=pygame.image.load('Game_Files/Assets/Controls_KBM_2.png').convert_alpha() #Screen showing the controls is loaded in.
+         controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM_2.png').convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==6: #Otherwise, this will run.
+      elif return_pressed==9: #Otherwise, this will run.
          set_name=True #set score is set to true.
       pygame.display.update() #Screen is refreshed.
 
@@ -306,7 +392,7 @@ while splash_screen: #While the splash screen is true, this runs.
    if set_score: #if set score is set to true, this will run.
          goal_display = font_3.render(f"Set Points Goal - MIN 100 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
          goal_display_parameters=goal_display.get_rect(topleft=(0,100)) #The goal the user inputs is put into a rect.
-         goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Leaderboard. ", True, "Green") #Prompts the user to continue the game.
+         goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
          goal_display_parameters_2=goal_display_2.get_rect(topleft=(100,SCREEN_HEIGHT-100)) #Places the continue text on the screen.
          screen.fill((0, 0, 0)) #background filled with black
          screen.blit(goal_display,  goal_display_parameters)  # Positions score on the scrren.
@@ -329,19 +415,19 @@ while splash_screen: #While the splash screen is true, this runs.
                      goal_input = goal_input[:-1]  # Allows deletion, copilot given.
                   elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=3): #They are ready to play the game.
                      mixer.music.stop() #Stops the track.
-                     mixer.music.load("Game_Files/AudioSFX/red-alert-klaxon-3.wav") #To make a dramatic entrance and stage the show.
+                     mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
                      mixer.music.play() #SFX plays.
-                     screen.blit(shop, shop_location) #The shop is drawn first.
-                     pygame.display.update() #Changes are updated to the screen.
-                     pygame.time.delay(3000) #Delay of 3 seconds.
-                     player_hitbox=player_jumping.get_rect(topleft=(0,0)) #Allows the player to not collide with th ebull when the game starts
-                     screen.blit(player_256, player_hitbox) #Draws the player on the screen.
-                     pygame.display.update()#Changes are updated to the screen.
-                     pygame.time.delay(3000)#Delay of 3 seconds.
-                     bull_hitbox=bull.get_rect(topleft=(1646,778)) #Places the bull at this location.
-                     screen.blit(bull, bull_hitbox) #Draws the bull on the screen.
-                     pygame.display.update()#Changes are updated to the screen.
-                     pygame.time.delay(3000)#Delay of 3 seconds.
+                     #screen.blit(shop, shop_location) #The shop is drawn first.
+                     #pygame.display.update() #Changes are updated to the screen.
+                     #pygame.time.delay(3000) #Delay of 3 seconds.
+                     #player_hitbox=player_jumping.get_rect(topleft=(0,0)) #Allows the player to not collide with th ebull when the game starts
+                     #screen.blit(player_256, player_hitbox) #Draws the player on the screen.
+                     #pygame.display.update()#Changes are updated to the screen.
+                    # pygame.time.delay(3000)#Delay of 3 seconds.
+                    # bull_hitbox=bull.get_rect(topleft=(1646,778)) #Places the bull at this location.
+                     #screen.blit(bull, bull_hitbox) #Draws the bull on the screen.
+                     #pygame.display.update()#Changes are updated to the screen.
+                     #pygame.time.delay(3000)#Delay of 3 seconds.
                      goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                      splash_screen=False #The spalsh screen is false.
                      set_score=False #set score is set to false
@@ -395,7 +481,7 @@ while main_game: #Handles the game loop.
          special_speed_counter=3  #Special dashes is reset to 3.
          goal_display = font_2.render(f"Set A New Points Goal - MIN 100 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
          goal_display_parameters=goal_display.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect.
-         goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Leaderboard. ", True, "Green") #Prompts the user to continue the game.
+         goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
          goal_display_parameters_2=goal_display_2.get_rect(topleft=(75,1000)) #Tells the user their options 
          previous_score=font_2.render(f"Previous - {goal_stored}", True, "Green") #The previous score the user attempted is displayed on the screen.
          previous_score_parameters=previous_score.get_rect(topleft=(0, 100)) #Puts the previous score on the bottom of the set score screen.
@@ -517,7 +603,7 @@ while main_game: #Handles the game loop.
            mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
            mixer.music.play() #The cheer is played
            success=True #Success is set to true.
-           with open ("Leaderboard.txt", "a") as f: #Stores the users name,time and score to a file.
+           with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
                      f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nFinal Time: " + total_time_2 + "\nRESULT: MISSION SUCCESS!")     
            print(total_time) #For debugging purposes.
            game_active=False #The game is paused
@@ -580,11 +666,11 @@ while main_game: #Handles the game loop.
         bull_lock_on() #Calls the bull lock on function.
      if inner_loop_x: #If the inner loop is true, this will run.
         if bull_hitbox.right < player_hitbox.left: #If the bull is in a position left of the player, it must move right.
-           #bull=pygame.image.load("Game_Files/Assets/bull_256.png")
+           bull=pygame.image.load("Game_Files/Assets/Bull/bull_256.png")
            bull_speed=17 #Bull speed is set to 17.
            bull_hitbox.x += bull_speed  # Moves the bull to the right of the screen.
         elif bull_hitbox.left > player_hitbox.right: #If the bull is to the right of the player, it must move to the left.
-             #bull=pygame.image.load("Game_Files/Assets/bull_256_left.png")
+             bull=pygame.image.load("Game_Files/Assets/Bull/bull_256_left.png")
              #bull_hitbox=bull.get_rect(topleft())
              bull_speed=17 #Bull speed is set to 17.
              bull_hitbox.x -= bull_speed # Moves the bull to the left of the player.
@@ -608,7 +694,7 @@ while main_game: #Handles the game loop.
         print("The bull got this item!") #For debug purposes.
      if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player this will happen.
         score_game_over=str(score) #I was able to Fix the issue where score was going up on key up, I had to basically like just make the score be at outside of the main loop
-        with open ("Leaderboard.txt", "a") as f: #Appends the failed game text to the file.
+        with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
                      f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nTarget Score-" + str(goal) + "\nLast Attempt Score- " + score_game_over + "\n" + "\nRESULT: NOT SUCCESSFUL")     
         time_keep=False #Tells the program to not keep taking the time.
         print(total_time) #For debug

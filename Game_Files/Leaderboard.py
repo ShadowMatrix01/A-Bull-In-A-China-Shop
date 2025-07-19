@@ -1,14 +1,14 @@
 #Author: Jhan Gomez
-#Version 1.0.0
-#Date: 07/09/2025
-#Purpose: To demonstrate a leaderboard system for my game, it had to be done using simple python because pygame is very limited due to its lack of support for newlines and
+#Version 1.0.1
+#Date: 07/18/2025
+#Purpose: To demonstrate a scoreboard system for my game, it had to be done using simple python because pygame is very limited due to its lack of support for newlines and
 #the constant need to render chunks of multiline text would prove impractical and a waste of memory.
 # THIS HAS SINCE BEEN MERGED INTO THE MAIN FILE, BUT THIS REMAINS AS A REFERENCE!
 from tkinter import * #Imports the entire tkinter module
 from tkinter import ttk #Imports the ttk submodule.
 root = Tk() #Root is set to the main window where everything else will be attached
 root.title("A Bull In A China Shop") #A title is set for the program.
-with open ("Leaderboard.txt", "r") as file: #Opens the leaderboard file.
+with open ("scoreboard.txt", "r") as file: #Opens the leaderboard file.
      scores=file.read() #Reads the text from the file with the appropriate line spacing.
 frame = ttk.Frame(root) #A frame is made using the .Frame method and will be attached to root.
 frame.pack(fill=BOTH, expand=True, padx=10, pady=10) #This frame will fill from both left and right, will expand if necessaring and will have x and y spacing of 10.
