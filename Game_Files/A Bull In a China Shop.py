@@ -1,6 +1,6 @@
 #Author: Jhan Gomez <br>
-#Date: 07-19-2025, 2:10 PM EST  <br>
-#Version (Pre-Release): 1.0.9 <br>
+#Date: 08-07-2025, 9:50 AM EST  <br>
+#Version (Pre-Release): 1.1.0 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over
@@ -28,6 +28,27 @@ import datetime #Important for the leaderboard
 pygame.init() #Pygame is initialized.
 SCREEN_WIDTH=1920 #Screen width is set to be 1920
 SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
+#countdown_timer=pygame.time.get_ticks() #obtains time for mode b.
+#  countdown_timer=(pygame.time.get_ticks()-countdown_timer)/1000 #For counting down in the game.
+     #if (countdown_timer > (5 * items_to_prove) and minimum=False): # The user gets a maximum of 5 seconds per item.
+      #game_active=False
+      #game_over=True
+     #elif (countdown_timer > 60 and minimum=True):
+           #finale_active=True
+           #mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
+           #mixer.music.play() #The cheer is played
+           #success=True #Success is set to true.
+           #with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
+                    # f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nFinal Time: " + total_time_2 + "\nRESULT: MISSION SUCCESS!")     
+           #print(total_time) #For debugging purposes.
+           #game_active=False #The game is paused
+           #points=0 #Points are reset
+           #goal_input='' #Goal input is blank for now.
+           #fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #Needed because the screen would not refresh to the input screen,
+           #regardless of where the rendering logic was. At first glance, it seemed like it could be because of the event handler,
+           #but moving the logic of the code that drew to the screen outside of that also rendered no results. It is also not abundantly clear what could be causing this,
+           #since multiple checks and modifications do not see a key conflict or a required key press, hence this fake event.
+           #pygame.event.post(fake_event) #Tells the event handler that this key was pressed
 return_pressed=0 #Determines how many times return was pressed.
 screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #The dimensions are now set to be the displays dimensions.
 game_active=False #This boolean allows pausing for when the player either wins or looses.
@@ -100,8 +121,10 @@ frame_40=pygame.image.load("Game_Files/Assets/Story/FRAME_40.png").convert_alpha
 frame_41=pygame.image.load("Game_Files/Assets/Story/FRAME_41.png").convert_alpha()
 frame_42=pygame.image.load("Game_Files/Assets/Story/FRAME_42.png").convert_alpha()
 frame_43=pygame.image.load("Game_Files/Assets/Story/FRAME_43.png").convert_alpha()
+
 pic_1=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_enter.png").convert_alpha()
 pic_2=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_no_enter.png").convert_alpha()
+
 breakdown_1=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-1.png").convert_alpha()
 breakdown_2=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-2.png").convert_alpha()
 breakdown_3=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-3.png").convert_alpha()
@@ -131,7 +154,7 @@ breakdown_26=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-26.png").c
 breakdown_27=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-27.png").convert_alpha()
 breakdown_28=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28.png").convert_alpha()
 breakdown_29=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28-No-Text.png").convert_alpha()
-breakdown_30=pygame.image.load("Game_Files/Assets/Story/new-breakdown.png").convert_alpha()
+
 ominous_1=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance.png").convert_alpha()
 ominous_2=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-2.png").convert_alpha()
 ominous_3=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-3.png").convert_alpha()
@@ -146,6 +169,130 @@ ominous_11=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-11.p
 ominous_12=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-12.png").convert_alpha()
 ominous_13=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-13.png").convert_alpha()
 ominous_14=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-14.png").convert_alpha()
+
+new_breakdown_1=pygame.image.load("Game_Files/Assets/Story/new-breakdown.png").convert_alpha()
+new_breakdown_2=pygame.image.load("Game_Files/Assets/Story/new-breakdown-2.png").convert_alpha()
+new_breakdown_3=pygame.image.load("Game_Files/Assets/Story/new-breakdown-3.png").convert_alpha()
+new_breakdown_4=pygame.image.load("Game_Files/Assets/Story/new-breakdown-4.png").convert_alpha()
+new_breakdown_5=pygame.image.load("Game_Files/Assets/Story/new-breakdown-5.png").convert_alpha()
+new_breakdown_6=pygame.image.load("Game_Files/Assets/Story/new-breakdown-6.png").convert_alpha()
+new_breakdown_7=pygame.image.load("Game_Files/Assets/Story/new-breakdown-7.png").convert_alpha()
+new_breakdown_8=pygame.image.load("Game_Files/Assets/Story/new-breakdown-8.png").convert_alpha()
+new_breakdown_9=pygame.image.load("Game_Files/Assets/Story/new-breakdown-9.png").convert_alpha()
+new_breakdown_10=pygame.image.load("Game_Files/Assets/Story/new-breakdown-10.png").convert_alpha()
+new_breakdown_11=pygame.image.load("Game_Files/Assets/Story/new-breakdown-11.png").convert_alpha()
+new_breakdown_12=pygame.image.load("Game_Files/Assets/Story/new-breakdown-12.png").convert_alpha()
+new_breakdown_13=pygame.image.load("Game_Files/Assets/Story/new-breakdown-13.png").convert_alpha()
+new_breakdown_14=pygame.image.load("Game_Files/Assets/Story/new-breakdown-14.png").convert_alpha()
+new_breakdown_15=pygame.image.load("Game_Files/Assets/Story/new-breakdown-15.png").convert_alpha()
+new_breakdown_16=pygame.image.load("Game_Files/Assets/Story/new-breakdown-16.png").convert_alpha()
+new_breakdown_17=pygame.image.load("Game_Files/Assets/Story/new-breakdown-17.png").convert_alpha()
+new_breakdown_18=pygame.image.load("Game_Files/Assets/Story/new-breakdown-18.png").convert_alpha()
+new_breakdown_19=pygame.image.load("Game_Files/Assets/Story/new-breakdown-19.png").convert_alpha()
+new_breakdown_20=pygame.image.load("Game_Files/Assets/Story/new-breakdown-20.png").convert_alpha()
+new_breakdown_21=pygame.image.load("Game_Files/Assets/Story/new-breakdown-21.png").convert_alpha()
+new_breakdown_22=pygame.image.load("Game_Files/Assets/Story/new-breakdown-22.png").convert_alpha()
+new_breakdown_23=pygame.image.load("Game_Files/Assets/Story/new-breakdown-23.png").convert_alpha()
+new_breakdown_24=pygame.image.load("Game_Files/Assets/Story/new-breakdown-24.png").convert_alpha()
+new_breakdown_25=pygame.image.load("Game_Files/Assets/Story/new-breakdown-25.png").convert_alpha()
+new_breakdown_26=pygame.image.load("Game_Files/Assets/Story/new-breakdown-26.png").convert_alpha()
+new_breakdown_27=pygame.image.load("Game_Files/Assets/Story/new-breakdown-27.png").convert_alpha()
+new_breakdown_28=pygame.image.load("Game_Files/Assets/Story/new-breakdown-28.png").convert_alpha()
+new_breakdown_29=pygame.image.load("Game_Files/Assets/Story/new-breakdown-29.png").convert_alpha()
+new_breakdown_30=pygame.image.load("Game_Files/Assets/Story/new-breakdown-30.png").convert_alpha()
+new_breakdown_31=pygame.image.load("Game_Files/Assets/Story/new-breakdown-31.png").convert_alpha()
+new_breakdown_32=pygame.image.load("Game_Files/Assets/Story/new-breakdown-32.png").convert_alpha()
+new_breakdown_32_b=pygame.image.load("Game_Files/Assets/Story/new-breakdown-32b.png").convert_alpha()
+new_breakdown_33=pygame.image.load("Game_Files/Assets/Story/new-breakdown-33.png").convert_alpha()
+new_breakdown_34=pygame.image.load("Game_Files/Assets/Story/new-breakdown-34.png").convert_alpha()
+new_breakdown_35=pygame.image.load("Game_Files/Assets/Story/new-breakdown-35.png").convert_alpha()
+new_breakdown_35_b=pygame.image.load("Game_Files/Assets/Story/new-breakdown-35b.png").convert_alpha()
+new_breakdown_36=pygame.image.load("Game_Files/Assets/Story/new-breakdown-36.png").convert_alpha()
+new_breakdown_37=pygame.image.load("Game_Files/Assets/Story/new-breakdown-37.png").convert_alpha()
+new_breakdown_38=pygame.image.load("Game_Files/Assets/Story/new-breakdown-38.png").convert_alpha()
+new_breakdown_39=pygame.image.load("Game_Files/Assets/Story/new-breakdown-39.png").convert_alpha()
+new_breakdown_40=pygame.image.load("Game_Files/Assets/Story/new-breakdown-40.png").convert_alpha()
+new_breakdown_41=pygame.image.load("Game_Files/Assets/Story/new-breakdown-41.png").convert_alpha()
+new_breakdown_42=pygame.image.load("Game_Files/Assets/Story/new-breakdown-42.png").convert_alpha()
+new_breakdown_43=pygame.image.load("Game_Files/Assets/Story/new-breakdown-43.png").convert_alpha()
+new_breakdown_44=pygame.image.load("Game_Files/Assets/Story/new-breakdown-44.png").convert_alpha()
+new_breakdown_45=pygame.image.load("Game_Files/Assets/Story/new-breakdown-45.png").convert_alpha()
+new_breakdown_46=pygame.image.load("Game_Files/Assets/Story/new-breakdown-46.png").convert_alpha()
+
+success_1=pygame.image.load("Game_Files/Assets/Story/success.png").convert_alpha()
+success_2=pygame.image.load("Game_Files/Assets/Story/success-2.png").convert_alpha()
+success_3=pygame.image.load("Game_Files/Assets/Story/success-3.png").convert_alpha()
+success_4=pygame.image.load("Game_Files/Assets/Story/success-4.png").convert_alpha()
+success_5=pygame.image.load("Game_Files/Assets/Story/success-5.png").convert_alpha()
+success_6=pygame.image.load("Game_Files/Assets/Story/success-6.png").convert_alpha()
+success_7=pygame.image.load("Game_Files/Assets/Story/success-7.png").convert_alpha()
+success_7b=pygame.image.load("Game_Files/Assets/Story/success-7b.png").convert_alpha()
+success_7c=pygame.image.load("Game_Files/Assets/Story/success-7c.png").convert_alpha()
+success_7d=pygame.image.load("Game_Files/Assets/Story/success-7d.png").convert_alpha()
+success_7e=pygame.image.load("Game_Files/Assets/Story/success-7e.png").convert_alpha()
+success_7f=pygame.image.load("Game_Files/Assets/Story/success-7f.png").convert_alpha()
+success_7g=pygame.image.load("Game_Files/Assets/Story/success-7g.png").convert_alpha()
+success_7h=pygame.image.load("Game_Files/Assets/Story/success-7h.png").convert_alpha()
+success_7i=pygame.image.load("Game_Files/Assets/Story/success-7i.png").convert_alpha()
+success_8=pygame.image.load("Game_Files/Assets/Story/success-8.png").convert_alpha()
+success_9=pygame.image.load("Game_Files/Assets/Story/success-9.png").convert_alpha()
+success_9b=pygame.image.load("Game_Files/Assets/Story/success-9b.png").convert_alpha()
+success_10=pygame.image.load("Game_Files/Assets/Story/success-10.png").convert_alpha()
+success_11=pygame.image.load("Game_Files/Assets/Story/success-11.png").convert_alpha()
+success_12=pygame.image.load("Game_Files/Assets/Story/success-12.png").convert_alpha()
+success_13=pygame.image.load("Game_Files/Assets/Story/success-13.png").convert_alpha()
+success_14=pygame.image.load("Game_Files/Assets/Story/success-14.png").convert_alpha()
+success_15=pygame.image.load("Game_Files/Assets/Story/success-15.png").convert_alpha()
+success_16=pygame.image.load("Game_Files/Assets/Story/success-16.png").convert_alpha()
+success_17=pygame.image.load("Game_Files/Assets/Story/success-17.png").convert_alpha()
+success_18=pygame.image.load("Game_Files/Assets/Story/success-18.png").convert_alpha()
+success_19=pygame.image.load("Game_Files/Assets/Story/success-19.png").convert_alpha()
+success_20=pygame.image.load("Game_Files/Assets/Story/success-20.png").convert_alpha()
+success_21=pygame.image.load("Game_Files/Assets/Story/success-21.png").convert_alpha()
+success_22=pygame.image.load("Game_Files/Assets/Story/success-22.png").convert_alpha()
+success_23=pygame.image.load("Game_Files/Assets/Story/success-23.png").convert_alpha()
+success_24=pygame.image.load("Game_Files/Assets/Story/success-24.png").convert_alpha()
+success_24b=pygame.image.load("Game_Files/Assets/Story/success-24b.png").convert_alpha()
+success_24c=pygame.image.load("Game_Files/Assets/Story/success-24c.png").convert_alpha()
+success_24d=pygame.image.load("Game_Files/Assets/Story/success-24d.png").convert_alpha()
+success_24e=pygame.image.load("Game_Files/Assets/Story/success-24e.png").convert_alpha()
+success_24f=pygame.image.load("Game_Files/Assets/Story/success-24f.png").convert_alpha()
+success_24g=pygame.image.load("Game_Files/Assets/Story/success-24g.png").convert_alpha()
+success_24h=pygame.image.load("Game_Files/Assets/Story/success-24h.png").convert_alpha()
+success_24i=pygame.image.load("Game_Files/Assets/Story/success-24i.png").convert_alpha()
+success_24j=pygame.image.load("Game_Files/Assets/Story/success-24j.png").convert_alpha()
+success_24k=pygame.image.load("Game_Files/Assets/Story/success-24k.png").convert_alpha()
+success_24l=pygame.image.load("Game_Files/Assets/Story/success-24l.png").convert_alpha()
+success_24m=pygame.image.load("Game_Files/Assets/Story/success-24l.png").convert_alpha() #Repeated intentionally
+success_25=pygame.image.load("Game_Files/Assets/Story/success-25.png").convert_alpha()
+success_26=pygame.image.load("Game_Files/Assets/Story/success-26.png").convert_alpha()
+success_27=pygame.image.load("Game_Files/Assets/Story/success-27.png").convert_alpha()
+success_28=pygame.image.load("Game_Files/Assets/Story/success-28.png").convert_alpha()
+success_28b=pygame.image.load("Game_Files/Assets/Story/success-28b.png").convert_alpha()
+success_28c=pygame.image.load("Game_Files/Assets/Story/success-28c.png").convert_alpha()
+success_28d=pygame.image.load("Game_Files/Assets/Story/success-28d.png").convert_alpha()
+success_28e=pygame.image.load("Game_Files/Assets/Story/success-28e.png").convert_alpha()
+success_28f=pygame.image.load("Game_Files/Assets/Story/success-28f.png").convert_alpha()
+success_28g=pygame.image.load("Game_Files/Assets/Story/success-28g.png").convert_alpha()
+success_28h=pygame.image.load("Game_Files/Assets/Story/success-28h.png").convert_alpha()
+success_28i=pygame.image.load("Game_Files/Assets/Story/success-28i.png").convert_alpha()
+success_29=pygame.image.load("Game_Files/Assets/Story/success-29.png").convert_alpha()
+success_30=pygame.image.load("Game_Files/Assets/Story/success-30.png").convert_alpha()
+success_30b=pygame.image.load("Game_Files/Assets/Story/success-30b.png").convert_alpha()
+success_31=pygame.image.load("Game_Files/Assets/Story/success-31.png").convert_alpha()
+success_31b=pygame.image.load("Game_Files/Assets/Story/success-31b.png").convert_alpha()
+success_32=pygame.image.load("Game_Files/Assets/Story/success-32.png").convert_alpha()
+success_32b=pygame.image.load("Game_Files/Assets/Story/success-32b.png").convert_alpha()
+success_33=pygame.image.load("Game_Files/Assets/Story/success-33.png").convert_alpha()
+success_33b=pygame.image.load("Game_Files/Assets/Story/success-33b.png").convert_alpha()
+success_34=pygame.image.load("Game_Files/Assets/Story/success-34.png").convert_alpha()
+success_35=pygame.image.load("Game_Files/Assets/Story/success-35.png").convert_alpha()
+success_36=pygame.image.load("Game_Files/Assets/Story/success-36.png").convert_alpha()
+
+credits_1=pygame.image.load("Game_Files/Assets/Story/credits.png").convert_alpha()
+credits_2=pygame.image.load("Game_Files/Assets/Story/credits-2.png").convert_alpha()
+credits_3=pygame.image.load("Game_Files/Assets/Story/credits-3.png").convert_alpha()
+
 background_rolling=[frame_1, frame_2, frame_3, 
                     frame_4, frame_5, frame_6, 
                     frame_7, frame_8, frame_9, 
@@ -188,6 +335,74 @@ bull_first_appearance_rolling=[ominous_1, ominous_2, ominous_3, ominous_4,
 bull_first_appearance_index=0 #The index for which frame to pick is set to 0.
 bull_first_appearance=bull_first_appearance_rolling[bull_first_appearance_index] #picks an image to display
 bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #Places the image on the screen.
+new_breakdown_rolling=[new_breakdown_1, new_breakdown_2, new_breakdown_3, new_breakdown_4, 
+                   new_breakdown_5, new_breakdown_6, new_breakdown_8, 
+                   new_breakdown_9, new_breakdown_10, new_breakdown_11, new_breakdown_12, 
+                   new_breakdown_13, new_breakdown_14] 
+new_breakdown_rolling_2=[new_breakdown_15, new_breakdown_16, 
+                   new_breakdown_17, new_breakdown_18, new_breakdown_19, new_breakdown_20, 
+                   new_breakdown_21, new_breakdown_22, new_breakdown_23, new_breakdown_24,  
+                   new_breakdown_25, new_breakdown_26, new_breakdown_27, new_breakdown_28, 
+                   new_breakdown_29] 
+new_breakdown_rolling_3=[new_breakdown_30, new_breakdown_31, new_breakdown_32, 
+                   new_breakdown_32_b, new_breakdown_33, new_breakdown_34, new_breakdown_35, 
+                   new_breakdown_35_b, new_breakdown_36]
+new_breakdown_rolling_4=[new_breakdown_37, new_breakdown_38, 
+                   new_breakdown_39, new_breakdown_40, new_breakdown_41, new_breakdown_42, 
+                   new_breakdown_43, new_breakdown_44, new_breakdown_45,new_breakdown_46]
+new_breakdown_index=0
+new_breakdown=new_breakdown_rolling[new_breakdown_index]
+new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
+
+new_breakdown_index_2=0
+new_breakdown_2=new_breakdown_rolling_2[new_breakdown_index_2]
+new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
+
+new_breakdown_index_3=0
+new_breakdown_3=new_breakdown_rolling_3[new_breakdown_index_3]
+new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
+
+new_breakdown_index_4=0
+new_breakdown_4=new_breakdown_rolling_4[new_breakdown_index_4]
+new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
+shop_count_5=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-5.png").convert_alpha()
+shop_count_4=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-4.png").convert_alpha()
+shop_count_3=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-3.png").convert_alpha()
+shop_count_2=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-2.png").convert_alpha()
+shop_count_1=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-1.png").convert_alpha()
+fade=False
+#For final scenes and credits.
+success_rolling=[success_1, success_2, success_3, success_4, 
+                 success_5, success_6, success_7, success_7b, 
+                 success_7c, success_7d, success_7e, success_7f, 
+                 success_7g, success_7h, success_7i, success_8, 
+                 success_9, success_9b, success_10, success_11, success_12, 
+                 success_13, success_14, success_15, success_16, 
+                 success_17, success_18, success_19, success_20,
+                 success_21, success_22, success_23, success_24, 
+                 success_24b, success_24c, success_24d, success_24e, 
+                 success_24f, success_24g, success_24h, success_24i, 
+                 success_24j, success_24k, success_24l, success_24m,
+                 success_25, success_26, success_27, success_28, 
+                 success_28b, success_28c, success_28d, success_28e, success_28f,
+                 success_28g, #54 success_28h, success_28i, 
+                 success_29, success_30, success_30b, success_31, success_31b, success_32, 
+                 success_32b, success_33, success_33b, success_34]
+success_index=0
+success_a=success_rolling[success_index]
+success_location=success_a.get_rect(topleft=(0,0))
+
+success_b_rolling=[success_35, success_36]
+success_b_index=0
+success_b=success_rolling[success_index]
+success_b_location=success_a.get_rect(topleft=(0,0))
+
+credits_rolling=[credits_1, credits_2, credits_3]
+credits_index=0
+credits=credits_rolling[credits_index]
+credits_location=credits.get_rect(topleft=(0,0))
+
+final_time=0
 def leaderboard_function(): #A function to display scores of users.
       root = Tk() #Root is set to the main window where everything else will be attached
       root.title("A Bull In A China Shop") #A title is set for the program.
@@ -289,9 +504,131 @@ py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image o
 name_input="" #Stores the user's name.
 attempted_score="" #Stores the user's attempted score.
 success=False #By default, the user did not succeed.
+return_finale_pressed=0
+finale_active=False
+def finale():
+    global game_active, score, game_over, credits, credits_index, credits_rolling, credits_location, return_finale_pressed, final_time, score_success, score_success_location
+    global success, success_rolling, success_index, success_location, finale_active, success_a, success_b, success_b_index, success_b_location, success_b_rolling
+    if return_finale_pressed==0:
+        success_index+=0.001
+        if success_index>=16:
+            success_index=16
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 0 and return_finale_pressed < 2): #To force the animation to work properly as the animation would glitch out if done the normal way.
+        if success_index < 16: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=16
+        success_index+=0.02
+        if success_index>=31:
+            success_index=31
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 1 and return_finale_pressed < 3):
+        if success_index < 31: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=31
+        success_index+=0.02
+        if success_index>=36:
+            success_index=36
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 2 and return_finale_pressed < 4):
+        if success_index < 36: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=36
+        success_index+=0.001
+        if success_index>=40:
+           success_index=40
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 3 and return_finale_pressed < 5):
+        if success_index < 40: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=40
+        success_index+=0.001
+        if success_index>=45:
+            success_index=45
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 4 and return_finale_pressed < 6):
+        if success_index < 45: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=45
+        success_index+=0.001
+        if success_index>=55:
+            success_index=55
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+    elif (return_finale_pressed > 5 and return_finale_pressed < 7):
+        if success_index < 55: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
+           success_index=55
+        success_index+=0.01
+        if success_index>=len(success_rolling):
+           success_index=len(success_rolling) - 1
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        screen.blit(success_a, success_location)
+        mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
+        mixer.music.play() #The cheer is played
+   
+    elif (return_finale_pressed > 6 and return_finale_pressed < 8): #Must add score, time, bonus, and items gathered to this screen!
+         success_b_index+=0.005
+         if success_b_index>=len(success_b_rolling):
+            success_b_index=0
+         #bonus=font.render(str(), True, "Green")
+         score_success=font_4.render(str(score), True, "Green")
+         score_success_location=score_success.get_rect(topleft=(500,820))
+         #items_obtained=font.render(str(), True, "Green")
+         time=font_4.render(total_time, True, "Green")
+         final_time=time.get_rect(topleft=(450,420))
+         success_b=success_b_rolling[int(success_b_index)]
+         success_b_location=success_b.get_rect(topleft=(0,0))
+         screen.blit(success_b, success_b_location)
+         screen.blit(time, final_time)
+         screen.blit(score_success, score_success_location)
+
+    elif (return_finale_pressed > 7 and return_finale_pressed < 9):
+        credits_index+=1
+        if credits_index>=0:
+            credits_index=0
+        credits=credits_rolling[int(credits_index)]
+        credits_location=credits.get_rect(topleft=(0,0))
+        screen.blit(credits, credits_location)
+    elif (return_finale_pressed > 8 and return_finale_pressed < 10):
+        credits_index+=1
+        if credits_index>=1:
+            credits_index=1
+        credits=credits_rolling[int(credits_index)]
+        credits_location=credits.get_rect(topleft=(0,0))
+        screen.blit(credits, credits_location)
+    elif (return_finale_pressed > 9 and return_finale_pressed < 11):
+        credits_index+=1
+        if credits_index>=2:
+            credits_index=2
+        credits=credits_rolling[int(credits_index)]
+        credits_location=credits.get_rect(topleft=(0,0))
+        screen.blit(credits, credits_location)
+    elif (return_finale_pressed > 10 and return_finale_pressed < 12):
+        return_finale_pressed=0
+        success_index=0
+        success_a=success_rolling[int(success_index)]
+        success_location=success_a.get_rect(topleft=(0,0))
+        success_b_index=0  
+        success_b=success_b_rolling[int(success_b_index)]
+        success_b_location=success_b.get_rect(topleft=(0,0))
+        credits_index=0
+        credits=credits_rolling[int(credits_index)]
+        credits_location=credits.get_rect(topleft=(0,0))
+        finale_active=False
+        success=False
+    pygame.display.update() #Screen is refreshed.
 def screen_to_take_you_to(): #A function handles which screen is drawn.
       global set_name, controls, controls_location, breakdown_location, breakdown_warning_location, breakdown_warning, breakdown_warning_index #set score is set at the global level.
       global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
+      global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2
+      global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
          screen.fill((0,0,0)) #Screen filled with black
          screen.blit(py_made, py_location) #pygame screen drawn to the screen.
@@ -336,18 +673,47 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
           breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
           breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
           screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
-      elif return_pressed==7: #If the enter key is pressed twice, this will be drawn.
+      elif return_pressed==7:
+          new_breakdown_index+=0.002
+          if new_breakdown_index >= len(new_breakdown_rolling):
+             new_breakdown_index=12
+          new_breakdown=new_breakdown_rolling[int(new_breakdown_index)]
+          new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
+          screen.blit(new_breakdown, new_breakdown_location)
+      elif return_pressed==8:
+          new_breakdown_index_2+=0.015
+          if new_breakdown_index_2 >= len(new_breakdown_rolling_2):
+             new_breakdown_index_2=14
+          new_breakdown_2=new_breakdown_rolling_2[int(new_breakdown_index_2)]
+          new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
+          screen.blit(new_breakdown_2, new_breakdown_location_2)
+      elif return_pressed==9:
+          if not fade:
+            new_breakdown_index_3+=0.001
+            if new_breakdown_index_3 >= len(new_breakdown_rolling_3):
+               new_breakdown_index_3=8
+               fade=True
+            new_breakdown_3=new_breakdown_rolling_3[int(new_breakdown_index_3)]
+            new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
+            screen.blit(new_breakdown_3, new_breakdown_location_3)
+          elif fade:
+            new_breakdown_index_4+=0.02
+            if new_breakdown_index_4 >= len(new_breakdown_rolling_4):
+               new_breakdown_index_4=9
+            new_breakdown_4=new_breakdown_rolling_4[int(new_breakdown_index_4)]
+            new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
+            screen.blit(new_breakdown_4, new_breakdown_location_4)  
+      elif return_pressed==10: #If the enter key is pressed twice, this will be drawn.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==8: #If enter pressed is 5 then this will happen.
+      elif return_pressed==11: #If enter pressed is 5 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM_2.png').convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==9: #Otherwise, this will run.
+      elif return_pressed>=12: #Otherwise, this will run.
          set_name=True #set score is set to true.
       pygame.display.update() #Screen is refreshed.
-
 while splash_screen: #While the splash screen is true, this runs.
    if animation_active: #If the animation is active this will run.
       screen_to_take_you_to() #Nice, I figured out how to make the splash screen story work, simply by seperating the drawing logic into a function that detects how many times the enter button has been pressed.
@@ -390,7 +756,7 @@ while splash_screen: #While the splash screen is true, this runs.
                      set_score=True #Set score is set to true
                      set_name=False #Set name is set to false
    if set_score: #if set score is set to true, this will run.
-         goal_display = font_3.render(f"Set Points Goal - MIN 100 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
+         goal_display = font_3.render(f"Set Points Goal - MIN 1000 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
          goal_display_parameters=goal_display.get_rect(topleft=(0,100)) #The goal the user inputs is put into a rect.
          goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
          goal_display_parameters_2=goal_display_2.get_rect(topleft=(100,SCREEN_HEIGHT-100)) #Places the continue text on the screen.
@@ -413,21 +779,25 @@ while splash_screen: #While the splash screen is true, this runs.
                      goal_input += event.unicode  # Adds the digit to string
                   elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
                      goal_input = goal_input[:-1]  # Allows deletion, copilot given.
-                  elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=3): #They are ready to play the game.
+                  elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=4): #They are ready to play the game.
                      mixer.music.stop() #Stops the track.
                      mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
                      mixer.music.play() #SFX plays.
-                     #screen.blit(shop, shop_location) #The shop is drawn first.
-                     #pygame.display.update() #Changes are updated to the screen.
-                     #pygame.time.delay(3000) #Delay of 3 seconds.
-                     #player_hitbox=player_jumping.get_rect(topleft=(0,0)) #Allows the player to not collide with th ebull when the game starts
-                     #screen.blit(player_256, player_hitbox) #Draws the player on the screen.
-                     #pygame.display.update()#Changes are updated to the screen.
-                    # pygame.time.delay(3000)#Delay of 3 seconds.
-                    # bull_hitbox=bull.get_rect(topleft=(1646,778)) #Places the bull at this location.
-                     #screen.blit(bull, bull_hitbox) #Draws the bull on the screen.
-                     #pygame.display.update()#Changes are updated to the screen.
-                     #pygame.time.delay(3000)#Delay of 3 seconds.
+                     screen.blit(shop_count_5, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_4, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_3, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_2, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_1, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
                      goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                      splash_screen=False #The spalsh screen is false.
                      set_score=False #set score is set to false
@@ -437,6 +807,7 @@ while splash_screen: #While the splash screen is true, this runs.
                      starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
                      game_active=True #the game is active.
                      attempted_score=str(goal_input) #The target score is stored.
+    
 while main_game: #Handles the game loop.
   player_x=player_hitbox.left #Its accurately getting the location!
   player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the player down.
@@ -478,60 +849,97 @@ while main_game: #Handles the game loop.
             if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user lets of the d or right key this will run.
                player_speed=0 #Player speed set to 0 to stop movement.
       elif (not game_active and not game_over): #If the game is not active, and it is not a game over this will run.
-         special_speed_counter=3  #Special dashes is reset to 3.
-         goal_display = font_2.render(f"Set A New Points Goal - MIN 100 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
-         goal_display_parameters=goal_display.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect.
-         goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
-         goal_display_parameters_2=goal_display_2.get_rect(topleft=(75,1000)) #Tells the user their options 
-         previous_score=font_2.render(f"Previous - {goal_stored}", True, "Green") #The previous score the user attempted is displayed on the screen.
-         previous_score_parameters=previous_score.get_rect(topleft=(0, 100)) #Puts the previous score on the bottom of the set score screen.
-         screen.fill((0, 0, 0)) #background filled with black
-         screen.blit(goal_display,  goal_display_parameters)  # Positions score on the scrren.
-         screen.blit(goal_display_2, goal_display_parameters_2) #Draws prompt
-         screen.blit(previous_score, previous_score_parameters) #Shows the previous score to the user.
-         pygame.display.update() #Screen is updated to show the score
-         keys=pygame.key.get_pressed() #Always remember this! Also, error was that events must be handled within the event loop!
-         if event.type==pygame.KEYDOWN: #If a button is pressed, this will be checked.
-            if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
-               pygame.quit() #Pygame quits the game.
-               quit() #Quit ends the execution of the program.
-            elif event.key==pygame.K_l: #If the user inputs L, this will happen.
-                leaderboard_function() #They are taken to the leaderboard mini program.
-            elif event.unicode.isdigit() and len(goal_input) < 7:  #If the inputted key is a digit and is smaller than a million this will run.
-               goal_input += event.unicode  # Adds the digit to string
-            elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
-               goal_input = goal_input[:-1]  # Allows deletion, copilot given.
-            elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=3): #They are ready to play the game.
-               score=0 #Score is set to 0 
-               player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
-               player_speed=0 #Prevents left over horizontal movement.
-               points_text=font_2.render("Points: 0 ", True, "Black") #Points are reset to 0.
-               points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
-               player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
-               bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
-               bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
-               bull_movement_cooldown = random.randint(1000, 2000) #The cooldwon is reset.
-               bull_speed = 0 #The bulls speed is set to 0
-               bull_gravity = 0 #The bulls gravity is set to 0
-               inner_loop_x = False # Innerr_loop_x is set to false.
-               goal=int(goal_input) #Converts the goal string to an int for a later comparison.
-               game_active=True #Game active is set to true.
-               goal_stored=goal #goal stored is the new input.
-               starting_time=pygame.time.get_ticks() #Resets the timer.
-               starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
-               time_keep=True #The timer can be used.
-               projectile_last_seen=pygame.time.get_ticks() #Projectile timer for last seen is set when the game starts.
-               warning_active=False #The warning is not active to prevent carryover from the previous session.
-               projectile_active=False #The projectile is also not active for the same reason.
-               warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
-               warning_y=random.randint(0, 450) #A random y for the warning is chosen.
-               projectile_x=warning_x #Projectile x is set to the value of warning x.
-               projectile_y=warning_y #Projectile y is set to the value of warning y.
-               projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Sets the projectile at this location.
-               warning_checked=0 #Warning checked is set to 0.
-               special_speed_counter=3 #Player gets 3 dashes.
-               special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
-               special_location=special.get_rect(topleft=(475,0)) #Dashes drawn at this location.
+            if not success:
+               special_speed_counter=3  #Special dashes is reset to 3.
+               goal_display = font_2.render(f"Set A New Points Goal - MIN 1000 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
+               goal_display_parameters=goal_display.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect.
+               goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
+               goal_display_parameters_2=goal_display_2.get_rect(topleft=(75,1000)) #Tells the user their options 
+               previous_score=font_2.render(f"Previous - {goal_stored}", True, "Green") #The previous score the user attempted is displayed on the screen.
+               previous_score_parameters=previous_score.get_rect(topleft=(0, 100)) #Puts the previous score on the bottom of the set score screen.
+               screen.fill((0, 0, 0)) #background filled with black
+               screen.blit(goal_display,  goal_display_parameters)  # Positions score on the scrren.
+               screen.blit(goal_display_2, goal_display_parameters_2) #Draws prompt
+               screen.blit(previous_score, previous_score_parameters) #Shows the previous score to the user.
+               pygame.display.update() #Screen is updated to show the score
+               keys=pygame.key.get_pressed() #Always remember this! Also, error was that events must be handled within the event loop!
+               if event.type==pygame.KEYDOWN: #If a button is pressed, this will be checked.
+                  if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
+                     pygame.quit() #Pygame quits the game.
+                     quit() #Quit ends the execution of the program.
+                  elif event.key==pygame.K_l: #If the user inputs L, this will happen.
+                     leaderboard_function() #They are taken to the leaderboard mini program.
+                  elif event.unicode.isdigit() and len(goal_input) < 7:  #If the inputted key is a digit and is smaller than a million this will run.
+                     goal_input += event.unicode  # Adds the digit to string
+                  elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
+                     goal_input = goal_input[:-1]  # Allows deletion, copilot given.
+                  elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=4): #They are ready to play the game.
+                     mixer.music.stop() #Stops the track.
+                     mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
+                     mixer.music.play() #SFX plays.
+                     screen.blit(shop_count_5, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_4, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_3, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_2, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     screen.blit(shop_count_1, shop_location) #The shop is drawn first.
+                     pygame.display.update() #Changes are updated to the screen.
+                     pygame.time.delay(1000) #Delay of 1 seconds.
+                     score=0 #Score is set to 0 
+                     player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
+                     player_speed=0 #Prevents left over horizontal movement.
+                     points_text=font_2.render("Points: 0 ", True, "Black") #Points are reset to 0.
+                     points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
+                     player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
+                     bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
+                     bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
+                     bull_movement_cooldown = random.randint(1000, 2000) #The cooldwon is reset.
+                     bull_speed = 0 #The bulls speed is set to 0
+                     bull_gravity = 0 #The bulls gravity is set to 0
+                     inner_loop_x = False # Innerr_loop_x is set to false.
+                     goal=int(goal_input) #Converts the goal string to an int for a later comparison.
+                     game_active=True #Game active is set to true.
+                     goal_stored=goal #goal stored is the new input.
+                     starting_time=pygame.time.get_ticks() #Resets the timer.
+                     starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
+                     time_keep=True #The timer can be used.
+                     projectile_last_seen=pygame.time.get_ticks() #Projectile timer for last seen is set when the game starts.
+                     warning_active=False #The warning is not active to prevent carryover from the previous session.
+                     projectile_active=False #The projectile is also not active for the same reason.
+                     warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
+                     warning_y=random.randint(0, 450) #A random y for the warning is chosen.
+                     projectile_x=warning_x #Projectile x is set to the value of warning x.
+                     projectile_y=warning_y #Projectile y is set to the value of warning y.
+                     projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Sets the projectile at this location.
+                     warning_checked=0 #Warning checked is set to 0.
+                     special_speed_counter=3 #Player gets 3 dashes.
+                     special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
+                     special_location=special.get_rect(topleft=(475,0)) #Dashes drawn at this location.
+            else:
+                while success:
+                     print(str(return_finale_pressed) + " times return finale was pressed")
+                     if finale_active:
+                           finale()
+                     for event in pygame.event.get(): #The events are gathered using this for loop.
+                           if event.type==pygame.QUIT: #If the player presses the 'X' key, then the game will stop running.
+                                 pygame.quit()#Pygame quits
+                                 quit()#python quits.
+                           keys=pygame.key.get_pressed() #The keys are recorded
+                           if event.type==pygame.KEYDOWN: #If a key is pressed this will run.
+                              if event.key==pygame.K_ESCAPE: #If the escape key is pressed it means that the user wants to quit.
+                                 pygame.quit() #Pygame exits.
+                                 quit() #Python shuts down.
+                              if event.key==pygame.K_RETURN: #if the enter key is pressed, then return pressed will go by one which will handle which story sequence to show.
+                                  return_finale_pressed+=1 #Everytime enter is pressed, it will go up by one.
+                           pygame.display.update()
+                
       else: #This took an extremely long time to figure out, but I cracked it after two days.
                success=False #Success is set to false.
                #Literally, just draw the game over screen here instead of using a function and if the user presses enter then set the game_over flag to false which
@@ -599,10 +1007,10 @@ while main_game: #Handles the game loop.
         score=points_system() #Score variable is a ssigned to the points returned
         points_text=font_2.render("Points " + score, True, "Black") #A rect object that contains the updated score is made.
         points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-        if int(score) >= goal: #A score to win will be determined. For now, it is set to 10.
-           mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
-           mixer.music.play() #The cheer is played
+        if int(score) >= -5: #A score to win will be determined. For now, it is set to 10.
+           finale_active=True
            success=True #Success is set to true.
+           time_keep=False
            with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
                      f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nFinal Time: " + total_time_2 + "\nRESULT: MISSION SUCCESS!")     
            print(total_time) #For debugging purposes.
