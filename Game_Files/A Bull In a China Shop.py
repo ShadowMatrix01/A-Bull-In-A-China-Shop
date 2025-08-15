@@ -1,6 +1,6 @@
 #Author: Jhan Gomez <br>
-#Date: 08-12-2025, 3:00 PM EST  <br>
-#Version (Pre-Release): 1.1.1 <br>
+#Date: 08-15-2025, 6:35 PM EST  <br>
+#Version (Pre-Release): 1.1.2 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over, initial groundwork for modes.
@@ -18,9 +18,11 @@ from tkinter import ttk #Imports the ttk submodule.
 import random #Random module imported in.
 import datetime #Important for the leaderboard
 pygame.init() #Pygame is initialized.
+pygame.display.set_caption("A Bull In A Jewelry Store") #Title of the game.
+pygame_icon_to_display=pygame.image.load("Game_Files/Assets/Bull/bull_256.png") #Icon for the game
+pygame.display.set_icon(pygame_icon_to_display) #Icon is displayed on screen.
 SCREEN_WIDTH=1920 #Screen width is set to be 1920
 SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
-
 minimum=False #minimum is by default false unless the user gets the items in the alloted time frame.
 items_to_prove=0 #Later on, the user will challenge themselves to get x items, they have 5 seconds per item, and in this case the bull when they interact will remove 1 item.
 countdown_timer=pygame.time.get_ticks() #For the countdown later on.
@@ -59,6 +61,9 @@ special_item_x_pos=random.randint(300,1581) #Default x value range for special i
 special_item_y_pos=random.randint(500,600) #Default y valur range for special item.
 special_item_hitbox=special_item.get_rect(topleft=(special_item_x_pos, special_item_y_pos)) #The special item is placed at the randomly generated x and y positions.
 
+#Frames for menu
+menu_screen_2=pygame.image.load("Game_Files/Assets/Stage/Menu-Screen-2.png").convert_alpha()
+menu_screen_2b=pygame.image.load("Game_Files/Assets/Stage/Menu-Screen-2b.png").convert_alpha()
 #Frames for background splash screen.
 frame_1=pygame.image.load("Game_Files/Assets/Story/FRAME_1.png").convert_alpha()
 frame_2=pygame.image.load("Game_Files/Assets/Story/FRAME_2.png").convert_alpha()
@@ -273,10 +278,18 @@ success_35b=pygame.image.load("Game_Files/Assets/Story/success-35b.png").convert
 success_36=pygame.image.load("Game_Files/Assets/Story/success-36.png").convert_alpha()
 success_36b=pygame.image.load("Game_Files/Assets/Story/success-36b.png").convert_alpha()
 
+#For main menu
+main_menu_rolling=[menu_screen_2, menu_screen_2b] #For main menu
+main_menu_index=0
+main_menu=main_menu_rolling[main_menu_index]
+main_menu_location=main_menu.get_rect(topleft=(0,0))
+
+#For credits
 credits_1=pygame.image.load("Game_Files/Assets/Story/credits.png").convert_alpha()
 credits_2=pygame.image.load("Game_Files/Assets/Story/credits-2.png").convert_alpha()
 credits_3=pygame.image.load("Game_Files/Assets/Story/credits-3.png").convert_alpha()
 
+#For initial intro sequence
 background_rolling=[frame_1, frame_2, frame_3, 
                     frame_4, frame_5, frame_6, 
                     frame_7, frame_8, frame_9, 
@@ -349,12 +362,15 @@ new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
 new_breakdown_index_4=0
 new_breakdown_4=new_breakdown_rolling_4[new_breakdown_index_4]
 new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
+
+#Shop countdown.
 shop_count_5=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-5.png").convert_alpha()
 shop_count_4=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-4.png").convert_alpha()
 shop_count_3=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-3.png").convert_alpha()
 shop_count_2=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-2.png").convert_alpha()
 shop_count_1=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-1.png").convert_alpha()
-fade=False
+fade=False #Handles the fading at the end of the animation.
+
 #For final scenes and credits.
 success_rolling=[success_1, success_2, success_3, success_4, 
                  success_5, success_6, success_7, success_7b, 
@@ -391,13 +407,15 @@ credits_index=0
 credits=credits_rolling[credits_index]
 credits_location=credits.get_rect(topleft=(0,0))
 
-final_time=0
+final_time=0 #By default, the final time is set to 0.
 count=0 #While this is not the traditonal implementation of a countdown, I believe my unorthodox solution is better for this scenario
 #as the pygame documentation suggest using userevents, but that is built for a very simple game, and not one with multiple modes.
 item_sound=pygame.mixer.Sound('Game_Files/AudioSFX/320655__rhodesmas__level-up-01.wav') #Sound effect when picking up an item.
+start_sound=pygame.mixer.Sound('Game_Files/AudioSFX/leave.wav') #Sound effect when picking up an item.
+
 def leaderboard_function(): #A function to display scores of users.
       root = Tk() #Root is set to the main window where everything else will be attached
-      root.title("A Bull In A China Shop") #A title is set for the program.
+      root.title("A Bull In A Jewelry Store") #Title changed to reflect setting.
       with open ("Scoreboard.txt", "r") as file: #Opens the scoreboard file.
          scores=file.read() #Reads the text from the file with the appropriate line spacing.
       frame = ttk.Frame(root) #A frame is made using the .Frame method and will be attached to root.
@@ -421,6 +439,8 @@ def player_sprites(): #Function for sprites, based of https://www.youtube.com/wa
        player_256=player_walking[int(player_walking_index)] #The loop restarts   
 game_over_screen=pygame.image.load('Game_Files/Assets/Stage/Game_Over.png').convert_alpha() #Game over screen loaded in when drawn.
 game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
+game_over_screen_2=pygame.image.load('Game_Files/Assets/Stage/Game_Over_2.png').convert_alpha() #Game over screen loaded in when drawn.
+game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
 #Assets and Locations
 item=pygame.image.load('Game_Files/Assets/Interactable/Necklace-2.png').convert_alpha() #Necklace asset loaded in.
 goal=0 #Goal is set to be a default of 0
@@ -435,7 +455,7 @@ item_x_pos=random.randint(300,1581) #Default x value range for normal items
 item_y_pos=random.randint(500,600) #Default y valur range for normal items.
 item_hitbox=item.get_rect(topleft=(item_x_pos, item_y_pos)) #The item is placed at the randomly generated x and y positions.
 points=0 #Points counter, default is 0.
-points_text=font_2.render("Points: 0 ", True, "Black") #At the beggining, the score is 0 and that is displayed on the screen.
+points_text=font_6.render("Points- 0 ", True, "Black") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
 bull=pygame.image.load('Game_Files/Assets/Bull/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
 bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-45)) #Bull is placed at specific location on the screen.
@@ -478,7 +498,7 @@ warning=pygame.image.load("Game_Files/Assets/Interactable/Warning.png").convert_
 warning_active=False # A flag used to see if the warning is active is made.
 warn_window=5000 #The user will get 5 seconds to react to the projectile
 warning_x=0 #Warning x is initally set to 0.
-warning_y=random.randint(0,450) #Warning y is initially set to 0.
+warning_y=random.randint(10,450) #Warning y is initially set to 0.
 projectile_x=warning_x #projectile x is set to warning x.
 projectile_y=warning_y #Projectile y is set to warning y.
 projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Puts the projectile at the location of projectile x and projectile y.
@@ -489,22 +509,23 @@ projectile_cooldown=random.randint(5000,7000) #A cooldown determines how much ti
 warning_last_seen=pygame.time.get_ticks() #used to see when the warning was last seen.
 warning_checked=0 #Warning checked is used to check the time once, against the warn window.
 #Reworked, allows for story to be drawn in.
-special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
-special_location=special.get_rect(topleft=(475,0)) #Draws the amount of dashes to the screen.
+special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
+special_location=special.get_rect(topleft=(700,0)) #Draws the amount of dashes to the screen.
 py_made=pygame.image.load('Game_Files/Assets/Stage/pygame_powered.png').convert_alpha() # loads pygame powered image
 py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image on screen.
 name_input="" #Stores the user's name.
 attempted_score="" #Stores the user's attempted score.
 success=False #By default, the user did not succeed.
-return_finale_pressed=0
-finale_active=False
-items_picked_up=0
-special_items_picked_up=0
-bonus=special_items_picked_up * 40
-items_obtained=0
-mode=""
-mode_selection=True
-def finale():
+return_finale_pressed=0 #Registers how many times enter is pressed
+finale_active=False #By default the finale is not active.
+items_picked_up=0 #Normal items stored, set to 0.
+special_items_picked_up=0 #Special items stored, set to 0.
+bonus=0 #Bonus, set to 0.
+mode="" #Mode, currently null by default.
+mode_selection=True #Mode selection is set to true by default.
+phase=pygame.mixer.Sound("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") #Loaded as a sound to allow song to coexist with main story sequence.
+
+def finale(): #This function handles the finale sequence.
     global game_active, score, game_over, credits, credits_index, credits_rolling, credits_location, success_c, success_c_index, success_c_rolling
     global return_finale_pressed, final_time, score_success, score_success_location, items_obtained, success_c_location, alloted_time, count, items_to_prove
     global success, success_rolling, success_index, success_location, finale_active, items_picked_up, items_obtained_location, alloted_time_location
@@ -516,7 +537,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 0 and return_finale_pressed < 2): #To force the animation to work properly as the animation would glitch out if done the normal way.
+    elif return_finale_pressed==1:
         if success_index < 16: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=16
         success_index+=0.02
@@ -525,7 +546,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 1 and return_finale_pressed < 3):
+    elif return_finale_pressed==2:
         if success_index < 31: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=31
         success_index+=0.02
@@ -534,7 +555,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 2 and return_finale_pressed < 4):
+    elif return_finale_pressed==3:
         if success_index < 36: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=36
         success_index+=0.001
@@ -543,7 +564,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 3 and return_finale_pressed < 5):
+    elif return_finale_pressed==4:
         if success_index < 40: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=40
         success_index+=0.001
@@ -552,7 +573,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 4 and return_finale_pressed < 6):
+    elif return_finale_pressed==5:
         if success_index < 44: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=44
         success_index+=0.001
@@ -561,7 +582,7 @@ def finale():
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-    elif (return_finale_pressed > 5 and return_finale_pressed < 7):
+    elif return_finale_pressed==6:
         if success_index < 57: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
            success_index=57
         success_index+=0.01
@@ -572,9 +593,9 @@ def finale():
         screen.blit(success_a, success_location)
         mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
         mixer.music.play() #The cheer is played
-   
-    elif (return_finale_pressed > 6 and return_finale_pressed < 8): #Must add score, time, bonus, and items gathered to this screen!
-         if mode.upper()=='A':
+   #If return pressed is equal to 7, its time for the mode screen to show up again.
+    elif return_finale_pressed==7:
+         if mode.upper()=='A': #For mode A, credit sequence.
             success_b_index+=0.005
             if success_b_index>=len(success_b_rolling):
                success_b_index=0
@@ -593,7 +614,7 @@ def finale():
             screen.blit(score_success, score_success_location)
             screen.blit(bonus_to_render, bonus_to_render_location)
             screen.blit(items_obtained, items_obtained_location)
-         elif mode.upper()=='B':
+         elif mode.upper()=='B': #For mode b, credit sequence.
             success_c_index+=0.005
             if success_c_index>=len(success_c_rolling):
                success_c_index=0
@@ -612,28 +633,28 @@ def finale():
             screen.blit(alloted_time, alloted_time_location)
             screen.blit(bonus_to_render, bonus_to_render_location)
             screen.blit(items_obtained, items_obtained_location)
-    elif (return_finale_pressed > 7 and return_finale_pressed < 9):
+    elif return_finale_pressed==8: 
         credits_index+=1
         if credits_index>=0:
             credits_index=0
         credits=credits_rolling[int(credits_index)]
         credits_location=credits.get_rect(topleft=(0,0))
         screen.blit(credits, credits_location)
-    elif (return_finale_pressed > 8 and return_finale_pressed < 10):
+    elif return_finale_pressed==9:
         credits_index+=1
         if credits_index>=1:
             credits_index=1
         credits=credits_rolling[int(credits_index)]
         credits_location=credits.get_rect(topleft=(0,0))
         screen.blit(credits, credits_location)
-    elif (return_finale_pressed > 9 and return_finale_pressed < 11):
+    elif return_finale_pressed==10:
         credits_index+=1
         if credits_index>=2:
             credits_index=2
         credits=credits_rolling[int(credits_index)]
         credits_location=credits.get_rect(topleft=(0,0))
         screen.blit(credits, credits_location)
-    elif (return_finale_pressed > 10 and return_finale_pressed < 12):
+    elif return_finale_pressed >=11:
         return_finale_pressed=0
         success_index=0
         success_a=success_rolling[int(success_index)]
@@ -655,6 +676,7 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
       global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
       global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2
       global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4
+      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
          screen.fill((0,0,0)) #Screen filled with black
          screen.blit(py_made, py_location) #pygame screen drawn to the screen.
@@ -668,52 +690,60 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
          flashing=flashing_rolling[int(flashing_index)] #gets the disclaimer image.
          flashing_location=flashing.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
          screen.blit(flashing, flashing_location) #Draws the disclaimer on the screen.
+      elif return_pressed==3: #If return pressed is equal to three, then this will run.
+         phase.play() #Required to avoid sound conflict.
+         main_menu_index+=0.003 #Main menu shown.
+         if main_menu_index >= len(main_menu_rolling): #If the index goes over the length of the list, this will happen.
+             main_menu_index=0 #Flashing index is set to 0.
+         main_menu=main_menu_rolling[int(main_menu_index)] #gets the disclaimer image.
+         main_menu_location=main_menu.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
+         screen.blit(main_menu, main_menu_location) #Draws the disclaimer on the screen.
          mixer.music.load("Game_Files/AudioSFX/fsm-team-escp-downtown-walk.mp3") #Music loaded in, will play on the next screen.
          mixer.music.play(-1) #Loops the track.
-      elif return_pressed==3: #If the enter key is pressed thrice, then this will run.
-         #mixer.music.play(-1) #Loops the track.
+      elif return_pressed==4: #If the enter key is pressed 4 times, then this will run.
+         phase.stop()
          background_index += 0.07  # A scroll across the frames will be applied using the index.
          if background_index >= len(background_rolling): # if the index is greater than the amount of frames, then it must be reset.
             background_index = 0 #Index reset.
          background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
          background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
          screen.blit(background, background_location) #Background is drawn.
-      elif return_pressed==4: #If the enter key is pressed 4 times, then this will run.
-          breakdown_index+=0.04 #Breakdown index goes up bu this number.
+      elif return_pressed==5: #If the enter key is pressed 5 times, then this will run.
+          breakdown_index+=0.03 #Breakdown index goes up bu this number.
           if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
              breakdown_index=27 #Index set to 27.
           breakdown = breakdown_rolling[int(breakdown_index)] #The background is set to the frame chosen using the list.
           breakdown_location=breakdown.get_rect(topleft=(0,0)) 
           screen.blit(breakdown, breakdown_location) #Background is drawn.
-      elif return_pressed==5: #If enter is pressed 5 times, this will run.
+      elif return_pressed==6: #If enter is pressed 6 times, this will run.
           bull_first_appearance_index+=0.025  # A scroll across the frames will be applied using the index.
           if bull_first_appearance_index >= len(bull_first_appearance_rolling): # if the index is greater than the amount of frames, then it must be reset.
               bull_first_appearance_index=13 #Index set to 13.
           bull_first_appearance=bull_first_appearance_rolling[int(bull_first_appearance_index)] #The background is set to the frame chosen using the list.
           bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #background placed at this location.
           screen.blit(bull_first_appearance, bull_first_appearance_location)
-      elif return_pressed==6: #If enter is pressed 6 times, this will run.
+      elif return_pressed==7: #If enter is pressed 7 times, this will run.
           breakdown_warning_index+=0.005 # A scroll across the frames will be applied using the index.
           if breakdown_warning_index >= len(breakdown_warning_rolling): # if the index is greater than the amount of frames, then it must be reset.
               breakdown_warning_index=0 #Index reset.
           breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
           breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
           screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
-      elif return_pressed==7:
+      elif return_pressed==8:
           new_breakdown_index+=0.002
           if new_breakdown_index >= len(new_breakdown_rolling):
              new_breakdown_index=12
           new_breakdown=new_breakdown_rolling[int(new_breakdown_index)]
           new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
           screen.blit(new_breakdown, new_breakdown_location)
-      elif return_pressed==8:
+      elif return_pressed==9:
           new_breakdown_index_2+=0.015
           if new_breakdown_index_2 >= len(new_breakdown_rolling_2):
              new_breakdown_index_2=14
           new_breakdown_2=new_breakdown_rolling_2[int(new_breakdown_index_2)]
           new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
           screen.blit(new_breakdown_2, new_breakdown_location_2)
-      elif return_pressed==9:
+      elif return_pressed==10:
           if not fade:
             new_breakdown_index_3+=0.001
             if new_breakdown_index_3 >= len(new_breakdown_rolling_3):
@@ -729,15 +759,20 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
             new_breakdown_4=new_breakdown_rolling_4[int(new_breakdown_index_4)]
             new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
             screen.blit(new_breakdown_4, new_breakdown_location_4)  
-      elif return_pressed==10: #If the enter key is pressed twice, this will be drawn.
+      elif return_pressed==11: #If the enter key is pressed 11 times, this will be drawn.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==11: #If enter pressed is 5 then this will happen.
+      elif return_pressed==12: #If enter pressed is 11 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM_2.png').convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed>=12: #Otherwise, this will run.
+      elif return_pressed==13: #If enter pressed is 12 then this will happen.
+         screen.fill((255,255,255)) #Clears screen of previous screen.
+         controls=pygame.image.load('Game_Files/Assets/Stage/Mode-Explained.png').convert_alpha() #Screen showing the controls is loaded in.
+         controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
+         screen.blit(controls, controls_location) #The controls are displayed on the screen.   
+      elif return_pressed>=14: #Otherwise, this will run.
          set_name=True #set score is set to true.
       pygame.display.update() #Screen is refreshed.
 while splash_screen: #While the splash screen is true, this runs.
@@ -759,8 +794,11 @@ while splash_screen: #While the splash screen is true, this runs.
        if mode_selection:
           mode_display=font_4.render(f"Enter 'A' for mode a or 'B' for mode b - {mode}", True, "Green")
           mode_display_location=mode_display.get_rect(topleft=(0,100))
+          name_display_2 = font_2.render("Press enter to continue", True, "Green") #When the user is done, they can proced by pressing enter.
+          name_display_parameters_2=name_display_2.get_rect(topleft=(500,1000)) #Places the enter text at this location.
           screen.fill((0, 0, 0))  #Fills the screen with black.
           screen.blit(mode_display, mode_display_location)
+          screen.blit(name_display_2, name_display_parameters_2)  #Draws the enter text on the screen.
           pygame.display.update() #Changes are updated to the screen.     
           for event in pygame.event.get(): #All events are handled, such as kbm input, mouse, etc.
                if event.type==pygame.QUIT: #If the player quits the game.
@@ -776,12 +814,12 @@ while splash_screen: #While the splash screen is true, this runs.
                      elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a letter must be removed.
                         mode = mode[:-1]  # Allows deletion
                      elif event.key==pygame.K_RETURN and not mode=="" and (mode.upper()=='A' or mode.upper()=='B'): #Takes them to the set name screen.
-                        mode_selection=False
-       if not mode_selection:
+                        mode_selection=False #Mode selection no longer active.
+       if not mode_selection: #If the mode selection screen is not being shown.
          name_display = font_4.render(f"Set Name - {name_input}", True, "Green") #The user is told to set their name.
          name_display_parameters=name_display.get_rect(topleft=(0,100)) #places the name text at this location.
          name_display_2 = font_2.render("Press enter to continue", True, "Green") #When the user is done, they can proced by pressing enter.
-         name_display_parameters_2=name_display_2.get_rect(topleft=(500,700)) #Places the enter text at this location.
+         name_display_parameters_2=name_display_2.get_rect(topleft=(500,1000)) #Places the enter text at this location.
          screen.fill((0, 0, 0))  #Fills the screen with black.
          screen.blit(name_display,  name_display_parameters) #Draws the name prompt on the screen.
          screen.blit(name_display_2, name_display_parameters_2)  #Draws the enter text on the screen.
@@ -804,7 +842,7 @@ while splash_screen: #While the splash screen is true, this runs.
                         set_score=True #Set score is set to true
                         set_name=False #Set name is set to false
    if set_score: #if set score is set to true, this will run.
-         if mode.upper()=='A':
+         if mode.upper()=='A': #If mode is set to A.
             goal_display = font_3.render(f"Set Points Goal - MIN 500 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
             goal_display_parameters=goal_display.get_rect(topleft=(0,100)) #The goal the user inputs is put into a rect.
             goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
@@ -830,8 +868,7 @@ while splash_screen: #While the splash screen is true, this runs.
                         goal_input = goal_input[:-1]  # Allows deletion, copilot given.
                      elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=3 and int(goal_input)>=500): #They are ready to play the game.
                         mixer.music.stop() #Stops the track.
-                        mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
-                        mixer.music.play() #SFX plays.
+                        pygame.mixer.Sound.play(start_sound) # A brief sound effect for start is played, allows simulteanous playback.
                         screen.blit(shop_count_5, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
@@ -847,6 +884,8 @@ while splash_screen: #While the splash screen is true, this runs.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
+                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.play(-1)
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                         splash_screen=False #The spalsh screen is false.
                         set_score=False #set score is set to false
@@ -857,8 +896,8 @@ while splash_screen: #While the splash screen is true, this runs.
                         game_active=True #the game is active.
                         attempted_score=str(goal_input) #The target score is stored.
                         countdown_timer=pygame.time.get_ticks() #obtains time for mode b.
-         elif mode.upper()=='B':
-            goal_display = font_3.render(f"Set Items Goal - MIN 10 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
+         elif mode.upper()=='B': #If mode is set to B.
+            goal_display = font_3.render(f"Set Items Goal - MIN 12 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
             goal_display_parameters=goal_display.get_rect(topleft=(0,100)) #The goal the user inputs is put into a rect.
             goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
             goal_display_parameters_2=goal_display_2.get_rect(topleft=(100,SCREEN_HEIGHT-100)) #Places the continue text on the screen.
@@ -881,10 +920,9 @@ while splash_screen: #While the splash screen is true, this runs.
                         goal_input += event.unicode  # Adds the digit to string
                      elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
                         goal_input = goal_input[:-1]  # Allows deletion, copilot given.
-                     elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=1 and int(goal_input)>=10): #They are ready to play the game.
+                     elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=1 and int(goal_input)>=12): #They are ready to play the game.
                         mixer.music.stop() #Stops the track.
-                        mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
-                        mixer.music.play() #SFX plays.
+                        pygame.mixer.Sound.play(start_sound) # A brief sound effect for start is played.
                         screen.blit(shop_count_5, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
@@ -900,8 +938,12 @@ while splash_screen: #While the splash screen is true, this runs.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
+                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3') #Loads main song.
+                        mixer.music.play(-1) #Plays infinitely.
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
-                        items_to_prove=(5 * goal)
+                        points_text=font_6.render("Items -  0 ", True, "Black") #Points are reset to 0.
+                        points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
+                        items_to_prove=(5 * goal) #Time given is 5 * items.
                         splash_screen=False #The spalsh screen is false.
                         set_score=False #set score is set to false
                         main_game=True #The main game can now run.
@@ -915,7 +957,6 @@ while main_game: #Handles the game loop.
   player_x=player_hitbox.left #Its accurately getting the location!
   player_y=player_hitbox.top #Same as above, to make the bull hopefully chase the player down.
   player_current_location=player_hitbox.topleft #Updates the players location continously.
- # print("Current position of player: " + str(player_current_location)) #for debugging purposes.
   for event in pygame.event.get(): #All events are handled, such as kbm input, mouse, etc.
       if event.type==pygame.QUIT: #If the player quits the game.
          pygame.quit() #Pygame quits the game.
@@ -931,13 +972,13 @@ while main_game: #Handles the game loop.
                      #register one event at a time.
                      player_speed = -30 #Player moves way faster than the bull to the left.
                      special_speed_counter=special_speed_counter-1 #One of the special dashes is removed from the user.
-                     special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black')  #Dashes remaining is rerendered.
-                     special_location=special.get_rect(topleft=(475,0)) #Dashes are drawn at this location.
+                     special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black')  #Dashes remaining is rerendered.
+                     special_location=special.get_rect(topleft=(700,0)) #Dashes are drawn at this location.
                   elif (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]) and special_speed_counter > 0: #Same as above but for right movement.
                      special_speed_counter=special_speed_counter-1 #One of the special dashes is removed from the user.
                      player_speed = +30 #Player moves way faster than the bull to the right.
-                     special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Dashes remaining is rerendered.
-                     special_location=special.get_rect(topleft=(475,0)) #Dashes are drawn at this location.
+                     special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Dashes remaining is rerendered.
+                     special_location=special.get_rect(topleft=(700,0)) #Dashes are drawn at this location.
             if event.key==pygame.K_w or event.key==pygame.K_SPACE or event.key==pygame.K_UP: #If the key pressed is w or space or up, this happens.
                player_gravity = -26 #Player gravity is set to -26, which is tied to the y movement.
             if event.key==pygame.K_s or event.key==pygame.K_DOWN: #If the s or down is pressed this will run.
@@ -952,8 +993,8 @@ while main_game: #Handles the game loop.
             if event.key==pygame.K_d or event.key==pygame.K_RIGHT: #If the user lets of the d or right key this will run.
                player_speed=0 #Player speed set to 0 to stop movement.
       elif (not game_active and not game_over): #If the game is not active, and it is not a game over this will run.
-            if (not success and not mode_selection):
-               if mode.upper()=='A':
+            if (not success and not mode_selection): #If its not mode selection this runs.
+               if mode.upper()=='A': #If mode is A.
                   special_speed_counter=3  #Special dashes is reset to 3.
                   goal_display = font_2.render(f"Set A New Points Goal - MIN 500 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
                   goal_display_parameters=goal_display.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect.
@@ -979,8 +1020,7 @@ while main_game: #Handles the game loop.
                         goal_input = goal_input[:-1]  # Allows deletion, copilot given.
                      elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=3 and int(goal_input)>=500): #They are ready to play the game.
                         mixer.music.stop() #Stops the track.
-                        mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
-                        mixer.music.play() #SFX plays.
+                        pygame.mixer.Sound.play(start_sound) # A brief sound effect for start is played.
                         screen.blit(shop_count_5, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
@@ -996,12 +1036,14 @@ while main_game: #Handles the game loop.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
+                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.play(-1)
                         score=0 #Score is set to 0 
                         items_picked_up=0
                         special_items_picked_up=0
                         player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
                         player_speed=0 #Prevents left over horizontal movement.
-                        points_text=font_2.render("Points: 0 ", True, "Black") #Points are reset to 0.
+                        points_text=font_6.render("Points- 0 ", True, "Black") #Points are reset to 0.
                         points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
                         player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                         bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
@@ -1020,19 +1062,19 @@ while main_game: #Handles the game loop.
                         warning_active=False #The warning is not active to prevent carryover from the previous session.
                         projectile_active=False #The projectile is also not active for the same reason.
                         warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
-                        warning_y=random.randint(0, 450) #A random y for the warning is chosen.
+                        warning_y=random.randint(10, 450) #A random y for the warning is chosen.
                         projectile_x=warning_x #Projectile x is set to the value of warning x.
                         projectile_y=warning_y #Projectile y is set to the value of warning y.
                         projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Sets the projectile at this location.
                         warning_checked=0 #Warning checked is set to 0.
                         special_speed_counter=3 #Player gets 3 dashes.
-                        special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
-                        special_location=special.get_rect(topleft=(475,0)) #Dashes drawn at this location.
+                        special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
+                        special_location=special.get_rect(topleft=(700,0)) #Dashes drawn at this location.
                         countdown_timer=pygame.time.get_ticks() #obtains time for mode b.
-               elif mode.upper()=='B':
-                  minimum=False
+               elif mode.upper()=='B': #If mode is b.
+                  minimum=False #Minimum is set to false.
                   special_speed_counter=3  #Special dashes is reset to 3.
-                  goal_display = font_2.render(f"Set A New Items Goal - MIN 10 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
+                  goal_display = font_2.render(f"Set A New Items Goal - MIN 12 - {goal_input}", True, "Green") #The goal being inputted is continously updated on the screen.
                   goal_display_parameters=goal_display.get_rect(topleft=(0,0)) #The goal the user inputs is put into a rect.
                   goal_display_2 = font_6.render("Press enter to start the game or press \"L\" to view the Scoreboard. ", True, "Green") #Prompts the user to continue the game.
                   goal_display_parameters_2=goal_display_2.get_rect(topleft=(75,1000)) #Tells the user their options 
@@ -1054,10 +1096,9 @@ while main_game: #Handles the game loop.
                         goal_input += event.unicode  # Adds the digit to string
                      elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a digit must be removed.
                         goal_input = goal_input[:-1]  # Allows deletion, copilot given.
-                     elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=1 and int(goal_input)>=10): #They are ready to play the game.
+                     elif event.key==pygame.K_RETURN and (not goal_input=="" and len(goal_input) >=1 and int(goal_input)>=12): #They are ready to play the game.
                         mixer.music.stop() #Stops the track.
-                        mixer.music.load("Game_Files/AudioSFX/leave.wav") #To make a dramatic entrance and stage the show.
-                        mixer.music.play() #SFX plays.
+                        pygame.mixer.Sound.play(start_sound) # A brief sound for countdown is played.
                         screen.blit(shop_count_5, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
@@ -1073,12 +1114,14 @@ while main_game: #Handles the game loop.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
+                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.play(-1)
                         score=0 #Score is set to 0 
                         items_picked_up=0
                         special_items_picked_up=0
                         player_hitbox.y=starting_pos #Allows the player to not collide with th ebull when the game starts
                         player_speed=0 #Prevents left over horizontal movement.
-                        points_text=font_2.render("Points: 0 ", True, "Black") #Points are reset to 0.
+                        points_text=font_6.render("Items -  0 ", True, "Black") #Points are reset to 0.
                         points_text_box=points_text.get_rect(topleft=(0,0)) #Points drawn at this location.
                         player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                         bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
@@ -1088,7 +1131,7 @@ while main_game: #Handles the game loop.
                         bull_gravity = 0 #The bulls gravity is set to 0
                         inner_loop_x = False # Innerr_loop_x is set to false.
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
-                        items_to_prove=(5 * goal)
+                        items_to_prove=(5 * goal) #Total time given to user.
                         game_active=True #Game active is set to true.
                         goal_stored=goal #goal stored is the new input.
                         starting_time=pygame.time.get_ticks() #Resets the timer.
@@ -1098,20 +1141,23 @@ while main_game: #Handles the game loop.
                         warning_active=False #The warning is not active to prevent carryover from the previous session.
                         projectile_active=False #The projectile is also not active for the same reason.
                         warning_x=0 #Warning x is set to 0 because the projectile will always be from left to right.
-                        warning_y=random.randint(0, 450) #A random y for the warning is chosen.
+                        warning_y=random.randint(10, 450) #A random y for the warning is chosen.
                         projectile_x=warning_x #Projectile x is set to the value of warning x.
                         projectile_y=warning_y #Projectile y is set to the value of warning y.
                         projectile_location=projectile.get_rect(topleft=(projectile_x, projectile_y)) #Sets the projectile at this location.
                         warning_checked=0 #Warning checked is set to 0.
                         special_speed_counter=3 #Player gets 3 dashes.
-                        special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
-                        special_location=special.get_rect(topleft=(475,0)) #Dashes drawn at this location.
+                        special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells the user how many dashes they have.
+                        special_location=special.get_rect(topleft=(700,0)) #Dashes drawn at this location.
                         countdown_timer=pygame.time.get_ticks() #obtains time for mode b.     
-            elif (not success and mode_selection):
-                  mode_display=font_4.render(f"Enter 'A' for mode a or 'B' for mode b - {mode}", True, "Green")
+            elif (not success and mode_selection): #Asks user for mode.
+                  mode_display=font_4.render(f"Enter 'A' for mode a or 'B' for mode b - {mode}", True, "Green") 
                   mode_display_location=mode_display.get_rect(topleft=(0,100))
+                  name_display_2 = font_2.render("Press enter to continue", True, "Green") #When the user is done, they can proced by pressing enter.
+                  name_display_parameters_2=name_display_2.get_rect(topleft=(500,1000)) #Places the enter text at this location.
                   screen.fill((0, 0, 0))  #Fills the screen with black.
                   screen.blit(mode_display, mode_display_location)
+                  screen.blit(name_display_2, name_display_parameters_2)
                   pygame.display.update() #Changes are updated to the screen.     
                   if event.type==pygame.QUIT: #If the player quits the game.
                               pygame.quit() #Pygame quits the game.
@@ -1126,15 +1172,13 @@ while main_game: #Handles the game loop.
                               elif event.key == pygame.K_BACKSPACE: #If the key is backspace, then a letter must be removed.
                                  mode = mode[:-1]  # Allows deletion
                               elif event.key==pygame.K_RETURN and not mode=="" and (mode.upper()=='A' or mode.upper()=='B'): #Takes them to the set name screen.
-                                 print("Message confirmed, now changing back to default") #Debug
                                  mode_selection=False
                                  success=False
                                  fake_event=pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #Required to avoid weird issue where after mode selection
                                  #was disabled, the game would skip the input score screen.
                                  pygame.event.post(fake_event)
-            elif success:
-                while success:
-                     print(str(return_finale_pressed) + " times return finale was pressed")
+            elif success: #If the user succeeds this will run.
+                while success: #While success is true, and the finale is active, the finale function is called.
                      if finale_active:
                            finale()
                      for event in pygame.event.get(): #The events are gathered using this for loop.
@@ -1151,7 +1195,7 @@ while main_game: #Handles the game loop.
                            pygame.display.update()
                 
       else: #This took an extremely long time to figure out, but I cracked it after two days.
-               if mode.upper()=='A':
+               if mode.upper()=='A': #If mode is set to A.
                   success=False #Success is set to false.
                   #Literally, just draw the game over screen here instead of using a function and if the user presses enter then set the game_over flag to false which
                   #would trigger the above code to run.
@@ -1166,8 +1210,24 @@ while main_game: #Handles the game loop.
                   screen.blit(score_game_over_text, score_game_over_text_rect) #The players last score is drawn to the screen.
                   screen.blit(total_time_text, total_time_text_rect) #Shows the final time on the screen.
                   pygame.display.update() #Screen is refreshed.
-               elif mode.upper()=='B':
-                    pass #Use count for time taken.
+               elif mode.upper()=='B': #If mode is set to B.
+                  success=False #Success is set to false.
+                  time_given=font_2.render(str(items_to_prove) + " SEC", True, "Red") 
+                  time_given_location=time_given.get_rect(topleft=(1375,100))
+                  total_time_text=font_2.render(str(items_to_prove - count) + " SEC", True, "Red") #The final time is shown on the screen.
+                  total_time_text_rect=total_time_text.get_rect(topleft=(1200,320)) #Sets the location of the final time.
+                  total_items=str(int(special_items_picked_up + items_picked_up))
+                  total_items_to_render=font_2.render(total_items, True, "Red")
+                  total_items_to_render_location=total_items_to_render.get_rect(topleft=(100,100))
+                  required_items=str(goal_input)
+                  required_items_to_render=font_2.render(required_items, True, "Red")
+                  required_items_to_render_location=required_items_to_render.get_rect(topleft=(350,320))
+                  screen.blit(game_over_screen_2, game_over_draw) #Game over screen is drawn.
+                  screen.blit(total_items_to_render, total_items_to_render_location) #Game over screen is drawn.
+                  screen.blit(required_items_to_render, required_items_to_render_location) #Game over screen is drawn.
+                  screen.blit(time_given, time_given_location) #Alloted time is drawn on the screen.
+                  screen.blit(total_time_text, total_time_text_rect) #Shows the final time on the screen.
+                  pygame.display.update() #Screen is refreshed.
                if event.type==pygame.KEYDOWN: #If a button is pressed, this will be checked.
                   if event.key==pygame.K_ESCAPE: #Allows the user to quit with escape.
                      pygame.quit() #Pygame quits the game.
@@ -1179,14 +1239,15 @@ while main_game: #Handles the game loop.
                      mixer.music.stop() #Stops the music from playing.
 
   if game_active: #If the game is active this will run.
-     print("Bull is at: x " + str(bull_hitbox.x) + " y: " + str(bull_hitbox.y)) #Debug
+     if special_speed_counter > 100: #Caps the dashes to a maximum of 100.
+         special_speed_counter=100 #Set to 100 if more dashes try to be added.
+         special=font_6.render("(Dashes remaining: " + str(special_speed_counter), True, 'Gold') #the new amount of dashes is placed on the screen.
+         special_location=special.get_rect(topleft=(700,0)) #New dashes placed at this location.
      time_keep=True #The timer is true.
      def points_system(): #This function handles how points will be distributed.
         global points #Without this, cannot reach points and update variable accordingly.
         item_hitbox.y=10000 #Since assets cannot despwan, it is instead moved out of sight from the player.
-        print("They have collided!") #Debuggin tool
         points+=10 #10 points are added to the users score.
-        print(points) #points are printed in the console to debug.
         return str(points) #Points MUST be returned as str because Python will not accept an integer for the text font.
      def special_points_system(): #This function handles how points will be distributed.
          global points #Without this, cannot reach points and update variable accordingly.
@@ -1225,9 +1286,9 @@ while main_game: #Handles the game loop.
      if player_hitbox.colliderect(item_hitbox): #If the player and the item collide, this will run.
         pygame.mixer.Sound.play(item_sound) # A brief sound effect is played.
         items_picked_up+=1
-        score=points_system() #Score variable is a ssigned to the points returned
+        score=points_system() #Score variable is assigned to the points returned
         if mode.upper()=='A':
-            points_text=font_2.render("Points " + score, True, "Black") #A rect object that contains the updated score is made.
+            points_text=font_6.render("Points - " + score + " of " + str(goal), True, "Black") #A rect object that contains the updated score is made.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if int(score) >= goal: #When the user accomplishews the task this will be true.
                mixer.music.stop()
@@ -1238,7 +1299,6 @@ while main_game: #Handles the game loop.
                time_keep=False
                with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
                            f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nFinal Time: " + total_time_2 + "\nItems Obtained:" + str(items_picked_up) + "\nRESULT: MISSION SUCCESS!")     
-               print(total_time) #For debugging purposes.
                game_active=False #The game is paused
                points=0 #Points are reset
                goal_input='' #Goal input is blank for now.
@@ -1248,7 +1308,7 @@ while main_game: #Handles the game loop.
                #since multiple checks and modifications do not see a key conflict or a required key press, hence this fake event.
                pygame.event.post(fake_event) #Tells the event handler that this key was pressed
         elif mode.upper()=='B':
-            points_text=font_2.render("Items " + str(items_picked_up + special_items_picked_up), True, "Black") #A rect object that contains the updated score is made.
+            points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up) + " of " + str(goal), True, "Black") #A rect object that contains the updated score is made.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if (items_picked_up + special_items_picked_up) >=goal:
                 minimum=True
@@ -1257,10 +1317,10 @@ while main_game: #Handles the game loop.
                 mixer.music.play(-1)
      if player_hitbox.colliderect(special_item_hitbox): #If the player and the item collide, these statements will run.
         pygame.mixer.Sound.play(item_sound) # A brief effect is played.
-        special_items_picked_up+=1
         score=special_points_system() #Score variable is a ssigned to the points returned
         if mode.upper()=='A':
-            points_text=font_2.render("Points " + score, True, "Gold") #A rect object that contains the updated score is made.
+            special_items_picked_up+=1
+            points_text=font_6.render("Points - " + str(points) + " of " + str(goal), True, "Red") #A rect object that contains the updated score is made.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if int(score) >= goal: #When the user accomplishews the task this will be true.
                mixer.music.stop()
@@ -1271,7 +1331,6 @@ while main_game: #Handles the game loop.
                time_keep=False
                with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
                            f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nFinal Time: " + total_time_2 + "\nItems Obtained:" + str(items_picked_up) + "\nRESULT: MISSION SUCCESS!")     
-               print(total_time) #For debugging purposes.
                game_active=False #The game is paused
                points=0 #Points are reset
                goal_input='' #Goal input is blank for now.
@@ -1281,7 +1340,8 @@ while main_game: #Handles the game loop.
                #since multiple checks and modifications do not see a key conflict or a required key press, hence this fake event.
                pygame.event.post(fake_event) #Tells the event handler that this key was pressed
         elif mode.upper()=='B':
-            points_text=font_2.render("Items " + str(items_picked_up + special_items_picked_up), True, "Black") #A rect object that contains the updated score is made.
+            special_items_picked_up+=2
+            points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up) + " of " + str(goal), True, "Black") #A rect object that contains the updated score is made.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if (items_picked_up + special_items_picked_up) >=goal:
                 minimum=True
@@ -1309,14 +1369,10 @@ while main_game: #Handles the game loop.
                item_y_pos=random.randint(500,600) #Remember, you need to subtract the width and the height of the object to prevent it from going off the screen
                item_hitbox.topleft = (item_x_pos, item_y_pos) #The item will be drawn at this location.
                if item_hitbox.right < bull_hitbox.left: #If the item is to the left of the bull this will be allowed.
-                  print("item is to the left of the bull") #For debug purposes.
-                  print("Bull left: " + str(bull_hitbox.left) + " and item right: " + str(item_hitbox.right)) #Debugging tool.
                   item_last_seen = current_time #Item last seen is set to the current time.
                   item_respawn_cooldown = random.randint(2000, 5000) #The cooldown is restarted.
                   break #Loop is broken.
                elif item_hitbox.left > bull_hitbox.right:  #If the item is to the right of the bull this will be allowed.
-                  print("item is to the right of the bull")  #Debug 
-                  print("Bull right: " + str(bull_hitbox.right) +  " item left: " + str(item_hitbox.left)) #Debug
                   item_last_seen = current_time #The item last seen timer is set to the current time.
                   item_respawn_cooldown = random.randint(2000, 5000) #The cooldown is restarted.
                   break #Loop breaks.
@@ -1352,7 +1408,6 @@ while main_game: #Handles the game loop.
         water_puddle_x_2=water_location_select_2 #The water puddles x location is the one that was randomly chosen.
         water_puddle_y_2=starting_pos-110 #Water puddle's y location is set here.
         water_puddle_location_2.topleft=(water_puddle_x_2, water_puddle_y_2) #The water puddle will be drawn at this location.
-        print(water_puddle_x) #For debug purposes.
         water_puddle_cooldown=random.randint(5000,10000) #Water puddle cooldown is reset.
      if not bull_charging and current_time - bull_last_seen >= bull_movement_cooldown: #If the bull has not moved in a certain amount of time and the bull is not currently charging this will run.
         bull_lock_on() #Calls the bull lock on function.
@@ -1382,20 +1437,23 @@ while main_game: #Handles the game loop.
             item_hitbox.y=10000 # The item will move out the way
             points-=20 #The points get reduced by 20.
             #points_text=font_5.render(f"Bull Got Item...-20 POINTS!", True, "RED") #Removes the points and displays on screen
-            points_text=font_2.render("Points - " + str(points), True, "Red") #A rect object that contains the updated score is made.
+            points_text=font_6.render("Points - " + str(points) + " of " + str(goal), True, "Red") #A rect object that contains the updated score is made.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
         elif mode.upper()=='B':
-            if items_picked_up > 0:
+            if items_picked_up >= 2:
                item_hitbox.y=10000 # The item will move out the way
-               items_picked_up-=1
-               points_text=font_2.render("Items - " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
+               items_picked_up-=2
+               points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
                points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-               print("The bull got this item!") #For debug purposes.
+            elif (not items_picked_up>=2 and special_items_picked_up>=2):
+               item_hitbox.y=10000 # The item will move out the way
+               special_items_picked_up-=2
+               points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
+               points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen
             else:
                item_hitbox.y=10000 # The item will move out the way
-               points_text=font_2.render("Items - " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
+               points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
                points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-               print("The bull got this item!") #For debug purposes. 
      if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player this will happen.
         if mode.upper()=='A':
            score_game_over=str(score) #I was able to Fix the issue where score was going up on key up, I had to basically like just make the score be at outside of the main loop
@@ -1403,9 +1461,8 @@ while main_game: #Handles the game loop.
                 f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nTarget Score-" + str(goal) + "\nLast Attempt Score- " + score_game_over + "\n" + "\nRESULT: NOT SUCCESSFUL")     
         elif mode.upper()=='B':
               with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
-                f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + "SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS" + "\n" + "\nRESULT: NOT SUCCESSFUL")     
+                f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + " SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS" + "\n" + "\nRESULT: NOT SUCCESSFUL")     
         time_keep=False #Tells the program to not keep taking the time.
-        print(total_time) #For debug
         mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
         #would glitch out for an event due to the event handler.
         mixer.music.play(-1) #Plays the music loaded in.
@@ -1418,56 +1475,54 @@ while main_game: #Handles the game loop.
         keys=pygame.key.get_pressed() #Keys needed because otherwise it cannot detect it, I believe it is due to the event handler interfering.
         if (keys[pygame.K_a]) or (keys[pygame.K_LEFT]): #If left or a is pressed, then the player speed will be adjusted in this way.
            player_speed=-5 #Player speed is reduced.
-           print("Water hazard, moving left.") #Debug purposes.
         elif (keys[pygame.K_d]) or (keys[pygame.K_RIGHT]): #If right or d is pressed, then the player speed will be adjusted in this way.
            player_speed=5 #Player speed is reduced.
-           print("Water hazard, moving right.") #Debug purposes.
      if player_hitbox.colliderect(water_puddle_location_2): #If the player collides with the water hazard, then they must be slowed down. They can stil jump normally as gravity is not affected here.
         keys=pygame.key.get_pressed() #Keys needed because otherwise it cannot detect it, I believe it is due to the event handler interfering.
         if (keys[pygame.K_a]) or (keys[pygame.K_LEFT]): #If left or a is pressed, then the player speed will be adjusted in this way.
            player_speed=-5 #Player speed is reduced.
-           print("Water hazard, moving left.") #Debug purposes.
         elif (keys[pygame.K_d]) or (keys[pygame.K_RIGHT]): #If right or d is pressed, then the player speed will be adjusted in this way.
            player_speed=5 #Player speed is reduced.
-           print("Water hazard, moving right.") #Debug purposes.
      if time_keep: #as long as the timer is set to ne true, this will run.
         if mode.upper()=='A':
-            time_message=font_2.render("Stopwatch in Minutes", 'True', 'Black') #Stopwwatch messaged rendered.
-            time_message_textbox=time_message.get_rect(topleft=(1160,0)) #Stopwtach messaged placed at this location.
+            time_message=font_6.render("Stopwatch-MIN and SEC", True, 'Black') #Stopwwatch messaged rendered.
+            time_message_textbox=time_message.get_rect(topleft=(1350,0)) #Stopwtach messaged placed at this location.
             seconds=int((pygame.time.get_ticks() - starting_time_secs)/1000) #The seconds are stored seperately to allow a reset of the seconds, but not the minutes.
             if seconds >= 60:#To prevent the seconds from ticking up again.
                starting_time_secs=pygame.time.get_ticks() #Resets the seconds to start back at 0.
                special_speed_counter+=1 #The player gets one dash added for every minute they survive
-               special=font_4.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #the new amount of dashes is placed on the screen.
-               special_location=special.get_rect(topleft=(475,0)) #New dashes placed at this location.
-            current_time_disp=font_2.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'Black') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
+               special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #the new amount of dashes is placed on the screen.
+               special_location=special.get_rect(topleft=(700,0)) #New dashes placed at this location.
+            current_time_disp=font_6.render("MIN " + str(int((pygame.time.get_ticks() - starting_time)/60000)) + "                         SEC " + str(seconds), 'True', 'Black') #The clock is shown on the screen, wrapped in multiple braces to avoid weird clock issues.
             total_time=str(int((pygame.time.get_ticks() - starting_time)/60000)) + " M " + str(seconds) + " S" #The total time is stored, which is useful for the game over and mission accomplished screens.
             total_time_2=str(int((pygame.time.get_ticks() - starting_time)/60000)) + " Minutes and " + str(seconds) + " Seconds. " #Meant to be used for the file saving feature.
-            current_time_textbox=current_time_disp.get_rect(topleft=(1160,60)) #places the timer on the specific location on screen.
+            current_time_textbox=current_time_disp.get_rect(topleft=(1350,40)) #places the timer on the specific location on screen.
             screen.blit(current_time_disp, current_time_textbox) #The time is shown on the screen.
         elif mode.upper()=='B':
-               time_message=font_2.render("Seconds Remaining", True, 'Black') #Stopwwatch messaged rendered.
-               time_message_textbox=time_message.get_rect(topleft=(1160,0)) #Stopwtach messaged placed at this location.
+               time_message=font_6.render("Seconds Remaining", True, 'Black') #Stopwwatch messaged rendered.
+               time_message_textbox=time_message.get_rect(topleft=(1435,0)) #Stopwtach messaged placed at this location.
                seconds=int((pygame.time.get_ticks()-countdown_timer))/1000 #For counting down in the game.
-               count=int(items_to_prove)-int(seconds)
-               countdown_timer_to_display=font_2.render(str(int(count)) + "", True, "Black")
-               countdown_timer_to_display_location=countdown_timer_to_display.get_rect(topleft=(1160,60))
+               count=int(items_to_prove)-int(seconds) #This meausres how much time remains,
+               #it is not the conventional way, but it allows the user to see how much time remains.
+               countdown_timer_to_display=font_6.render(str(int(count)) + "", True, "Black")
+               countdown_timer_to_display_location=countdown_timer_to_display.get_rect(topleft=(1435,40))
                screen.blit(countdown_timer_to_display, countdown_timer_to_display_location)
-               if seconds > items_to_prove and minimum==False: # The user gets a maximum of 5 seconds per item.
-                     game_active=False
-                     game_over=True
-                     fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #Needed because the screen would not refresh to the input screen,
-                        #regardless of where the rendering logic was. At first glance, it seemed like it could be because of the event handler,
-                        #but moving the logic of the code that drew to the screen outside of that also rendered no results. It is also not abundantly clear what could be causing this,
-                        #since multiple checks and modifications do not see a key conflict or a required key press, hence this fake event.
-                        #pygame.event.post(fake_event) #Tells the event handler that this key was pressed
-                     pygame.event.post(fake_event)
-               elif (seconds >= items_to_prove and minimum==True) or (seconds < items_to_prove and minimum==True):
+               if seconds >= items_to_prove and minimum==False: # The user gets a maximum of 5 seconds per item.
+                    with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
+                           f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + " SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS"  + "\nRESULT: NOT SUCCESSFUL")     
+                    mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+                    #would glitch out for an event due to the event handler.
+                    mixer.music.play(-1) #Plays the music loaded in.
+                    game_active=False #Game active is false
+                    game_over=True #Game over is set to true
+                    fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #Like above, this is needed because the game over screen wouldnt show without input
+                    #so i used the same method I discovered before again and it works properly.
+                    pygame.event.post(fake_event) #Tells the event handler that this key was pressed
+               elif (seconds >= items_to_prove and minimum==True) or (seconds < items_to_prove and minimum==True): #Else if the user gets the items within the time frame this runs.
                         finale_active=True
                         success=True #Success is set to true.
                         with open ("Scoreboard.txt", "a") as f: #Stores the users name,time and score to a file.
-                                 f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nObtained Minimum Score-" + str(goal) + "\nFinal Score- " + str(score) + "\nAlloted Time: " + str(items_to_prove) + " Seconds\nActual Time: " + str(int(items_to_prove - count)) + " Seconds\nRESULT: MISSION SUCCESS!")     
-                        print(total_time) #For debugging purposes.
+                             f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + " SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS"  + "\nRESULT: MISSION SUCCESS!")     
                         game_active=False #The game is paused
                         points=0 #Points are reset
                         goal_input='' #Goal input is blank for now.
@@ -1486,14 +1541,11 @@ while main_game: #Handles the game loop.
         screen.blit(warning, warning_location) #Warning drawn on this location on the screen.
         warning_checked+=1 #Warning checked gets 1 added, this allows the time to be checked precisely ONCE!
         if warning_checked > 0 and warning_checked < 2: #Provided warning checked is greater than 0 and less than two, this will run.
-           print("Comparison reached") #Prints that the comparison was reached
            warning_last_seen=pygame.time.get_ticks() #Time checked precisely once rather than having to reset it.
            warning_x=0 #Warning_x is also set to 0 precisely once, which prevents an issue whre the x would constantly be set to 0
            #which prevented the comparison later to not work.
-           print(str(warning_last_seen) + " was last seen at this time.") #For debug purposes.
         if current_time - warning_last_seen > warn_window: #If the warning has passed 5 seconds, the projectile can now be shown.
             projectile_active=True #Projectile active is now set to true.
-            print("projectile can now be shown.")
      if projectile_active: #If the projectile_active is true, this can run.
         warning_active=False #The warning is no loner active
         projectile_x+=35 #Projectile will move across the x axis at this rate.
@@ -1503,22 +1555,24 @@ while main_game: #Handles the game loop.
             if player_hitbox.colliderect(projectile_location): #If the player collides with the projectile this will happen.
                   projectile_x=2000 #Projectile is moved off the screen.
                   player_hitbox.y+=SCREEN_WIDTH #Will stun the player to where they immediately fall to the ground.
-                  if points >= 50: #If the player has more than 50 points, then this will run.
-                     points-=50 #50 points are deducted from the player
-                     points_text=font_2.render("Points " + str(points), True, "RED") #A rect object that contains the updated score is made.
-                     points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-                  else: #Otherwise, its over.
-                     mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
-                     mixer.music.play(-1) #Plays the music loaded in.
-                     game_active=False #The game is no longer active.
-                     game_over=True #game over is set to true.
-                     fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #fake event is made.
-                     pygame.event.post(fake_event) #Tells the event handler that this key was pressed
+                  if mode.upper()=='A':
+                     if points >= 50: #If the player has more than 50 points, then this will run.
+                        points-=50 #50 points are deducted from the player
+                        points_text=font_6.render("Points - " + str(points) + " of " + str(goal), True, "Red") #A rect object that contains the updated score is made.
+                        points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
+                     else: #Otherwise, its over.
+                        mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+                        mixer.music.play(-1) #Plays the music loaded in.
+                        game_active=False #The game is no longer active.
+                        game_over=True #game over is set to true.
+                        fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #fake event is made.
+                        pygame.event.post(fake_event) #Tells the event handler that this key was pressed 
+                  elif mode.upper()=='B':
+                       countdown_timer-=5000 #A 5 second penalty is applied for touching the laser.
         else: #If the projectile is off the screen this will run.
             projectile_active=False #Projectile active is set to false.
-            print("The projectle is now deactived.") #For debug
             projectile_last_seen=current_time #Projectile last seen is set to current time.
-            warning_y=random.randint(0, 450) #The warning's y location is set to a random location, this also serves as the y location for the projectile.
+            warning_y=random.randint(10, 450) #The warning's y location is set to a random location, this also serves as the y location for the projectile.
             projectile_x=warning_x #Projectile x location is set to the warning's x location.
             projectile_y=warning_y #Projectile's y location is set to the warning's y location.
             projectile_cooldown=random.randint(5000,7000) #The cooldown is reset.

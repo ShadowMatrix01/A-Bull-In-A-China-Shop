@@ -1,6 +1,6 @@
 <h1> Author: Jhan Gomez <br>
-<h1>Date: 08-12-2025, 3:00 PM EST  <br>
-<h1>Version (Pre-Release): 1.1.1 <br>
+<h1>Date: 08-12-2025, 3:35 PM EST  <br>
+<h1>Version (Pre-Release): 1.1.2 <br>
 <h1>Purpose: <br>
 <h2>To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 <h1>DONE:<br>
