@@ -1,11 +1,10 @@
 #Author: Jhan Gomez <br>
-#Date: 08-15-2025, 6:35 PM EST  <br>
-#Version (Pre-Release): 1.1.2 <br>
+#Date: 08-17-2025, 1:35 PM EST  <br>
+#Version (Pre-Release): 1.1.3 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over, initial groundwork for modes.
-#Item and enviroemental hazard, splash screen, ground, high score + time and name to file, partial(animation for background)
-#To-Draw: player when moving. <br>
+#Item and enviroemental hazard, splash screen, ground, high score + time and name to file, animation for background
 import ctypes #These two lines of code were found out to be needed when I attempted to draw an image on the background for the game over.
 #It is called ctypes, which interacts with the windows API, which is crucial because windows has scaling set to 125% as a default.
 ctypes.windll.user32.SetProcessDPIAware() #Makes windows not use its own scaling configs and instead use pygames which is ideal for better and faster development
@@ -39,7 +38,7 @@ font_5=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 20) #Karmatic Arcade 
 font_6=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 35) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 starting_time=pygame.time.get_ticks() #Used for the timer.
 starting_time_secs=pygame.time.get_ticks() #Used for the timer in seconds.
-#Sprites for animationms
+#Sprites for animationm
 controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM.png').convert_alpha() #Screen showing the controls is loaded in.
 controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
 disclaimer=pygame.image.load('Game_Files/Assets/Stage/disclaimer.png').convert_alpha() #Loads the disclaimer in.
@@ -107,7 +106,49 @@ frame_39=pygame.image.load("Game_Files/Assets/Story/FRAME_39.png").convert_alpha
 frame_40=pygame.image.load("Game_Files/Assets/Story/FRAME_40.png").convert_alpha()
 frame_41=pygame.image.load("Game_Files/Assets/Story/FRAME_41.png").convert_alpha()
 frame_42=pygame.image.load("Game_Files/Assets/Story/FRAME_42.png").convert_alpha()
-frame_43=pygame.image.load("Game_Files/Assets/Story/FRAME_43.png").convert_alpha()
+
+frame_1b=pygame.image.load("Game_Files/Assets/Story/FRAME_1b.png").convert_alpha()
+frame_2b=pygame.image.load("Game_Files/Assets/Story/FRAME_2b.png").convert_alpha()
+frame_3b=pygame.image.load("Game_Files/Assets/Story/FRAME_3b.png").convert_alpha()
+frame_4b=pygame.image.load("Game_Files/Assets/Story/FRAME_4b.png").convert_alpha()
+frame_5b=pygame.image.load("Game_Files/Assets/Story/FRAME_5b.png").convert_alpha()
+frame_6b=pygame.image.load("Game_Files/Assets/Story/FRAME_6b.png").convert_alpha()
+frame_7b=pygame.image.load("Game_Files/Assets/Story/FRAME_7b.png").convert_alpha()
+frame_8b=pygame.image.load("Game_Files/Assets/Story/FRAME_8b.png").convert_alpha()
+frame_9b=pygame.image.load("Game_Files/Assets/Story/FRAME_9b.png").convert_alpha()
+frame_10b=pygame.image.load("Game_Files/Assets/Story/FRAME_10b.png").convert_alpha()
+frame_11b=pygame.image.load("Game_Files/Assets/Story/FRAME_11b.png").convert_alpha()
+frame_12b=pygame.image.load("Game_Files/Assets/Story/FRAME_12b.png").convert_alpha()
+frame_13b=pygame.image.load("Game_Files/Assets/Story/FRAME_13b.png").convert_alpha()
+frame_14b=pygame.image.load("Game_Files/Assets/Story/FRAME_14b.png").convert_alpha()
+frame_15b=pygame.image.load("Game_Files/Assets/Story/FRAME_15b.png").convert_alpha()
+frame_16b=pygame.image.load("Game_Files/Assets/Story/FRAME_16b.png").convert_alpha()
+frame_17b=pygame.image.load("Game_Files/Assets/Story/FRAME_17b.png").convert_alpha()
+frame_18b=pygame.image.load("Game_Files/Assets/Story/FRAME_18b.png").convert_alpha()
+frame_19b=pygame.image.load("Game_Files/Assets/Story/FRAME_19b.png").convert_alpha()
+frame_20b=pygame.image.load("Game_Files/Assets/Story/FRAME_20b.png").convert_alpha()
+frame_21b=pygame.image.load("Game_Files/Assets/Story/FRAME_21b.png").convert_alpha()
+frame_22b=pygame.image.load("Game_Files/Assets/Story/FRAME_22b.png").convert_alpha()
+frame_23b=pygame.image.load("Game_Files/Assets/Story/FRAME_23b.png").convert_alpha()
+frame_24b=pygame.image.load("Game_Files/Assets/Story/FRAME_24b.png").convert_alpha()
+frame_25b=pygame.image.load("Game_Files/Assets/Story/FRAME_25b.png").convert_alpha()
+frame_26b=pygame.image.load("Game_Files/Assets/Story/FRAME_26b.png").convert_alpha()
+frame_27b=pygame.image.load("Game_Files/Assets/Story/FRAME_27b.png").convert_alpha()
+frame_28b=pygame.image.load("Game_Files/Assets/Story/FRAME_28b.png").convert_alpha()
+frame_29b=pygame.image.load("Game_Files/Assets/Story/FRAME_29b.png").convert_alpha()
+frame_30b=pygame.image.load("Game_Files/Assets/Story/FRAME_30b.png").convert_alpha()
+frame_31b=pygame.image.load("Game_Files/Assets/Story/FRAME_31b.png").convert_alpha()
+frame_32b=pygame.image.load("Game_Files/Assets/Story/FRAME_32b.png").convert_alpha()
+frame_33b=pygame.image.load("Game_Files/Assets/Story/FRAME_33b.png").convert_alpha()
+frame_34b=pygame.image.load("Game_Files/Assets/Story/FRAME_34b.png").convert_alpha()
+frame_35b=pygame.image.load("Game_Files/Assets/Story/FRAME_35b.png").convert_alpha()
+frame_36b=pygame.image.load("Game_Files/Assets/Story/FRAME_36b.png").convert_alpha()
+frame_37b=pygame.image.load("Game_Files/Assets/Story/FRAME_37b.png").convert_alpha()
+frame_38b=pygame.image.load("Game_Files/Assets/Story/FRAME_38b.png").convert_alpha()
+frame_39b=pygame.image.load("Game_Files/Assets/Story/FRAME_39b.png").convert_alpha()
+frame_40b=pygame.image.load("Game_Files/Assets/Story/FRAME_40b.png").convert_alpha()
+frame_41b=pygame.image.load("Game_Files/Assets/Story/FRAME_41b.png").convert_alpha()
+frame_42b=pygame.image.load("Game_Files/Assets/Story/FRAME_42b.png").convert_alpha()
 
 pic_1=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_enter.png").convert_alpha()
 pic_2=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_no_enter.png").convert_alpha()
@@ -287,7 +328,8 @@ main_menu_location=main_menu.get_rect(topleft=(0,0))
 #For credits
 credits_1=pygame.image.load("Game_Files/Assets/Story/credits.png").convert_alpha()
 credits_2=pygame.image.load("Game_Files/Assets/Story/credits-2.png").convert_alpha()
-credits_3=pygame.image.load("Game_Files/Assets/Story/credits-3.png").convert_alpha()
+credits_3=pygame.image.load("Game_Files/Assets/Story/thanks.png").convert_alpha()
+credits_4=pygame.image.load("Game_Files/Assets/Story/credits-3.png").convert_alpha()
 
 #For initial intro sequence
 background_rolling=[frame_1, frame_2, frame_3, 
@@ -303,7 +345,20 @@ background_rolling=[frame_1, frame_2, frame_3,
                     frame_31, frame_32, frame_33,
                     frame_34, frame_35, frame_36,
                     frame_37, frame_38, frame_39,
-                    frame_40, frame_41, frame_42] # I need a totaL minimum  of 16 for smooth animation.
+                    frame_40, frame_41, frame_42, frame_1b, frame_2b, frame_3b, 
+                    frame_4b, frame_5b, frame_6b, 
+                    frame_7b, frame_8b, frame_9b, 
+                    frame_10b, frame_11b, frame_12b, 
+                    frame_13b, frame_14b, frame_15b, 
+                    frame_16b, frame_17b, frame_18b, 
+                    frame_19b, frame_20b, frame_21b, 
+                    frame_22b, frame_23b, frame_24b, 
+                    frame_25b, frame_26b, frame_27b, 
+                    frame_28b, frame_29b, frame_30b,
+                    frame_31b, frame_32b, frame_33b,
+                    frame_34b, frame_35b, frame_36b,
+                    frame_37b, frame_38b, frame_39b,
+                    frame_40b, frame_41b, frame_42b] # I need a totaL minimum  of 16 for smooth animation.
 background_index=0 #The index for which frame to pick is set to 0.
 background=background_rolling[background_index] #The background is set to be the index position of the background index withing the background rolling list.
 background_location=background.get_rect(topleft=(0,0)) #Draws the background at this location.
@@ -402,7 +457,7 @@ success_c_index=0
 success_c=success_c_rolling[success_c_index]
 success_c_location=success_c.get_rect(topleft=(0,0))
 
-credits_rolling=[credits_1, credits_2, credits_3]
+credits_rolling=[credits_1, credits_2, credits_3, credits_4]
 credits_index=0
 credits=credits_rolling[credits_index]
 credits_location=credits.get_rect(topleft=(0,0))
@@ -412,7 +467,7 @@ count=0 #While this is not the traditonal implementation of a countdown, I belie
 #as the pygame documentation suggest using userevents, but that is built for a very simple game, and not one with multiple modes.
 item_sound=pygame.mixer.Sound('Game_Files/AudioSFX/320655__rhodesmas__level-up-01.wav') #Sound effect when picking up an item.
 start_sound=pygame.mixer.Sound('Game_Files/AudioSFX/leave.wav') #Sound effect when picking up an item.
-
+enter=False
 def leaderboard_function(): #A function to display scores of users.
       root = Tk() #Root is set to the main window where everything else will be attached
       root.title("A Bull In A Jewelry Store") #Title changed to reflect setting.
@@ -529,7 +584,7 @@ def finale(): #This function handles the finale sequence.
     global game_active, score, game_over, credits, credits_index, credits_rolling, credits_location, success_c, success_c_index, success_c_rolling
     global return_finale_pressed, final_time, score_success, score_success_location, items_obtained, success_c_location, alloted_time, count, items_to_prove
     global success, success_rolling, success_index, success_location, finale_active, items_picked_up, items_obtained_location, alloted_time_location
-    global success_a, success_b, success_b_index, success_b_location, success_b_rolling, bonus_to_render, bonus_to_render_location
+    global success_a, success_b, success_b_index, success_b_location, success_b_rolling, bonus_to_render, bonus_to_render_location, mode_selection
     if return_finale_pressed==0:
         success_index+=0.001
         if success_index>=16:
@@ -622,8 +677,8 @@ def finale(): #This function handles the finale sequence.
             bonus_to_render_location=bonus_to_render.get_rect(topleft=(350,820))
             items_obtained=font_4.render(str(items_picked_up + special_items_picked_up), True, "Green")
             items_obtained_location=items_obtained.get_rect(topleft=(550, 220))
-            time=font_4.render(str(int(items_to_prove-count)) + " S", True, "Green")
-            final_time=time.get_rect(topleft=(450,420))
+            time=font_4.render(str(int(items_to_prove-count)) + " SECONDS", True, "Green")
+            final_time=time.get_rect(topleft=(425,420))
             alloted_time=font_4.render(str(items_to_prove) + " SECONDS", True, "Green")
             alloted_time_location=alloted_time.get_rect(topleft=(500, 620))
             success_c=success_c_rolling[int(success_c_index)]
@@ -654,7 +709,14 @@ def finale(): #This function handles the finale sequence.
         credits=credits_rolling[int(credits_index)]
         credits_location=credits.get_rect(topleft=(0,0))
         screen.blit(credits, credits_location)
-    elif return_finale_pressed >=11:
+    elif return_finale_pressed==11:
+        credits_index+=1
+        if credits_index>=3:
+            credits_index=3
+        credits=credits_rolling[int(credits_index)]
+        credits_location=credits.get_rect(topleft=(0,0))
+        screen.blit(credits, credits_location)
+    elif return_finale_pressed >=12:
         return_finale_pressed=0
         success_index=0
         success_a=success_rolling[int(success_index)]
@@ -670,13 +732,14 @@ def finale(): #This function handles the finale sequence.
         credits_location=credits.get_rect(topleft=(0,0))
         finale_active=False
         success=False
+        mode_selection=True
     pygame.display.update() #Screen is refreshed.
 def screen_to_take_you_to(): #A function handles which screen is drawn.
       global set_name, controls, controls_location, breakdown_location, breakdown_warning_location, breakdown_warning, breakdown_warning_index #set score is set at the global level.
       global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
       global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2
       global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4
-      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase
+      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase, enter
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
          screen.fill((0,0,0)) #Screen filled with black
          screen.blit(py_made, py_location) #pygame screen drawn to the screen.
@@ -702,12 +765,20 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
          mixer.music.play(-1) #Loops the track.
       elif return_pressed==4: #If the enter key is pressed 4 times, then this will run.
          phase.stop()
-         background_index += 0.07  # A scroll across the frames will be applied using the index.
-         if background_index >= len(background_rolling): # if the index is greater than the amount of frames, then it must be reset.
-            background_index = 0 #Index reset.
-         background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
-         background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
-         screen.blit(background, background_location) #Background is drawn.
+         if not enter: #if the enter button is not ready to be displayed, the original frames are shown.
+            background_index += 0.07  # A scroll across the frames will be applied using the index.
+            if background_index >= 41: # if the index is greater than the amount of frames, then it must be reset.
+               enter=True #Its time to show the enter button to allow the user to know the sequence is looping.
+            background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
+            background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
+            screen.blit(background, background_location) #Background is drawn.
+         if enter: #Shows the enter button.
+            background_index += 0.07  # A scroll across the frames will be applied using the index.
+            if background_index >= len(background_rolling): # if the index is greater than the amount of frames, then it must be reset.
+               background_index=42
+            background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
+            background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
+            screen.blit(background, background_location) #Background is drawn. 
       elif return_pressed==5: #If the enter key is pressed 5 times, then this will run.
           breakdown_index+=0.03 #Breakdown index goes up bu this number.
           if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
@@ -1376,10 +1447,9 @@ while main_game: #Handles the game loop.
                   item_last_seen = current_time #The item last seen timer is set to the current time.
                   item_respawn_cooldown = random.randint(2000, 5000) #The cooldown is restarted.
                   break #Loop breaks.
-               else: #Otherwise, the loop must continue.
-                  #Debug tool.
-                  print("Not good to spawn here. Bull left: " + str(bull_hitbox.left) + " and item left: " + str(item_hitbox.left) + "/n Bull right: " + str(bull_hitbox.right) +  " item right: " + str(item_hitbox.right))
-    
+               else: 
+                 pass
+                    
      if current_time_2 - special_item_last_seen >= special_item_respawn_cooldown: #If the time elapsed is greater than the cooldown this will run.
         while True: #This loop will continously generate x and y value  for the item until there is no overlap with the bull.
                special_item_x_pos=random.randint(200,1581) #Random x position is generated
@@ -1394,8 +1464,7 @@ while main_game: #Handles the game loop.
                   special_item_respawn_cooldown = random.randint(30000, 45000) #The cooldown is restarted.
                   break #Loop breaks.
                else: #Otherwise, the loop must continue.
-                  #Debug tool.
-                  print("Not good to spawn here. Bull left: " + str(bull_hitbox.left) + " and pyramid left: " + str(special_item_hitbox.left) + "/n Bull right: " + str(bull_hitbox.right) +  " pyramid right: " + str(special_item_hitbox.right))
+                  pass
      if current_time - water_puddle_last_seen >= water_puddle_cooldown: #if the water cooldown period is exceeded this will run.
         water_possible_locations=[0, 393] #Allows a better way to put the water hazrd on screen.
         water_location_select=random.choice(water_possible_locations) #Chooses a random place to place the water puddle across the x axis.
