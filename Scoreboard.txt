@@ -1,6 +1,6 @@
 This is an Internal Scoreboard, not a global one.
 The scores here are meant for you to compare yourself and
 your close friends.
-IMPORTANT: YOU MUST CLOSE THE SCOREBOARD FOR POINT INPUT
+IMPORTANT: YOU MUST CLOSE THE SCOREBOARD FOR POINTS INPUT
 TO WORK!!!
 Use the scroll wheel to navigate the scores list, thank you. -Jhan

@@ -1,6 +1,6 @@
 #Author: Jhan Gomez <br>
-#Date: 08-17-2025, 1:35 PM EST  <br>
-#Version (Pre-Release): 1.1.3 <br>
+#Date: 08-23-2025, 10:00 AM EST  <br>
+#Version (Pre-Release): 1.1.4 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over, initial groundwork for modes.
@@ -10,6 +10,7 @@ import ctypes #These two lines of code were found out to be needed when I attemp
 ctypes.windll.user32.SetProcessDPIAware() #Makes windows not use its own scaling configs and instead use pygames which is ideal for better and faster development
 #aswell as placements.
 import pygame #Pygame library is imported in.
+import os, sys #Required because pyinstaller can't find the
 from pygame import mixer #This is the music package from pygame that is being imported.
 from sys import exit #Exit is imported from the os.
 from tkinter import * #Imports the entire tkinter module
@@ -18,7 +19,12 @@ import random #Random module imported in.
 import datetime #Important for the leaderboard
 pygame.init() #Pygame is initialized.
 pygame.display.set_caption("A Bull In A Jewelry Store") #Title of the game.
-pygame_icon_to_display=pygame.image.load("Game_Files/Assets/Bull/bull_256.png") #Icon for the game
+
+def resource_path(relative_path):
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(sys.argv[0])))
+    return os.path.join(base_path, relative_path)
+
+pygame_icon_to_display=pygame.image.load(resource_path("Assets/Bull/bull_256.png")) #Icon for the game
 pygame.display.set_icon(pygame_icon_to_display) #Icon is displayed on screen.
 SCREEN_WIDTH=1920 #Screen width is set to be 1920
 SCREEN_HEIGHT=1080 #Screen height is set to be 1080.
@@ -30,30 +36,30 @@ return_pressed=0 #Determines how many times return was pressed.
 screen=pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) #The dimensions are now set to be the displays dimensions.
 game_active=False #This boolean allows pausing for when the player either wins or looses.
 clock=pygame.time.Clock() #Allows a consistent frame rate in my game.
-font=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_2=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_3=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 75) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_4=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 40) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_5=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 20) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
-font_6=pygame.font.Font('Game_Files/Font/Arcade_Font.ttf', 35) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 100) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_2=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 50) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_3=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 75) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_4=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 40) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_5=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 20) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
+font_6=pygame.font.Font(resource_path('Font/Arcade_Font.ttf'), 35) #Karmatic Arcade font used courtesy of Vic Feiger, https://www.dafont.com/karmatic-arcade.font?l[]=10&l[]=1
 starting_time=pygame.time.get_ticks() #Used for the timer.
 starting_time_secs=pygame.time.get_ticks() #Used for the timer in seconds.
 #Sprites for animationm
-controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM.png').convert_alpha() #Screen showing the controls is loaded in.
+controls=pygame.image.load(resource_path('Assets/Stage/Controls_KBM.png')).convert_alpha() #Screen showing the controls is loaded in.
 controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
-disclaimer=pygame.image.load('Game_Files/Assets/Stage/disclaimer.png').convert_alpha() #Loads the disclaimer in.
+disclaimer=pygame.image.load(resource_path('Assets/Stage/disclaimer.png')).convert_alpha() #Loads the disclaimer in.
 disclaimer_location=disclaimer.get_rect(topleft=(0,0)) #Puts the disclaimer on screen.
-player_walking_1=pygame.image.load('Game_Files/Assets/Humans/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
-player_walking_2=pygame.image.load('Game_Files/Assets/Humans/player_stationary.png').convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_1=pygame.image.load(resource_path('Assets/Humans/player_stationary.png')).convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
+player_walking_2=pygame.image.load(resource_path('Assets/Humans/player_stationary.png')).convert_alpha() #Asset loaded in, convert alpha helps it have the higest quality.
 player_walking=[player_walking_1, player_walking_2] #Has two sprites, can be changed.
 player_walking_index=0 #Allows one of the above indexes to be selected to animate
 player_256=player_walking[player_walking_index] #The sprite chosen is the one at the specified index position within the array.
 player_hitbox = player_256.get_rect(midbottom=(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 45)) #Works regardless of screen size chosen.
-player_jumping=pygame.image.load('Game_Files/Assets/Humans/player_jumping.png').convert_alpha() #Jumping animation for player.
-shop=pygame.image.load('Game_Files/Assets/Stage/jewel-shop.png').convert_alpha() #Loads the shops background in.
+player_jumping=pygame.image.load(resource_path('Assets/Humans/player_jumping.png')).convert_alpha() #Jumping animation for player.
+shop=pygame.image.load(resource_path('Assets/Stage/jewel-shop.png')).convert_alpha() #Loads the shops background in.
 shop_location=shop.get_rect(topleft=(0,0)) #Puts the shop at this location.
 
-special_item=pygame.image.load("Game_Files/Assets/Interactable/Pyramid.png").convert_alpha()
+special_item=pygame.image.load(resource_path("Assets/Interactable/Pyramid.png")).convert_alpha()
 special_item_last_seen=pygame.time.get_ticks() #Stores the last time the special item was seen.
 special_item_respawn_cooldown=random.randint(30000,45000) #A cooldown of between 30 seconds to 45 seconds is made.
 special_item_x_pos=random.randint(300,1581) #Default x value range for special item
@@ -61,263 +67,267 @@ special_item_y_pos=random.randint(500,600) #Default y valur range for special it
 special_item_hitbox=special_item.get_rect(topleft=(special_item_x_pos, special_item_y_pos)) #The special item is placed at the randomly generated x and y positions.
 
 #Frames for menu
-menu_screen_2=pygame.image.load("Game_Files/Assets/Stage/Menu-Screen-2.png").convert_alpha()
-menu_screen_2b=pygame.image.load("Game_Files/Assets/Stage/Menu-Screen-2b.png").convert_alpha()
+menu_screen_2=pygame.image.load(resource_path("Assets/Stage/Menu-Screen-2.png")).convert_alpha()
+menu_screen_2b=pygame.image.load(resource_path("Assets/Stage/Menu-Screen-2b.png")).convert_alpha()
 #Frames for background splash screen.
-frame_1=pygame.image.load("Game_Files/Assets/Story/FRAME_1.png").convert_alpha()
-frame_2=pygame.image.load("Game_Files/Assets/Story/FRAME_2.png").convert_alpha()
-frame_3=pygame.image.load("Game_Files/Assets/Story/FRAME_3.png").convert_alpha()
-frame_4=pygame.image.load("Game_Files/Assets/Story/FRAME_4.png").convert_alpha()
-frame_5=pygame.image.load("Game_Files/Assets/Story/FRAME_5.png").convert_alpha()
-frame_6=pygame.image.load("Game_Files/Assets/Story/FRAME_6.png").convert_alpha()
-frame_7=pygame.image.load("Game_Files/Assets/Story/FRAME_7.png").convert_alpha()
-frame_8=pygame.image.load("Game_Files/Assets/Story/FRAME_8.png").convert_alpha()
-frame_9=pygame.image.load("Game_Files/Assets/Story/FRAME_9.png").convert_alpha()
-frame_10=pygame.image.load("Game_Files/Assets/Story/FRAME_10.png").convert_alpha()
-frame_11=pygame.image.load("Game_Files/Assets/Story/FRAME_11.png").convert_alpha()
-frame_12=pygame.image.load("Game_Files/Assets/Story/FRAME_12.png").convert_alpha()
-frame_13=pygame.image.load("Game_Files/Assets/Story/FRAME_13.png").convert_alpha()
-frame_14=pygame.image.load("Game_Files/Assets/Story/FRAME_14.png").convert_alpha()
-frame_15=pygame.image.load("Game_Files/Assets/Story/FRAME_15.png").convert_alpha()
-frame_16=pygame.image.load("Game_Files/Assets/Story/FRAME_16.png").convert_alpha()
-frame_17=pygame.image.load("Game_Files/Assets/Story/FRAME_17.png").convert_alpha()
-frame_18=pygame.image.load("Game_Files/Assets/Story/FRAME_18.png").convert_alpha()
-frame_19=pygame.image.load("Game_Files/Assets/Story/FRAME_19.png").convert_alpha()
-frame_20=pygame.image.load("Game_Files/Assets/Story/FRAME_20.png").convert_alpha()
-frame_21=pygame.image.load("Game_Files/Assets/Story/FRAME_21.png").convert_alpha()
-frame_22=pygame.image.load("Game_Files/Assets/Story/FRAME_22.png").convert_alpha()
-frame_23=pygame.image.load("Game_Files/Assets/Story/FRAME_23.png").convert_alpha()
-frame_24=pygame.image.load("Game_Files/Assets/Story/FRAME_24.png").convert_alpha()
-frame_25=pygame.image.load("Game_Files/Assets/Story/FRAME_25.png").convert_alpha()
-frame_26=pygame.image.load("Game_Files/Assets/Story/FRAME_26.png").convert_alpha()
-frame_27=pygame.image.load("Game_Files/Assets/Story/FRAME_27.png").convert_alpha()
-frame_28=pygame.image.load("Game_Files/Assets/Story/FRAME_28.png").convert_alpha()
-frame_29=pygame.image.load("Game_Files/Assets/Story/FRAME_29.png").convert_alpha()
-frame_30=pygame.image.load("Game_Files/Assets/Story/FRAME_30.png").convert_alpha()
-frame_31=pygame.image.load("Game_Files/Assets/Story/FRAME_31.png").convert_alpha()
-frame_32=pygame.image.load("Game_Files/Assets/Story/FRAME_32.png").convert_alpha()
-frame_33=pygame.image.load("Game_Files/Assets/Story/FRAME_33.png").convert_alpha()
-frame_34=pygame.image.load("Game_Files/Assets/Story/FRAME_34.png").convert_alpha()
-frame_35=pygame.image.load("Game_Files/Assets/Story/FRAME_35.png").convert_alpha()
-frame_36=pygame.image.load("Game_Files/Assets/Story/FRAME_36.png").convert_alpha()
-frame_37=pygame.image.load("Game_Files/Assets/Story/FRAME_37.png").convert_alpha()
-frame_38=pygame.image.load("Game_Files/Assets/Story/FRAME_38.png").convert_alpha()
-frame_39=pygame.image.load("Game_Files/Assets/Story/FRAME_39.png").convert_alpha()
-frame_40=pygame.image.load("Game_Files/Assets/Story/FRAME_40.png").convert_alpha()
-frame_41=pygame.image.load("Game_Files/Assets/Story/FRAME_41.png").convert_alpha()
-frame_42=pygame.image.load("Game_Files/Assets/Story/FRAME_42.png").convert_alpha()
+frame_1=pygame.image.load(resource_path("Assets/Story/FRAME_1.png")).convert_alpha()
+frame_2=pygame.image.load(resource_path("Assets/Story/FRAME_2.png")).convert_alpha()
+frame_3=pygame.image.load(resource_path("Assets/Story/FRAME_3.png")).convert_alpha()
+frame_4=pygame.image.load(resource_path("Assets/Story/FRAME_4.png")).convert_alpha()
+frame_5=pygame.image.load(resource_path("Assets/Story/FRAME_5.png")).convert_alpha()
+frame_6=pygame.image.load(resource_path("Assets/Story/FRAME_6.png")).convert_alpha()
+frame_7=pygame.image.load(resource_path("Assets/Story/FRAME_7.png")).convert_alpha()
+frame_8=pygame.image.load(resource_path("Assets/Story/FRAME_8.png")).convert_alpha()
+frame_9=pygame.image.load(resource_path("Assets/Story/FRAME_9.png")).convert_alpha()
+frame_10=pygame.image.load(resource_path("Assets/Story/FRAME_10.png")).convert_alpha()
+frame_11=pygame.image.load(resource_path("Assets/Story/FRAME_11.png")).convert_alpha()
+frame_12=pygame.image.load(resource_path("Assets/Story/FRAME_12.png")).convert_alpha()
+frame_13=pygame.image.load(resource_path("Assets/Story/FRAME_13.png")).convert_alpha()
+frame_14=pygame.image.load(resource_path("Assets/Story/FRAME_14.png")).convert_alpha()
+frame_15=pygame.image.load(resource_path("Assets/Story/FRAME_15.png")).convert_alpha()
+frame_16=pygame.image.load(resource_path("Assets/Story/FRAME_16.png")).convert_alpha()
+frame_17=pygame.image.load(resource_path("Assets/Story/FRAME_17.png")).convert_alpha()
+frame_18=pygame.image.load(resource_path("Assets/Story/FRAME_18.png")).convert_alpha()
+frame_19=pygame.image.load(resource_path("Assets/Story/FRAME_19.png")).convert_alpha()
+frame_20=pygame.image.load(resource_path("Assets/Story/FRAME_20.png")).convert_alpha()
+frame_21=pygame.image.load(resource_path("Assets/Story/FRAME_21.png")).convert_alpha()
+frame_22=pygame.image.load(resource_path("Assets/Story/FRAME_22.png")).convert_alpha()
+frame_23=pygame.image.load(resource_path("Assets/Story/FRAME_23.png")).convert_alpha()
+frame_24=pygame.image.load(resource_path("Assets/Story/FRAME_24.png")).convert_alpha()
+frame_25=pygame.image.load(resource_path("Assets/Story/FRAME_25.png")).convert_alpha()
+frame_26=pygame.image.load(resource_path("Assets/Story/FRAME_26.png")).convert_alpha()
+frame_27=pygame.image.load(resource_path("Assets/Story/FRAME_27.png")).convert_alpha()
+frame_28=pygame.image.load(resource_path("Assets/Story/FRAME_28.png")).convert_alpha()
+frame_29=pygame.image.load(resource_path("Assets/Story/FRAME_29.png")).convert_alpha()
+frame_30=pygame.image.load(resource_path("Assets/Story/FRAME_30.png")).convert_alpha()
+frame_31=pygame.image.load(resource_path("Assets/Story/FRAME_31.png")).convert_alpha()
+frame_32=pygame.image.load(resource_path("Assets/Story/FRAME_32.png")).convert_alpha()
+frame_33=pygame.image.load(resource_path("Assets/Story/FRAME_33.png")).convert_alpha()
+frame_34=pygame.image.load(resource_path("Assets/Story/FRAME_34.png")).convert_alpha()
+frame_35=pygame.image.load(resource_path("Assets/Story/FRAME_35.png")).convert_alpha()
+frame_36=pygame.image.load(resource_path("Assets/Story/FRAME_36.png")).convert_alpha()
+frame_37=pygame.image.load(resource_path("Assets/Story/FRAME_37.png")).convert_alpha()
+frame_38=pygame.image.load(resource_path("Assets/Story/FRAME_38.png")).convert_alpha()
+frame_39=pygame.image.load(resource_path("Assets/Story/FRAME_39.png")).convert_alpha()
+frame_40=pygame.image.load(resource_path("Assets/Story/FRAME_40.png")).convert_alpha()
+frame_41=pygame.image.load(resource_path("Assets/Story/FRAME_41.png")).convert_alpha()
+frame_42=pygame.image.load(resource_path("Assets/Story/FRAME_42.png")).convert_alpha()
 
-frame_1b=pygame.image.load("Game_Files/Assets/Story/FRAME_1b.png").convert_alpha()
-frame_2b=pygame.image.load("Game_Files/Assets/Story/FRAME_2b.png").convert_alpha()
-frame_3b=pygame.image.load("Game_Files/Assets/Story/FRAME_3b.png").convert_alpha()
-frame_4b=pygame.image.load("Game_Files/Assets/Story/FRAME_4b.png").convert_alpha()
-frame_5b=pygame.image.load("Game_Files/Assets/Story/FRAME_5b.png").convert_alpha()
-frame_6b=pygame.image.load("Game_Files/Assets/Story/FRAME_6b.png").convert_alpha()
-frame_7b=pygame.image.load("Game_Files/Assets/Story/FRAME_7b.png").convert_alpha()
-frame_8b=pygame.image.load("Game_Files/Assets/Story/FRAME_8b.png").convert_alpha()
-frame_9b=pygame.image.load("Game_Files/Assets/Story/FRAME_9b.png").convert_alpha()
-frame_10b=pygame.image.load("Game_Files/Assets/Story/FRAME_10b.png").convert_alpha()
-frame_11b=pygame.image.load("Game_Files/Assets/Story/FRAME_11b.png").convert_alpha()
-frame_12b=pygame.image.load("Game_Files/Assets/Story/FRAME_12b.png").convert_alpha()
-frame_13b=pygame.image.load("Game_Files/Assets/Story/FRAME_13b.png").convert_alpha()
-frame_14b=pygame.image.load("Game_Files/Assets/Story/FRAME_14b.png").convert_alpha()
-frame_15b=pygame.image.load("Game_Files/Assets/Story/FRAME_15b.png").convert_alpha()
-frame_16b=pygame.image.load("Game_Files/Assets/Story/FRAME_16b.png").convert_alpha()
-frame_17b=pygame.image.load("Game_Files/Assets/Story/FRAME_17b.png").convert_alpha()
-frame_18b=pygame.image.load("Game_Files/Assets/Story/FRAME_18b.png").convert_alpha()
-frame_19b=pygame.image.load("Game_Files/Assets/Story/FRAME_19b.png").convert_alpha()
-frame_20b=pygame.image.load("Game_Files/Assets/Story/FRAME_20b.png").convert_alpha()
-frame_21b=pygame.image.load("Game_Files/Assets/Story/FRAME_21b.png").convert_alpha()
-frame_22b=pygame.image.load("Game_Files/Assets/Story/FRAME_22b.png").convert_alpha()
-frame_23b=pygame.image.load("Game_Files/Assets/Story/FRAME_23b.png").convert_alpha()
-frame_24b=pygame.image.load("Game_Files/Assets/Story/FRAME_24b.png").convert_alpha()
-frame_25b=pygame.image.load("Game_Files/Assets/Story/FRAME_25b.png").convert_alpha()
-frame_26b=pygame.image.load("Game_Files/Assets/Story/FRAME_26b.png").convert_alpha()
-frame_27b=pygame.image.load("Game_Files/Assets/Story/FRAME_27b.png").convert_alpha()
-frame_28b=pygame.image.load("Game_Files/Assets/Story/FRAME_28b.png").convert_alpha()
-frame_29b=pygame.image.load("Game_Files/Assets/Story/FRAME_29b.png").convert_alpha()
-frame_30b=pygame.image.load("Game_Files/Assets/Story/FRAME_30b.png").convert_alpha()
-frame_31b=pygame.image.load("Game_Files/Assets/Story/FRAME_31b.png").convert_alpha()
-frame_32b=pygame.image.load("Game_Files/Assets/Story/FRAME_32b.png").convert_alpha()
-frame_33b=pygame.image.load("Game_Files/Assets/Story/FRAME_33b.png").convert_alpha()
-frame_34b=pygame.image.load("Game_Files/Assets/Story/FRAME_34b.png").convert_alpha()
-frame_35b=pygame.image.load("Game_Files/Assets/Story/FRAME_35b.png").convert_alpha()
-frame_36b=pygame.image.load("Game_Files/Assets/Story/FRAME_36b.png").convert_alpha()
-frame_37b=pygame.image.load("Game_Files/Assets/Story/FRAME_37b.png").convert_alpha()
-frame_38b=pygame.image.load("Game_Files/Assets/Story/FRAME_38b.png").convert_alpha()
-frame_39b=pygame.image.load("Game_Files/Assets/Story/FRAME_39b.png").convert_alpha()
-frame_40b=pygame.image.load("Game_Files/Assets/Story/FRAME_40b.png").convert_alpha()
-frame_41b=pygame.image.load("Game_Files/Assets/Story/FRAME_41b.png").convert_alpha()
-frame_42b=pygame.image.load("Game_Files/Assets/Story/FRAME_42b.png").convert_alpha()
+frame_1b=pygame.image.load(resource_path("Assets/Story/FRAME_1b.png")).convert_alpha()
+frame_2b=pygame.image.load(resource_path("Assets/Story/FRAME_2b.png")).convert_alpha()
+frame_3b=pygame.image.load(resource_path("Assets/Story/FRAME_3b.png")).convert_alpha()
+frame_4b=pygame.image.load(resource_path("Assets/Story/FRAME_4b.png")).convert_alpha()
+frame_5b=pygame.image.load(resource_path("Assets/Story/FRAME_5b.png")).convert_alpha()
+frame_6b=pygame.image.load(resource_path("Assets/Story/FRAME_6b.png")).convert_alpha()
+frame_7b=pygame.image.load(resource_path("Assets/Story/FRAME_7b.png")).convert_alpha()
+frame_8b=pygame.image.load(resource_path("Assets/Story/FRAME_8b.png")).convert_alpha()
+frame_9b=pygame.image.load(resource_path("Assets/Story/FRAME_9b.png")).convert_alpha()
+frame_10b=pygame.image.load(resource_path("Assets/Story/FRAME_10b.png")).convert_alpha()
+frame_11b=pygame.image.load(resource_path("Assets/Story/FRAME_11b.png")).convert_alpha()
+frame_12b=pygame.image.load(resource_path("Assets/Story/FRAME_12b.png")).convert_alpha()
+frame_13b=pygame.image.load(resource_path("Assets/Story/FRAME_13b.png")).convert_alpha()
+frame_14b=pygame.image.load(resource_path("Assets/Story/FRAME_14b.png")).convert_alpha()
+frame_15b=pygame.image.load(resource_path("Assets/Story/FRAME_15b.png")).convert_alpha()
+frame_16b=pygame.image.load(resource_path("Assets/Story/FRAME_16b.png")).convert_alpha()
+frame_17b=pygame.image.load(resource_path("Assets/Story/FRAME_17b.png")).convert_alpha()
+frame_18b=pygame.image.load(resource_path("Assets/Story/FRAME_18b.png")).convert_alpha()
+frame_19b=pygame.image.load(resource_path("Assets/Story/FRAME_19b.png")).convert_alpha()
+frame_20b=pygame.image.load(resource_path("Assets/Story/FRAME_20b.png")).convert_alpha()
+frame_21b=pygame.image.load(resource_path("Assets/Story/FRAME_21b.png")).convert_alpha()
+frame_22b=pygame.image.load(resource_path("Assets/Story/FRAME_22b.png")).convert_alpha()
+frame_23b=pygame.image.load(resource_path("Assets/Story/FRAME_23b.png")).convert_alpha()
+frame_24b=pygame.image.load(resource_path("Assets/Story/FRAME_24b.png")).convert_alpha()
+frame_25b=pygame.image.load(resource_path("Assets/Story/FRAME_25b.png")).convert_alpha()
+frame_26b=pygame.image.load(resource_path("Assets/Story/FRAME_26b.png")).convert_alpha()
+frame_27b=pygame.image.load(resource_path("Assets/Story/FRAME_27b.png")).convert_alpha()
+frame_28b=pygame.image.load(resource_path("Assets/Story/FRAME_28b.png")).convert_alpha()
+frame_29b=pygame.image.load(resource_path("Assets/Story/FRAME_29b.png")).convert_alpha()
+frame_30b=pygame.image.load(resource_path("Assets/Story/FRAME_30b.png")).convert_alpha()
+frame_31b=pygame.image.load(resource_path("Assets/Story/FRAME_31b.png")).convert_alpha()
+frame_32b=pygame.image.load(resource_path("Assets/Story/FRAME_32b.png")).convert_alpha()
+frame_33b=pygame.image.load(resource_path("Assets/Story/FRAME_33b.png")).convert_alpha()
+frame_34b=pygame.image.load(resource_path("Assets/Story/FRAME_34b.png")).convert_alpha()
+frame_35b=pygame.image.load(resource_path("Assets/Story/FRAME_35b.png")).convert_alpha()
+frame_36b=pygame.image.load(resource_path("Assets/Story/FRAME_36b.png")).convert_alpha()
+frame_37b=pygame.image.load(resource_path("Assets/Story/FRAME_37b.png")).convert_alpha()
+frame_38b=pygame.image.load(resource_path("Assets/Story/FRAME_38b.png")).convert_alpha()
+frame_39b=pygame.image.load(resource_path("Assets/Story/FRAME_39b.png")).convert_alpha()
+frame_40b=pygame.image.load(resource_path("Assets/Story/FRAME_40b.png")).convert_alpha()
+frame_41b=pygame.image.load(resource_path("Assets/Story/FRAME_41b.png")).convert_alpha()
+frame_42b=pygame.image.load(resource_path("Assets/Story/FRAME_42b.png")).convert_alpha()
 
-pic_1=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_enter.png").convert_alpha()
-pic_2=pygame.image.load("Game_Files/Assets/Stage/CC_BY_NA_SA_4_no_enter.png").convert_alpha()
+#License for art assets.
+pic_1=pygame.image.load(resource_path("Assets/Stage/CC_BY_NA_SA_4_enter.png")).convert_alpha()
+pic_2=pygame.image.load(resource_path("Assets/Stage/CC_BY_NA_SA_4_no_enter.png")).convert_alpha()\
+#Mit license for code.
+pic_3=pygame.image.load(resource_path("Assets/Stage/MIT_enter.png")).convert_alpha()
+pic_4=pygame.image.load(resource_path("Assets/Stage/MIT_no_enter.png")).convert_alpha()
 
-breakdown_1=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-1.png").convert_alpha()
-breakdown_2=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-2.png").convert_alpha()
-breakdown_3=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-3.png").convert_alpha()
-breakdown_4=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-4.png").convert_alpha()
-breakdown_5=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-5.png").convert_alpha()
-breakdown_6=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-6.png").convert_alpha()
-breakdown_7=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-7.png").convert_alpha()
-breakdown_8=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-8.png").convert_alpha()
-breakdown_9=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-9.png").convert_alpha()
-breakdown_10=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-10.png").convert_alpha()
-breakdown_11=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-11.png").convert_alpha()
-breakdown_12=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-12.png").convert_alpha()
-breakdown_13=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-13.png").convert_alpha()
-breakdown_14=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-14.png").convert_alpha()
-breakdown_15=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-15.png").convert_alpha()
-breakdown_16=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-16.png").convert_alpha()
-breakdown_17=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-17.png").convert_alpha()
-breakdown_18=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-18.png").convert_alpha()
-breakdown_19=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-19.png").convert_alpha()
-breakdown_20=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-20.png").convert_alpha()
-breakdown_21=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-21.png").convert_alpha()
-breakdown_22=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-22.png").convert_alpha()
-breakdown_23=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-23.png").convert_alpha()
-breakdown_24=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-24.png").convert_alpha()
-breakdown_25=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-25.png").convert_alpha()
-breakdown_26=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-26.png").convert_alpha()
-breakdown_27=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-27.png").convert_alpha()
-breakdown_28=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28.png").convert_alpha()
-breakdown_29=pygame.image.load("Game_Files/Assets/Story/Pre-Breakdown-28-No-Text.png").convert_alpha()
+breakdown_1=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-1.png")).convert_alpha()
+breakdown_2=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-2.png")).convert_alpha()
+breakdown_3=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-3.png")).convert_alpha()
+breakdown_4=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-4.png")).convert_alpha()
+breakdown_5=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-5.png")).convert_alpha()
+breakdown_6=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-6.png")).convert_alpha()
+breakdown_7=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-7.png")).convert_alpha()
+breakdown_8=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-8.png")).convert_alpha()
+breakdown_9=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-9.png")).convert_alpha()
+breakdown_10=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-10.png")).convert_alpha()
+breakdown_11=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-11.png")).convert_alpha()
+breakdown_12=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-12.png")).convert_alpha()
+breakdown_13=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-13.png")).convert_alpha()
+breakdown_14=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-14.png")).convert_alpha()
+breakdown_15=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-15.png")).convert_alpha()
+breakdown_16=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-16.png")).convert_alpha()
+breakdown_17=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-17.png")).convert_alpha()
+breakdown_18=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-18.png")).convert_alpha()
+breakdown_19=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-19.png")).convert_alpha()
+breakdown_20=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-20.png")).convert_alpha()
+breakdown_21=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-21.png")).convert_alpha()
+breakdown_22=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-22.png")).convert_alpha()
+breakdown_23=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-23.png")).convert_alpha()
+breakdown_24=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-24.png")).convert_alpha()
+breakdown_25=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-25.png")).convert_alpha()
+breakdown_26=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-26.png")).convert_alpha()
+breakdown_27=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-27.png")).convert_alpha()
+breakdown_28=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-28.png")).convert_alpha()
+breakdown_29=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-28-No-Text.png")).convert_alpha()
 
-ominous_1=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance.png").convert_alpha()
-ominous_2=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-2.png").convert_alpha()
-ominous_3=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-3.png").convert_alpha()
-ominous_4=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-4.png").convert_alpha()
-ominous_5=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-5.png").convert_alpha()
-ominous_6=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-6.png").convert_alpha()
-ominous_7=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-7.png").convert_alpha()
-ominous_8=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-8.png").convert_alpha()
-ominous_9=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-9.png").convert_alpha()
-ominous_10=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-10.png").convert_alpha()
-ominous_11=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-11.png").convert_alpha()
-ominous_12=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-12.png").convert_alpha()
-ominous_13=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-13.png").convert_alpha()
-ominous_14=pygame.image.load("Game_Files/Assets/Story/bull-first-appearance-14.png").convert_alpha()
+ominous_1=pygame.image.load(resource_path("Assets/Story/bull-first-appearance.png")).convert_alpha()
+ominous_2=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-2.png")).convert_alpha()
+ominous_3=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-3.png")).convert_alpha()
+ominous_4=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-4.png")).convert_alpha()
+ominous_5=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-5.png")).convert_alpha()
+ominous_6=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-6.png")).convert_alpha()
+ominous_7=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-7.png")).convert_alpha()
+ominous_8=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-8.png")).convert_alpha()
+ominous_9=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-9.png")).convert_alpha()
+ominous_10=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-10.png")).convert_alpha()
+ominous_11=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-11.png")).convert_alpha()
+ominous_12=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-12.png")).convert_alpha()
+ominous_13=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-13.png")).convert_alpha()
+ominous_14=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-14.png")).convert_alpha()
 
-new_breakdown_1=pygame.image.load("Game_Files/Assets/Story/new-breakdown.png").convert_alpha()
-new_breakdown_2=pygame.image.load("Game_Files/Assets/Story/new-breakdown-2.png").convert_alpha()
-new_breakdown_3=pygame.image.load("Game_Files/Assets/Story/new-breakdown-3.png").convert_alpha()
-new_breakdown_4=pygame.image.load("Game_Files/Assets/Story/new-breakdown-4.png").convert_alpha()
-new_breakdown_5=pygame.image.load("Game_Files/Assets/Story/new-breakdown-5.png").convert_alpha()
-new_breakdown_6=pygame.image.load("Game_Files/Assets/Story/new-breakdown-6.png").convert_alpha()
-new_breakdown_7=pygame.image.load("Game_Files/Assets/Story/new-breakdown-7.png").convert_alpha()
-new_breakdown_8=pygame.image.load("Game_Files/Assets/Story/new-breakdown-8.png").convert_alpha()
-new_breakdown_9=pygame.image.load("Game_Files/Assets/Story/new-breakdown-9.png").convert_alpha()
-new_breakdown_10=pygame.image.load("Game_Files/Assets/Story/new-breakdown-10.png").convert_alpha()
-new_breakdown_11=pygame.image.load("Game_Files/Assets/Story/new-breakdown-11.png").convert_alpha()
-new_breakdown_12=pygame.image.load("Game_Files/Assets/Story/new-breakdown-12.png").convert_alpha()
-new_breakdown_13=pygame.image.load("Game_Files/Assets/Story/new-breakdown-13.png").convert_alpha()
-new_breakdown_14=pygame.image.load("Game_Files/Assets/Story/new-breakdown-14.png").convert_alpha()
-new_breakdown_15=pygame.image.load("Game_Files/Assets/Story/new-breakdown-15.png").convert_alpha()
-new_breakdown_16=pygame.image.load("Game_Files/Assets/Story/new-breakdown-16.png").convert_alpha()
-new_breakdown_17=pygame.image.load("Game_Files/Assets/Story/new-breakdown-17.png").convert_alpha()
-new_breakdown_18=pygame.image.load("Game_Files/Assets/Story/new-breakdown-18.png").convert_alpha()
-new_breakdown_19=pygame.image.load("Game_Files/Assets/Story/new-breakdown-19.png").convert_alpha()
-new_breakdown_20=pygame.image.load("Game_Files/Assets/Story/new-breakdown-20.png").convert_alpha()
-new_breakdown_21=pygame.image.load("Game_Files/Assets/Story/new-breakdown-21.png").convert_alpha()
-new_breakdown_22=pygame.image.load("Game_Files/Assets/Story/new-breakdown-22.png").convert_alpha()
-new_breakdown_23=pygame.image.load("Game_Files/Assets/Story/new-breakdown-23.png").convert_alpha()
-new_breakdown_24=pygame.image.load("Game_Files/Assets/Story/new-breakdown-24.png").convert_alpha()
-new_breakdown_25=pygame.image.load("Game_Files/Assets/Story/new-breakdown-25.png").convert_alpha()
-new_breakdown_26=pygame.image.load("Game_Files/Assets/Story/new-breakdown-26.png").convert_alpha()
-new_breakdown_27=pygame.image.load("Game_Files/Assets/Story/new-breakdown-27.png").convert_alpha()
-new_breakdown_28=pygame.image.load("Game_Files/Assets/Story/new-breakdown-28.png").convert_alpha()
-new_breakdown_29=pygame.image.load("Game_Files/Assets/Story/new-breakdown-29.png").convert_alpha()
-new_breakdown_30=pygame.image.load("Game_Files/Assets/Story/new-breakdown-30.png").convert_alpha()
-new_breakdown_31=pygame.image.load("Game_Files/Assets/Story/new-breakdown-31.png").convert_alpha()
-new_breakdown_32=pygame.image.load("Game_Files/Assets/Story/new-breakdown-32.png").convert_alpha()
-new_breakdown_32_b=pygame.image.load("Game_Files/Assets/Story/new-breakdown-32b.png").convert_alpha()
-new_breakdown_33=pygame.image.load("Game_Files/Assets/Story/new-breakdown-33.png").convert_alpha()
-new_breakdown_34=pygame.image.load("Game_Files/Assets/Story/new-breakdown-34.png").convert_alpha()
-new_breakdown_35=pygame.image.load("Game_Files/Assets/Story/new-breakdown-35.png").convert_alpha()
-new_breakdown_35_b=pygame.image.load("Game_Files/Assets/Story/new-breakdown-35b.png").convert_alpha()
-new_breakdown_36=pygame.image.load("Game_Files/Assets/Story/new-breakdown-36.png").convert_alpha()
-new_breakdown_37=pygame.image.load("Game_Files/Assets/Story/new-breakdown-37.png").convert_alpha()
-new_breakdown_38=pygame.image.load("Game_Files/Assets/Story/new-breakdown-38.png").convert_alpha()
-new_breakdown_39=pygame.image.load("Game_Files/Assets/Story/new-breakdown-39.png").convert_alpha()
-new_breakdown_40=pygame.image.load("Game_Files/Assets/Story/new-breakdown-40.png").convert_alpha()
-new_breakdown_41=pygame.image.load("Game_Files/Assets/Story/new-breakdown-41.png").convert_alpha()
-new_breakdown_42=pygame.image.load("Game_Files/Assets/Story/new-breakdown-42.png").convert_alpha()
-new_breakdown_43=pygame.image.load("Game_Files/Assets/Story/new-breakdown-43.png").convert_alpha()
-new_breakdown_44=pygame.image.load("Game_Files/Assets/Story/new-breakdown-44.png").convert_alpha()
-new_breakdown_45=pygame.image.load("Game_Files/Assets/Story/new-breakdown-45.png").convert_alpha()
-new_breakdown_46=pygame.image.load("Game_Files/Assets/Story/new-breakdown-46.png").convert_alpha()
+new_breakdown_1=pygame.image.load(resource_path("Assets/Story/new-breakdown.png")).convert_alpha()
+new_breakdown_2=pygame.image.load(resource_path("Assets/Story/new-breakdown-2.png")).convert_alpha()
+new_breakdown_3=pygame.image.load(resource_path("Assets/Story/new-breakdown-3.png")).convert_alpha()
+new_breakdown_4=pygame.image.load(resource_path("Assets/Story/new-breakdown-4.png")).convert_alpha()
+new_breakdown_5=pygame.image.load(resource_path("Assets/Story/new-breakdown-5.png")).convert_alpha()
+new_breakdown_6=pygame.image.load(resource_path("Assets/Story/new-breakdown-6.png")).convert_alpha()
+new_breakdown_7=pygame.image.load(resource_path("Assets/Story/new-breakdown-7.png")).convert_alpha()
+new_breakdown_8=pygame.image.load(resource_path("Assets/Story/new-breakdown-8.png")).convert_alpha()
+new_breakdown_9=pygame.image.load(resource_path("Assets/Story/new-breakdown-9.png")).convert_alpha()
+new_breakdown_10=pygame.image.load(resource_path("Assets/Story/new-breakdown-10.png")).convert_alpha()
+new_breakdown_11=pygame.image.load(resource_path("Assets/Story/new-breakdown-11.png")).convert_alpha()
+new_breakdown_12=pygame.image.load(resource_path("Assets/Story/new-breakdown-12.png")).convert_alpha()
+new_breakdown_13=pygame.image.load(resource_path("Assets/Story/new-breakdown-13.png")).convert_alpha()
+new_breakdown_14=pygame.image.load(resource_path("Assets/Story/new-breakdown-14.png")).convert_alpha()
+new_breakdown_15=pygame.image.load(resource_path("Assets/Story/new-breakdown-15.png")).convert_alpha()
+new_breakdown_16=pygame.image.load(resource_path("Assets/Story/new-breakdown-16.png")).convert_alpha()
+new_breakdown_17=pygame.image.load(resource_path("Assets/Story/new-breakdown-17.png")).convert_alpha()
+new_breakdown_18=pygame.image.load(resource_path("Assets/Story/new-breakdown-18.png")).convert_alpha()
+new_breakdown_19=pygame.image.load(resource_path("Assets/Story/new-breakdown-19.png")).convert_alpha()
+new_breakdown_20=pygame.image.load(resource_path("Assets/Story/new-breakdown-20.png")).convert_alpha()
+new_breakdown_21=pygame.image.load(resource_path("Assets/Story/new-breakdown-21.png")).convert_alpha()
+new_breakdown_22=pygame.image.load(resource_path("Assets/Story/new-breakdown-22.png")).convert_alpha()
+new_breakdown_23=pygame.image.load(resource_path("Assets/Story/new-breakdown-23.png")).convert_alpha()
+new_breakdown_24=pygame.image.load(resource_path("Assets/Story/new-breakdown-24.png")).convert_alpha()
+new_breakdown_25=pygame.image.load(resource_path("Assets/Story/new-breakdown-25.png")).convert_alpha()
+new_breakdown_26=pygame.image.load(resource_path("Assets/Story/new-breakdown-26.png")).convert_alpha()
+new_breakdown_27=pygame.image.load(resource_path("Assets/Story/new-breakdown-27.png")).convert_alpha()
+new_breakdown_28=pygame.image.load(resource_path("Assets/Story/new-breakdown-28.png")).convert_alpha()
+new_breakdown_29=pygame.image.load(resource_path("Assets/Story/new-breakdown-29.png")).convert_alpha()
+new_breakdown_30=pygame.image.load(resource_path("Assets/Story/new-breakdown-30.png")).convert_alpha()
+new_breakdown_31=pygame.image.load(resource_path("Assets/Story/new-breakdown-31.png")).convert_alpha()
+new_breakdown_32=pygame.image.load(resource_path("Assets/Story/new-breakdown-32.png")).convert_alpha()
+new_breakdown_32_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-32b.png")).convert_alpha()
+new_breakdown_33=pygame.image.load(resource_path("Assets/Story/new-breakdown-33.png")).convert_alpha()
+new_breakdown_34=pygame.image.load(resource_path("Assets/Story/new-breakdown-34.png")).convert_alpha()
+new_breakdown_35=pygame.image.load(resource_path("Assets/Story/new-breakdown-35.png")).convert_alpha()
+new_breakdown_35_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-35b.png")).convert_alpha()
+new_breakdown_36=pygame.image.load(resource_path("Assets/Story/new-breakdown-36.png")).convert_alpha()
+new_breakdown_37=pygame.image.load(resource_path("Assets/Story/new-breakdown-37.png")).convert_alpha()
+new_breakdown_38=pygame.image.load(resource_path("Assets/Story/new-breakdown-38.png")).convert_alpha()
+new_breakdown_39=pygame.image.load(resource_path("Assets/Story/new-breakdown-39.png")).convert_alpha()
+new_breakdown_40=pygame.image.load(resource_path("Assets/Story/new-breakdown-40.png")).convert_alpha()
+new_breakdown_41=pygame.image.load(resource_path("Assets/Story/new-breakdown-41.png")).convert_alpha()
+new_breakdown_42=pygame.image.load(resource_path("Assets/Story/new-breakdown-42.png")).convert_alpha()
+new_breakdown_43=pygame.image.load(resource_path("Assets/Story/new-breakdown-43.png")).convert_alpha()
+new_breakdown_44=pygame.image.load(resource_path("Assets/Story/new-breakdown-44.png")).convert_alpha()
+new_breakdown_45=pygame.image.load(resource_path("Assets/Story/new-breakdown-45.png")).convert_alpha()
+new_breakdown_46=pygame.image.load(resource_path("Assets/Story/new-breakdown-46.png")).convert_alpha()
 
-success_1=pygame.image.load("Game_Files/Assets/Story/success.png").convert_alpha()
-success_2=pygame.image.load("Game_Files/Assets/Story/success-2.png").convert_alpha()
-success_3=pygame.image.load("Game_Files/Assets/Story/success-3.png").convert_alpha()
-success_4=pygame.image.load("Game_Files/Assets/Story/success-4.png").convert_alpha()
-success_5=pygame.image.load("Game_Files/Assets/Story/success-5.png").convert_alpha()
-success_6=pygame.image.load("Game_Files/Assets/Story/success-6.png").convert_alpha()
-success_7=pygame.image.load("Game_Files/Assets/Story/success-7.png").convert_alpha()
-success_7b=pygame.image.load("Game_Files/Assets/Story/success-7b.png").convert_alpha()
-success_7c=pygame.image.load("Game_Files/Assets/Story/success-7c.png").convert_alpha()
-success_7d=pygame.image.load("Game_Files/Assets/Story/success-7d.png").convert_alpha()
-success_7e=pygame.image.load("Game_Files/Assets/Story/success-7e.png").convert_alpha()
-success_7f=pygame.image.load("Game_Files/Assets/Story/success-7f.png").convert_alpha()
-success_7g=pygame.image.load("Game_Files/Assets/Story/success-7g.png").convert_alpha()
-success_7h=pygame.image.load("Game_Files/Assets/Story/success-7h.png").convert_alpha()
-success_7i=pygame.image.load("Game_Files/Assets/Story/success-7i.png").convert_alpha()
-success_8=pygame.image.load("Game_Files/Assets/Story/success-8.png").convert_alpha()
-success_9=pygame.image.load("Game_Files/Assets/Story/success-9.png").convert_alpha()
-success_9b=pygame.image.load("Game_Files/Assets/Story/success-9b.png").convert_alpha()
-success_10=pygame.image.load("Game_Files/Assets/Story/success-10.png").convert_alpha()
-success_11=pygame.image.load("Game_Files/Assets/Story/success-11.png").convert_alpha()
-success_12=pygame.image.load("Game_Files/Assets/Story/success-12.png").convert_alpha()
-success_13=pygame.image.load("Game_Files/Assets/Story/success-13.png").convert_alpha()
-success_14=pygame.image.load("Game_Files/Assets/Story/success-14.png").convert_alpha()
-success_15=pygame.image.load("Game_Files/Assets/Story/success-15.png").convert_alpha()
-success_16=pygame.image.load("Game_Files/Assets/Story/success-16.png").convert_alpha()
-success_17=pygame.image.load("Game_Files/Assets/Story/success-17.png").convert_alpha()
-success_18=pygame.image.load("Game_Files/Assets/Story/success-18.png").convert_alpha()
-success_19=pygame.image.load("Game_Files/Assets/Story/success-19.png").convert_alpha()
-success_20=pygame.image.load("Game_Files/Assets/Story/success-20.png").convert_alpha()
-success_21=pygame.image.load("Game_Files/Assets/Story/success-21.png").convert_alpha()
-success_22=pygame.image.load("Game_Files/Assets/Story/success-22.png").convert_alpha()
-success_23=pygame.image.load("Game_Files/Assets/Story/success-23.png").convert_alpha()
-success_24=pygame.image.load("Game_Files/Assets/Story/success-24.png").convert_alpha()
-success_24b=pygame.image.load("Game_Files/Assets/Story/success-24b.png").convert_alpha()
-success_24c=pygame.image.load("Game_Files/Assets/Story/success-24c.png").convert_alpha()
-success_24d=pygame.image.load("Game_Files/Assets/Story/success-24d.png").convert_alpha()
-success_24e=pygame.image.load("Game_Files/Assets/Story/success-24e.png").convert_alpha()
-success_24f=pygame.image.load("Game_Files/Assets/Story/success-24f.png").convert_alpha()
-success_24g=pygame.image.load("Game_Files/Assets/Story/success-24g.png").convert_alpha()
-success_24h=pygame.image.load("Game_Files/Assets/Story/success-24h.png").convert_alpha()
-success_24i=pygame.image.load("Game_Files/Assets/Story/success-24i.png").convert_alpha()
-success_24j=pygame.image.load("Game_Files/Assets/Story/success-24j.png").convert_alpha()
-success_24k=pygame.image.load("Game_Files/Assets/Story/success-24k.png").convert_alpha()
-success_24l=pygame.image.load("Game_Files/Assets/Story/success-24l.png").convert_alpha()
-success_24m=pygame.image.load("Game_Files/Assets/Story/success-24l.png").convert_alpha() #Repeated intentionally
-success_25=pygame.image.load("Game_Files/Assets/Story/success-25.png").convert_alpha()
-success_26=pygame.image.load("Game_Files/Assets/Story/success-26.png").convert_alpha()
-success_27=pygame.image.load("Game_Files/Assets/Story/success-27.png").convert_alpha()
-success_28=pygame.image.load("Game_Files/Assets/Story/success-28.png").convert_alpha()
-success_28b=pygame.image.load("Game_Files/Assets/Story/success-28b.png").convert_alpha()
-success_28c=pygame.image.load("Game_Files/Assets/Story/success-28c.png").convert_alpha()
-success_28d=pygame.image.load("Game_Files/Assets/Story/success-28d.png").convert_alpha()
-success_28e=pygame.image.load("Game_Files/Assets/Story/success-28e.png").convert_alpha()
-success_28f=pygame.image.load("Game_Files/Assets/Story/success-28f.png").convert_alpha()
-success_28g=pygame.image.load("Game_Files/Assets/Story/success-28g.png").convert_alpha()
-success_28h=pygame.image.load("Game_Files/Assets/Story/success-28h.png").convert_alpha()
-success_28i=pygame.image.load("Game_Files/Assets/Story/success-28i.png").convert_alpha()
-success_29=pygame.image.load("Game_Files/Assets/Story/success-29.png").convert_alpha()
-success_30=pygame.image.load("Game_Files/Assets/Story/success-30.png").convert_alpha()
-success_30b=pygame.image.load("Game_Files/Assets/Story/success-30b.png").convert_alpha()
-success_31=pygame.image.load("Game_Files/Assets/Story/success-31.png").convert_alpha()
-success_31b=pygame.image.load("Game_Files/Assets/Story/success-31b.png").convert_alpha()
-success_32=pygame.image.load("Game_Files/Assets/Story/success-32.png").convert_alpha()
-success_32b=pygame.image.load("Game_Files/Assets/Story/success-32b.png").convert_alpha()
-success_33=pygame.image.load("Game_Files/Assets/Story/success-33.png").convert_alpha()
-success_33b=pygame.image.load("Game_Files/Assets/Story/success-33b.png").convert_alpha()
-success_34=pygame.image.load("Game_Files/Assets/Story/success-34.png").convert_alpha()
-success_35=pygame.image.load("Game_Files/Assets/Story/success-35.png").convert_alpha()
-success_35b=pygame.image.load("Game_Files/Assets/Story/success-35b.png").convert_alpha()
-success_36=pygame.image.load("Game_Files/Assets/Story/success-36.png").convert_alpha()
-success_36b=pygame.image.load("Game_Files/Assets/Story/success-36b.png").convert_alpha()
+success_1=pygame.image.load(resource_path("Assets/Story/success.png")).convert_alpha()
+success_2=pygame.image.load(resource_path("Assets/Story/success-2.png")).convert_alpha()
+success_3=pygame.image.load(resource_path("Assets/Story/success-3.png")).convert_alpha()
+success_4=pygame.image.load(resource_path("Assets/Story/success-4.png")).convert_alpha()
+success_5=pygame.image.load(resource_path("Assets/Story/success-5.png")).convert_alpha()
+success_6=pygame.image.load(resource_path("Assets/Story/success-6.png")).convert_alpha()
+success_7=pygame.image.load(resource_path("Assets/Story/success-7.png")).convert_alpha()
+success_7b=pygame.image.load(resource_path("Assets/Story/success-7b.png")).convert_alpha()
+success_7c=pygame.image.load(resource_path("Assets/Story/success-7c.png")).convert_alpha()
+success_7d=pygame.image.load(resource_path("Assets/Story/success-7d.png")).convert_alpha()
+success_7e=pygame.image.load(resource_path("Assets/Story/success-7e.png")).convert_alpha()
+success_7f=pygame.image.load(resource_path("Assets/Story/success-7f.png")).convert_alpha()
+success_7g=pygame.image.load(resource_path("Assets/Story/success-7g.png")).convert_alpha()
+success_7h=pygame.image.load(resource_path("Assets/Story/success-7h.png")).convert_alpha()
+success_7i=pygame.image.load(resource_path("Assets/Story/success-7i.png")).convert_alpha()
+success_8=pygame.image.load(resource_path("Assets/Story/success-8.png")).convert_alpha()
+success_9=pygame.image.load(resource_path("Assets/Story/success-9.png")).convert_alpha()
+success_9b=pygame.image.load(resource_path("Assets/Story/success-9b.png")).convert_alpha()
+success_10=pygame.image.load(resource_path("Assets/Story/success-10.png")).convert_alpha()
+success_11=pygame.image.load(resource_path("Assets/Story/success-11.png")).convert_alpha()
+success_12=pygame.image.load(resource_path("Assets/Story/success-12.png")).convert_alpha()
+success_13=pygame.image.load(resource_path("Assets/Story/success-13.png")).convert_alpha()
+success_14=pygame.image.load(resource_path("Assets/Story/success-14.png")).convert_alpha()
+success_15=pygame.image.load(resource_path("Assets/Story/success-15.png")).convert_alpha()
+success_16=pygame.image.load(resource_path("Assets/Story/success-16.png")).convert_alpha()
+success_17=pygame.image.load(resource_path("Assets/Story/success-17.png")).convert_alpha()
+success_18=pygame.image.load(resource_path("Assets/Story/success-18.png")).convert_alpha()
+success_19=pygame.image.load(resource_path("Assets/Story/success-19.png")).convert_alpha()
+success_20=pygame.image.load(resource_path("Assets/Story/success-20.png")).convert_alpha()
+success_21=pygame.image.load(resource_path("Assets/Story/success-21.png")).convert_alpha()
+success_22=pygame.image.load(resource_path("Assets/Story/success-22.png")).convert_alpha()
+success_23=pygame.image.load(resource_path("Assets/Story/success-23.png")).convert_alpha()
+success_24=pygame.image.load(resource_path("Assets/Story/success-24.png")).convert_alpha()
+success_24b=pygame.image.load(resource_path("Assets/Story/success-24b.png")).convert_alpha()
+success_24c=pygame.image.load(resource_path("Assets/Story/success-24c.png")).convert_alpha()
+success_24d=pygame.image.load(resource_path("Assets/Story/success-24d.png")).convert_alpha()
+success_24e=pygame.image.load(resource_path("Assets/Story/success-24e.png")).convert_alpha()
+success_24f=pygame.image.load(resource_path("Assets/Story/success-24f.png")).convert_alpha()
+success_24g=pygame.image.load(resource_path("Assets/Story/success-24g.png")).convert_alpha()
+success_24h=pygame.image.load(resource_path("Assets/Story/success-24h.png")).convert_alpha()
+success_24i=pygame.image.load(resource_path("Assets/Story/success-24i.png")).convert_alpha()
+success_24j=pygame.image.load(resource_path("Assets/Story/success-24j.png")).convert_alpha()
+success_24k=pygame.image.load(resource_path("Assets/Story/success-24k.png")).convert_alpha()
+success_24l=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha()
+success_24m=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha() #Repeated intentionally
+success_25=pygame.image.load(resource_path("Assets/Story/success-25.png")).convert_alpha()
+success_26=pygame.image.load(resource_path("Assets/Story/success-26.png")).convert_alpha()
+success_27=pygame.image.load(resource_path("Assets/Story/success-27.png")).convert_alpha()
+success_28=pygame.image.load(resource_path("Assets/Story/success-28.png")).convert_alpha()
+success_28b=pygame.image.load(resource_path("Assets/Story/success-28b.png")).convert_alpha()
+success_28c=pygame.image.load(resource_path("Assets/Story/success-28c.png")).convert_alpha()
+success_28d=pygame.image.load(resource_path("Assets/Story/success-28d.png")).convert_alpha()
+success_28e=pygame.image.load(resource_path("Assets/Story/success-28e.png")).convert_alpha()
+success_28f=pygame.image.load(resource_path("Assets/Story/success-28f.png")).convert_alpha()
+success_28g=pygame.image.load(resource_path("Assets/Story/success-28g.png")).convert_alpha()
+success_28h=pygame.image.load(resource_path("Assets/Story/success-28h.png")).convert_alpha()
+success_28i=pygame.image.load(resource_path("Assets/Story/success-28i.png")).convert_alpha()
+success_29=pygame.image.load(resource_path("Assets/Story/success-29.png")).convert_alpha()
+success_30=pygame.image.load(resource_path("Assets/Story/success-30.png")).convert_alpha()
+success_30b=pygame.image.load(resource_path("Assets/Story/success-30b.png")).convert_alpha()
+success_31=pygame.image.load(resource_path("Assets/Story/success-31.png")).convert_alpha()
+success_31b=pygame.image.load(resource_path("Assets/Story/success-31b.png")).convert_alpha()
+success_32=pygame.image.load(resource_path("Assets/Story/success-32.png")).convert_alpha()
+success_32b=pygame.image.load(resource_path("Assets/Story/success-32b.png")).convert_alpha()
+success_33=pygame.image.load(resource_path("Assets/Story/success-33.png")).convert_alpha()
+success_33b=pygame.image.load(resource_path("Assets/Story/success-33b.png")).convert_alpha()
+success_34=pygame.image.load(resource_path("Assets/Story/success-34.png")).convert_alpha()
+success_35=pygame.image.load(resource_path("Assets/Story/success-35.png")).convert_alpha()
+success_35b=pygame.image.load(resource_path("Assets/Story/success-35b.png")).convert_alpha()
+success_36=pygame.image.load(resource_path("Assets/Story/success-36.png")).convert_alpha()
+success_36b=pygame.image.load(resource_path("Assets/Story/success-36b.png")).convert_alpha()
 
 #For main menu
 main_menu_rolling=[menu_screen_2, menu_screen_2b] #For main menu
@@ -326,10 +336,10 @@ main_menu=main_menu_rolling[main_menu_index]
 main_menu_location=main_menu.get_rect(topleft=(0,0))
 
 #For credits
-credits_1=pygame.image.load("Game_Files/Assets/Story/credits.png").convert_alpha()
-credits_2=pygame.image.load("Game_Files/Assets/Story/credits-2.png").convert_alpha()
-credits_3=pygame.image.load("Game_Files/Assets/Story/thanks.png").convert_alpha()
-credits_4=pygame.image.load("Game_Files/Assets/Story/credits-3.png").convert_alpha()
+credits_1=pygame.image.load(resource_path("Assets/Story/credits.png")).convert_alpha()
+credits_2=pygame.image.load(resource_path("Assets/Story/credits-2.png")).convert_alpha()
+credits_3=pygame.image.load(resource_path("Assets/Story/thanks.png")).convert_alpha()
+credits_4=pygame.image.load(resource_path("Assets/Story/credits-3.png")).convert_alpha()
 
 #For initial intro sequence
 background_rolling=[frame_1, frame_2, frame_3, 
@@ -366,6 +376,12 @@ flashing_rolling=[pic_1, pic_2] #Contains the pictures for the CC BY NA SA 4 Dis
 flashing_index=0 #Contains the index for the disclaimer cc.
 flashing=flashing_rolling[flashing_index] #Picks which picture to display depending on the index.
 flashing_location=flashing.get_rect(topleft=(0,0)) #Displays the CC disclaimer on the screen.
+
+flashing_rolling_2=[pic_3, pic_4] #Contains the pictures for the MIT Disclaimer
+flashing_index_2=0 #Contains the index for the disclaimer MIT.
+flashing_2=flashing_rolling_2[flashing_index_2] #Picks which picture to display depending on the index.
+flashing_location_2=flashing_2.get_rect(topleft=(0,0)) #Displays the MIT disclaimer on the screen.
+
 breakdown_rolling=[breakdown_1, breakdown_2, breakdown_3, breakdown_4, 
                    breakdown_5, breakdown_6, breakdown_7, breakdown_8, 
                    breakdown_9, breakdown_10, breakdown_11,breakdown_12, 
@@ -419,11 +435,11 @@ new_breakdown_4=new_breakdown_rolling_4[new_breakdown_index_4]
 new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
 
 #Shop countdown.
-shop_count_5=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-5.png").convert_alpha()
-shop_count_4=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-4.png").convert_alpha()
-shop_count_3=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-3.png").convert_alpha()
-shop_count_2=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-2.png").convert_alpha()
-shop_count_1=pygame.image.load("Game_Files/Assets/Stage/jewel-shop-countdown-1.png").convert_alpha()
+shop_count_5=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-5.png")).convert_alpha()
+shop_count_4=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-4.png")).convert_alpha()
+shop_count_3=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-3.png")).convert_alpha()
+shop_count_2=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-2.png")).convert_alpha()
+shop_count_1=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-1.png")).convert_alpha()
 fade=False #Handles the fading at the end of the animation.
 
 #For final scenes and credits.
@@ -465,8 +481,8 @@ credits_location=credits.get_rect(topleft=(0,0))
 final_time=0 #By default, the final time is set to 0.
 count=0 #While this is not the traditonal implementation of a countdown, I believe my unorthodox solution is better for this scenario
 #as the pygame documentation suggest using userevents, but that is built for a very simple game, and not one with multiple modes.
-item_sound=pygame.mixer.Sound('Game_Files/AudioSFX/320655__rhodesmas__level-up-01.wav') #Sound effect when picking up an item.
-start_sound=pygame.mixer.Sound('Game_Files/AudioSFX/leave.wav') #Sound effect when picking up an item.
+item_sound=pygame.mixer.Sound(resource_path('AudioSFX/320655__rhodesmas__level-up-01.wav')) #Sound effect when picking up an item.
+start_sound=pygame.mixer.Sound(resource_path('AudioSFX/leave.wav')) #Sound effect when picking up an item.
 enter=False
 def leaderboard_function(): #A function to display scores of users.
       root = Tk() #Root is set to the main window where everything else will be attached
@@ -492,12 +508,12 @@ def player_sprites(): #Function for sprites, based of https://www.youtube.com/wa
        if player_walking_index >= len(player_walking): #Prevents an out of bounds exception.
           player_walking_index=0 #Index is reset to 0.
        player_256=player_walking[int(player_walking_index)] #The loop restarts   
-game_over_screen=pygame.image.load('Game_Files/Assets/Stage/Game_Over.png').convert_alpha() #Game over screen loaded in when drawn.
+game_over_screen=pygame.image.load(resource_path('Assets/Stage/Game_Over.png')).convert_alpha() #Game over screen loaded in when drawn.
 game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
-game_over_screen_2=pygame.image.load('Game_Files/Assets/Stage/Game_Over_2.png').convert_alpha() #Game over screen loaded in when drawn.
+game_over_screen_2=pygame.image.load(resource_path('Assets/Stage/Game_Over_2.png')).convert_alpha() #Game over screen loaded in when drawn.
 game_over_draw=game_over_screen.get_rect(topleft=(0, 0)) #Location of game over screen declared.
 #Assets and Locations
-item=pygame.image.load('Game_Files/Assets/Interactable/Necklace-2.png').convert_alpha() #Necklace asset loaded in.
+item=pygame.image.load(resource_path('Assets/Interactable/Necklace-2.png')).convert_alpha() #Necklace asset loaded in.
 goal=0 #Goal is set to be a default of 0
 goal_input = "" #Gets the users desired score
 player_speed=0 #Default player speed is set to 0.
@@ -512,7 +528,7 @@ item_hitbox=item.get_rect(topleft=(item_x_pos, item_y_pos)) #The item is placed 
 points=0 #Points counter, default is 0.
 points_text=font_6.render("Points- 0 ", True, "Black") #At the beggining, the score is 0 and that is displayed on the screen.
 points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
-bull=pygame.image.load('Game_Files/Assets/Bull/bull_256.png') #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
+bull=pygame.image.load(resource_path('Assets/Bull/bull_256.png')) #Loads the bull asset. Imagee will change depending on whether the bull is moving left or right.
 bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-45)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_last_seen=pygame.time.get_ticks() #the last time the bull was seen is set to this time.
@@ -530,8 +546,8 @@ total_time="" #Stores the total time used, blank by default.
 set_name=False #Set name is set to false by default.
 #Water puddle hazard and drawing on screen.
 animation_active=True #Flag to handle the animation of the splash screen.
-water_puddle=pygame.image.load('Game_Files/Assets/Interactable/water-test.png').convert_alpha() #Picture loaded in as water_puddle
-water_puddle_2=pygame.image.load('Game_Files/Assets/Interactable/water-test-2.png').convert_alpha() #Loads in a second water puddle.
+water_puddle=pygame.image.load(resource_path('Assets/Interactable/water-test.png')).convert_alpha() #Picture loaded in as water_puddle
+water_puddle_2=pygame.image.load(resource_path('Assets/Interactable/water-test-2.png')).convert_alpha() #Loads in a second water puddle.
 water_possible_locations=[0, 393] #Possible locations for the water puddle.
 water_possible_locations_2=[785, SCREEN_WIDTH-350] #Possible locations for the water puddle.
 water_location_select=random.choice(water_possible_locations) #Selects a location to choose from for the water.
@@ -548,8 +564,8 @@ score=0 #Score is by default set to 0.
 set_score=False #This flag determines whether or not the user can input the score
 time_keep=False #this flag determines whether the timer is active, useful for when game over or mission accomplished.
 mixer.init() #Needed for music and sfx later on.
-projectile=pygame.image.load("Game_Files/Assets/Interactable/Danger.png").convert_alpha() #Loads in the projectile image.
-warning=pygame.image.load("Game_Files/Assets/Interactable/Warning.png").convert_alpha() #Loads in the warning image.
+projectile=pygame.image.load(resource_path("Assets/Interactable/Danger.png")).convert_alpha() #Loads in the projectile image.
+warning=pygame.image.load(resource_path("Assets/Interactable/Warning.png")).convert_alpha() #Loads in the warning image.
 warning_active=False # A flag used to see if the warning is active is made.
 warn_window=5000 #The user will get 5 seconds to react to the projectile
 warning_x=0 #Warning x is initally set to 0.
@@ -566,7 +582,7 @@ warning_checked=0 #Warning checked is used to check the time once, against the w
 #Reworked, allows for story to be drawn in.
 special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
 special_location=special.get_rect(topleft=(700,0)) #Draws the amount of dashes to the screen.
-py_made=pygame.image.load('Game_Files/Assets/Stage/pygame_powered.png').convert_alpha() # loads pygame powered image
+py_made=pygame.image.load(resource_path('Assets/Stage/pygame_powered.png')).convert_alpha() # loads pygame powered image
 py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image on screen.
 name_input="" #Stores the user's name.
 attempted_score="" #Stores the user's attempted score.
@@ -578,7 +594,7 @@ special_items_picked_up=0 #Special items stored, set to 0.
 bonus=0 #Bonus, set to 0.
 mode="" #Mode, currently null by default.
 mode_selection=True #Mode selection is set to true by default.
-phase=pygame.mixer.Sound("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") #Loaded as a sound to allow song to coexist with main story sequence.
+phase=pygame.mixer.Sound(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) #Loaded as a sound to allow song to coexist with main story sequence.
 
 def finale(): #This function handles the finale sequence.
     global game_active, score, game_over, credits, credits_index, credits_rolling, credits_location, success_c, success_c_index, success_c_rolling
@@ -646,7 +662,7 @@ def finale(): #This function handles the finale sequence.
         success_a=success_rolling[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
-        mixer.music.load("Game_Files/AudioSFX/crowd-cheer.wav") #A cheering sound is played when the user succeeds
+        mixer.music.load(resource_path("AudioSFX/crowd-cheer.wav")) #A cheering sound is played when the user succeeds
         mixer.music.play() #The cheer is played
    #If return pressed is equal to 7, its time for the mode screen to show up again.
     elif return_finale_pressed==7:
@@ -739,7 +755,7 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
       global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
       global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2
       global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4
-      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase, enter
+      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase, enter, flashing_index_2, flashing_2, flashing_location_2, flashing_rolling_2
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
          screen.fill((0,0,0)) #Screen filled with black
          screen.blit(py_made, py_location) #pygame screen drawn to the screen.
@@ -754,6 +770,13 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
          flashing_location=flashing.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
          screen.blit(flashing, flashing_location) #Draws the disclaimer on the screen.
       elif return_pressed==3: #If return pressed is equal to three, then this will run.
+         flashing_index_2+=0.005 #Flashes the MIT disclaimer text.
+         if flashing_index_2 >= len(flashing_rolling_2): #If the index goes over the length of the list, this will happen.
+             flashing_index_2=0 #Flashing index is set to 0.
+         flashing_2=flashing_rolling_2[int(flashing_index_2)] #gets the disclaimer image.
+         flashing_location_2=flashing_2.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
+         screen.blit(flashing_2, flashing_location_2) #Draws the disclaimer on the screen.
+      elif return_pressed==4: #If return pressed is equal to four, then this will run.
          phase.play() #Required to avoid sound conflict.
          main_menu_index+=0.003 #Main menu shown.
          if main_menu_index >= len(main_menu_rolling): #If the index goes over the length of the list, this will happen.
@@ -761,9 +784,9 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
          main_menu=main_menu_rolling[int(main_menu_index)] #gets the disclaimer image.
          main_menu_location=main_menu.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
          screen.blit(main_menu, main_menu_location) #Draws the disclaimer on the screen.
-         mixer.music.load("Game_Files/AudioSFX/fsm-team-escp-downtown-walk.mp3") #Music loaded in, will play on the next screen.
+         mixer.music.load(resource_path("AudioSFX/fsm-team-escp-downtown-walk.mp3")) #Music loaded in, will play on the next screen.
          mixer.music.play(-1) #Loops the track.
-      elif return_pressed==4: #If the enter key is pressed 4 times, then this will run.
+      elif return_pressed==5: #If the enter key is pressed 5 times, then this will run.
          phase.stop()
          if not enter: #if the enter button is not ready to be displayed, the original frames are shown.
             background_index += 0.07  # A scroll across the frames will be applied using the index.
@@ -779,42 +802,42 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
             background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
             background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
             screen.blit(background, background_location) #Background is drawn. 
-      elif return_pressed==5: #If the enter key is pressed 5 times, then this will run.
+      elif return_pressed==6: #If the enter key is pressed 6 times, then this will run.
           breakdown_index+=0.03 #Breakdown index goes up bu this number.
           if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
              breakdown_index=27 #Index set to 27.
           breakdown = breakdown_rolling[int(breakdown_index)] #The background is set to the frame chosen using the list.
           breakdown_location=breakdown.get_rect(topleft=(0,0)) 
           screen.blit(breakdown, breakdown_location) #Background is drawn.
-      elif return_pressed==6: #If enter is pressed 6 times, this will run.
+      elif return_pressed==7: #If enter is pressed 7 times, this will run.
           bull_first_appearance_index+=0.025  # A scroll across the frames will be applied using the index.
           if bull_first_appearance_index >= len(bull_first_appearance_rolling): # if the index is greater than the amount of frames, then it must be reset.
               bull_first_appearance_index=13 #Index set to 13.
           bull_first_appearance=bull_first_appearance_rolling[int(bull_first_appearance_index)] #The background is set to the frame chosen using the list.
           bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #background placed at this location.
           screen.blit(bull_first_appearance, bull_first_appearance_location)
-      elif return_pressed==7: #If enter is pressed 7 times, this will run.
+      elif return_pressed==8: #If enter is pressed 8 times, this will run.
           breakdown_warning_index+=0.005 # A scroll across the frames will be applied using the index.
           if breakdown_warning_index >= len(breakdown_warning_rolling): # if the index is greater than the amount of frames, then it must be reset.
               breakdown_warning_index=0 #Index reset.
           breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
           breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
           screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
-      elif return_pressed==8:
+      elif return_pressed==9:
           new_breakdown_index+=0.002
           if new_breakdown_index >= len(new_breakdown_rolling):
              new_breakdown_index=12
           new_breakdown=new_breakdown_rolling[int(new_breakdown_index)]
           new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
           screen.blit(new_breakdown, new_breakdown_location)
-      elif return_pressed==9:
+      elif return_pressed==10:
           new_breakdown_index_2+=0.015
           if new_breakdown_index_2 >= len(new_breakdown_rolling_2):
              new_breakdown_index_2=14
           new_breakdown_2=new_breakdown_rolling_2[int(new_breakdown_index_2)]
           new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
           screen.blit(new_breakdown_2, new_breakdown_location_2)
-      elif return_pressed==10:
+      elif return_pressed==11:
           if not fade:
             new_breakdown_index_3+=0.001
             if new_breakdown_index_3 >= len(new_breakdown_rolling_3):
@@ -830,20 +853,20 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
             new_breakdown_4=new_breakdown_rolling_4[int(new_breakdown_index_4)]
             new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
             screen.blit(new_breakdown_4, new_breakdown_location_4)  
-      elif return_pressed==11: #If the enter key is pressed 11 times, this will be drawn.
+      elif return_pressed==12: #If the enter key is pressed 11 times, this will be drawn.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==12: #If enter pressed is 11 then this will happen.
+      elif return_pressed==13: #If enter pressed is 11 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
-         controls=pygame.image.load('Game_Files/Assets/Stage/Controls_KBM_2.png').convert_alpha() #Screen showing the controls is loaded in.
+         controls=pygame.image.load(resource_path('Assets/Stage/Controls_KBM_2.png')).convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==13: #If enter pressed is 12 then this will happen.
+      elif return_pressed==14: #If enter pressed is 12 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
-         controls=pygame.image.load('Game_Files/Assets/Stage/Mode-Explained.png').convert_alpha() #Screen showing the controls is loaded in.
+         controls=pygame.image.load(resource_path('Assets/Stage/Mode-Explained.png')).convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.   
-      elif return_pressed>=14: #Otherwise, this will run.
+      elif return_pressed>=15: #Otherwise, this will run.
          set_name=True #set score is set to true.
       pygame.display.update() #Screen is refreshed.
 while splash_screen: #While the splash screen is true, this runs.
@@ -955,7 +978,7 @@ while splash_screen: #While the splash screen is true, this runs.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
-                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.load(resource_path('AudioSFX/surf-house-productions-ethereal-pulse.mp3'))
                         mixer.music.play(-1)
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                         splash_screen=False #The spalsh screen is false.
@@ -1009,7 +1032,7 @@ while splash_screen: #While the splash screen is true, this runs.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
-                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3') #Loads main song.
+                        mixer.music.load(resource_path('AudioSFX/surf-house-productions-ethereal-pulse.mp3')) #Loads main song.
                         mixer.music.play(-1) #Plays infinitely.
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                         points_text=font_6.render("Items -  0 ", True, "Black") #Points are reset to 0.
@@ -1107,7 +1130,7 @@ while main_game: #Handles the game loop.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
-                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.load(resource_path('AudioSFX/surf-house-productions-ethereal-pulse.mp3'))
                         mixer.music.play(-1)
                         score=0 #Score is set to 0 
                         items_picked_up=0
@@ -1185,7 +1208,7 @@ while main_game: #Handles the game loop.
                         screen.blit(shop_count_1, shop_location) #The shop is drawn first.
                         pygame.display.update() #Changes are updated to the screen.
                         pygame.time.delay(1000) #Delay of 1 seconds.
-                        mixer.music.load('Game_Files/AudioSFX/surf-house-productions-ethereal-pulse.mp3')
+                        mixer.music.load(resource_path('AudioSFX/surf-house-productions-ethereal-pulse.mp3'))
                         mixer.music.play(-1)
                         score=0 #Score is set to 0 
                         items_picked_up=0
@@ -1363,7 +1386,7 @@ while main_game: #Handles the game loop.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if int(score) >= goal: #When the user accomplishews the task this will be true.
                mixer.music.stop()
-               mixer.music.load("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") 
+               mixer.music.load(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) 
                mixer.music.play(-1)
                finale_active=True
                success=True #Success is set to true.
@@ -1384,7 +1407,7 @@ while main_game: #Handles the game loop.
             if (items_picked_up + special_items_picked_up) >=goal:
                 minimum=True
                 mixer.music.stop()
-                mixer.music.load("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") 
+                mixer.music.load(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) 
                 mixer.music.play(-1)
      if player_hitbox.colliderect(special_item_hitbox): #If the player and the item collide, these statements will run.
         pygame.mixer.Sound.play(item_sound) # A brief effect is played.
@@ -1395,7 +1418,7 @@ while main_game: #Handles the game loop.
             points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
             if int(score) >= goal: #When the user accomplishews the task this will be true.
                mixer.music.stop()
-               mixer.music.load("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") 
+               mixer.music.load(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) 
                mixer.music.play(-1)
                finale_active=True
                success=True #Success is set to true.
@@ -1417,7 +1440,7 @@ while main_game: #Handles the game loop.
             if (items_picked_up + special_items_picked_up) >=goal:
                 minimum=True
                 mixer.music.stop()
-                mixer.music.load("Game_Files/AudioSFX/scott-buckley-phase-shift.mp3") 
+                mixer.music.load(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) 
                 mixer.music.play(-1)
      current_time=pygame.time.get_ticks() #The current time in milliseconds is obtained.
      current_time_2=pygame.time.get_ticks() #The current time in milliseconds is obtained.
@@ -1482,11 +1505,11 @@ while main_game: #Handles the game loop.
         bull_lock_on() #Calls the bull lock on function.
      if inner_loop_x: #If the inner loop is true, this will run.
         if bull_hitbox.right < player_hitbox.left: #If the bull is in a position left of the player, it must move right.
-           bull=pygame.image.load("Game_Files/Assets/Bull/bull_256.png")
+           bull=pygame.image.load(resource_path("Assets/Bull/bull_256.png"))
            bull_speed=17 #Bull speed is set to 17.
            bull_hitbox.x += bull_speed  # Moves the bull to the right of the screen.
         elif bull_hitbox.left > player_hitbox.right: #If the bull is to the right of the player, it must move to the left.
-             bull=pygame.image.load("Game_Files/Assets/Bull/bull_256_left.png")
+             bull=pygame.image.load(resource_path("Assets/Bull/bull_256_left.png"))
              #bull_hitbox=bull.get_rect(topleft())
              bull_speed=17 #Bull speed is set to 17.
              bull_hitbox.x -= bull_speed # Moves the bull to the left of the player.
@@ -1524,6 +1547,9 @@ while main_game: #Handles the game loop.
                points_text=font_6.render("Items -  " + str(items_picked_up + special_items_picked_up), True, "Red") #A rect object that contains the updated score is made.
                points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
      if bull_hitbox.colliderect(player_hitbox): # If the bull touches the player this will happen.
+        item_sound.stop()
+        start_sound.stop()
+        mixer.music.stop()
         if mode.upper()=='A':
            score_game_over=str(score) #I was able to Fix the issue where score was going up on key up, I had to basically like just make the score be at outside of the main loop
            with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
@@ -1532,7 +1558,7 @@ while main_game: #Handles the game loop.
               with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
                 f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + " SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS" + "\n" + "\nRESULT: NOT SUCCESSFUL")     
         time_keep=False #Tells the program to not keep taking the time.
-        mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+        mixer.music.load(resource_path("AudioSFX/aylex-tension-rising.mp3")) #Track attribution within files. Has to be done here because otherwise the music 
         #would glitch out for an event due to the event handler.
         mixer.music.play(-1) #Plays the music loaded in.
         game_active=False #Game active is false
@@ -1579,7 +1605,7 @@ while main_game: #Handles the game loop.
                if seconds >= items_to_prove and minimum==False: # The user gets a maximum of 5 seconds per item.
                     with open ("Scoreboard.txt", "a") as f: #Appends the failed game text to the file.
                            f.write("\n\nName- " + name_input.upper() + "\nDate - " + date_and_time.strftime("%x") + "\nMode: " + mode.upper() + "\nItems Obtained: " + str(items_picked_up + special_items_picked_up) + "\nAlloted Time: " + str(items_to_prove) + " SECONDS\nFinal Time: " + str(int(items_to_prove-count)) + " SECONDS"  + "\nRESULT: NOT SUCCESSFUL")     
-                    mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+                    mixer.music.load(resource_path("AudioSFX/aylex-tension-rising.mp3")) #Track attribution within files. Has to be done here because otherwise the music 
                     #would glitch out for an event due to the event handler.
                     mixer.music.play(-1) #Plays the music loaded in.
                     game_active=False #Game active is false
@@ -1630,7 +1656,7 @@ while main_game: #Handles the game loop.
                         points_text=font_6.render("Points - " + str(points) + " of " + str(goal), True, "Red") #A rect object that contains the updated score is made.
                         points_text_box=points_text.get_rect(topleft=(0, 0)) #Sets the points location on the screen.
                      else: #Otherwise, its over.
-                        mixer.music.load("Game_Files/AudioSFX/aylex-tension-rising.mp3") #Track attribution within files. Has to be done here because otherwise the music 
+                        mixer.music.load(resource_path("AudioSFX/aylex-tension-rising.mp3")) #Track attribution within files. Has to be done here because otherwise the music 
                         mixer.music.play(-1) #Plays the music loaded in.
                         game_active=False #The game is no longer active.
                         game_over=True #game over is set to true.
