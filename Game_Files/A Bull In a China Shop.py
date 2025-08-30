@@ -1,6 +1,6 @@
 #Author: Jhan Gomez <br>
-#Date: 08-23-2025, 10:00 AM EST  <br>
-#Version (Pre-Release): 1.1.4 <br>
+#Date: 08-30-2025, 6:00 PM EST  <br>
+#Version (Release): 1.2.1 <br>
 #Purpose: To make a fun game in PyGame that also demonstrates my understanding of python such as libraries, loops, conditionals, branching, front-end graphics, back-end code, and more.  <br>
 #DONE: Controls screen, Bull movement across the x axis, bull drawing, item spawning and respawning logic, points accumulated, player when stationary, player when jumping, windows scaling set to 100%, bgm (select), out of bounds, warn and projectile system. <br>
 #Fully complete bull and item logic, store, game over, initial groundwork for modes.
@@ -10,6 +10,7 @@ import ctypes #These two lines of code were found out to be needed when I attemp
 ctypes.windll.user32.SetProcessDPIAware() #Makes windows not use its own scaling configs and instead use pygames which is ideal for better and faster development
 #aswell as placements.
 import pygame #Pygame library is imported in.
+import gc
 import os, sys #Required because pyinstaller can't find the
 from pygame import mixer #This is the music package from pygame that is being imported.
 from sys import exit #Exit is imported from the os.
@@ -70,260 +71,268 @@ special_item_hitbox=special_item.get_rect(topleft=(special_item_x_pos, special_i
 menu_screen_2=pygame.image.load(resource_path("Assets/Stage/Menu-Screen-2.png")).convert_alpha()
 menu_screen_2b=pygame.image.load(resource_path("Assets/Stage/Menu-Screen-2b.png")).convert_alpha()
 #Frames for background splash screen.
-frame_1=pygame.image.load(resource_path("Assets/Story/FRAME_1.png")).convert_alpha()
-frame_2=pygame.image.load(resource_path("Assets/Story/FRAME_2.png")).convert_alpha()
-frame_3=pygame.image.load(resource_path("Assets/Story/FRAME_3.png")).convert_alpha()
-frame_4=pygame.image.load(resource_path("Assets/Story/FRAME_4.png")).convert_alpha()
-frame_5=pygame.image.load(resource_path("Assets/Story/FRAME_5.png")).convert_alpha()
-frame_6=pygame.image.load(resource_path("Assets/Story/FRAME_6.png")).convert_alpha()
-frame_7=pygame.image.load(resource_path("Assets/Story/FRAME_7.png")).convert_alpha()
-frame_8=pygame.image.load(resource_path("Assets/Story/FRAME_8.png")).convert_alpha()
-frame_9=pygame.image.load(resource_path("Assets/Story/FRAME_9.png")).convert_alpha()
-frame_10=pygame.image.load(resource_path("Assets/Story/FRAME_10.png")).convert_alpha()
-frame_11=pygame.image.load(resource_path("Assets/Story/FRAME_11.png")).convert_alpha()
-frame_12=pygame.image.load(resource_path("Assets/Story/FRAME_12.png")).convert_alpha()
-frame_13=pygame.image.load(resource_path("Assets/Story/FRAME_13.png")).convert_alpha()
-frame_14=pygame.image.load(resource_path("Assets/Story/FRAME_14.png")).convert_alpha()
-frame_15=pygame.image.load(resource_path("Assets/Story/FRAME_15.png")).convert_alpha()
-frame_16=pygame.image.load(resource_path("Assets/Story/FRAME_16.png")).convert_alpha()
-frame_17=pygame.image.load(resource_path("Assets/Story/FRAME_17.png")).convert_alpha()
-frame_18=pygame.image.load(resource_path("Assets/Story/FRAME_18.png")).convert_alpha()
-frame_19=pygame.image.load(resource_path("Assets/Story/FRAME_19.png")).convert_alpha()
-frame_20=pygame.image.load(resource_path("Assets/Story/FRAME_20.png")).convert_alpha()
-frame_21=pygame.image.load(resource_path("Assets/Story/FRAME_21.png")).convert_alpha()
-frame_22=pygame.image.load(resource_path("Assets/Story/FRAME_22.png")).convert_alpha()
-frame_23=pygame.image.load(resource_path("Assets/Story/FRAME_23.png")).convert_alpha()
-frame_24=pygame.image.load(resource_path("Assets/Story/FRAME_24.png")).convert_alpha()
-frame_25=pygame.image.load(resource_path("Assets/Story/FRAME_25.png")).convert_alpha()
-frame_26=pygame.image.load(resource_path("Assets/Story/FRAME_26.png")).convert_alpha()
-frame_27=pygame.image.load(resource_path("Assets/Story/FRAME_27.png")).convert_alpha()
-frame_28=pygame.image.load(resource_path("Assets/Story/FRAME_28.png")).convert_alpha()
-frame_29=pygame.image.load(resource_path("Assets/Story/FRAME_29.png")).convert_alpha()
-frame_30=pygame.image.load(resource_path("Assets/Story/FRAME_30.png")).convert_alpha()
-frame_31=pygame.image.load(resource_path("Assets/Story/FRAME_31.png")).convert_alpha()
-frame_32=pygame.image.load(resource_path("Assets/Story/FRAME_32.png")).convert_alpha()
-frame_33=pygame.image.load(resource_path("Assets/Story/FRAME_33.png")).convert_alpha()
-frame_34=pygame.image.load(resource_path("Assets/Story/FRAME_34.png")).convert_alpha()
-frame_35=pygame.image.load(resource_path("Assets/Story/FRAME_35.png")).convert_alpha()
-frame_36=pygame.image.load(resource_path("Assets/Story/FRAME_36.png")).convert_alpha()
-frame_37=pygame.image.load(resource_path("Assets/Story/FRAME_37.png")).convert_alpha()
-frame_38=pygame.image.load(resource_path("Assets/Story/FRAME_38.png")).convert_alpha()
-frame_39=pygame.image.load(resource_path("Assets/Story/FRAME_39.png")).convert_alpha()
-frame_40=pygame.image.load(resource_path("Assets/Story/FRAME_40.png")).convert_alpha()
-frame_41=pygame.image.load(resource_path("Assets/Story/FRAME_41.png")).convert_alpha()
-frame_42=pygame.image.load(resource_path("Assets/Story/FRAME_42.png")).convert_alpha()
 
-frame_1b=pygame.image.load(resource_path("Assets/Story/FRAME_1b.png")).convert_alpha()
-frame_2b=pygame.image.load(resource_path("Assets/Story/FRAME_2b.png")).convert_alpha()
-frame_3b=pygame.image.load(resource_path("Assets/Story/FRAME_3b.png")).convert_alpha()
-frame_4b=pygame.image.load(resource_path("Assets/Story/FRAME_4b.png")).convert_alpha()
-frame_5b=pygame.image.load(resource_path("Assets/Story/FRAME_5b.png")).convert_alpha()
-frame_6b=pygame.image.load(resource_path("Assets/Story/FRAME_6b.png")).convert_alpha()
-frame_7b=pygame.image.load(resource_path("Assets/Story/FRAME_7b.png")).convert_alpha()
-frame_8b=pygame.image.load(resource_path("Assets/Story/FRAME_8b.png")).convert_alpha()
-frame_9b=pygame.image.load(resource_path("Assets/Story/FRAME_9b.png")).convert_alpha()
-frame_10b=pygame.image.load(resource_path("Assets/Story/FRAME_10b.png")).convert_alpha()
-frame_11b=pygame.image.load(resource_path("Assets/Story/FRAME_11b.png")).convert_alpha()
-frame_12b=pygame.image.load(resource_path("Assets/Story/FRAME_12b.png")).convert_alpha()
-frame_13b=pygame.image.load(resource_path("Assets/Story/FRAME_13b.png")).convert_alpha()
-frame_14b=pygame.image.load(resource_path("Assets/Story/FRAME_14b.png")).convert_alpha()
-frame_15b=pygame.image.load(resource_path("Assets/Story/FRAME_15b.png")).convert_alpha()
-frame_16b=pygame.image.load(resource_path("Assets/Story/FRAME_16b.png")).convert_alpha()
-frame_17b=pygame.image.load(resource_path("Assets/Story/FRAME_17b.png")).convert_alpha()
-frame_18b=pygame.image.load(resource_path("Assets/Story/FRAME_18b.png")).convert_alpha()
-frame_19b=pygame.image.load(resource_path("Assets/Story/FRAME_19b.png")).convert_alpha()
-frame_20b=pygame.image.load(resource_path("Assets/Story/FRAME_20b.png")).convert_alpha()
-frame_21b=pygame.image.load(resource_path("Assets/Story/FRAME_21b.png")).convert_alpha()
-frame_22b=pygame.image.load(resource_path("Assets/Story/FRAME_22b.png")).convert_alpha()
-frame_23b=pygame.image.load(resource_path("Assets/Story/FRAME_23b.png")).convert_alpha()
-frame_24b=pygame.image.load(resource_path("Assets/Story/FRAME_24b.png")).convert_alpha()
-frame_25b=pygame.image.load(resource_path("Assets/Story/FRAME_25b.png")).convert_alpha()
-frame_26b=pygame.image.load(resource_path("Assets/Story/FRAME_26b.png")).convert_alpha()
-frame_27b=pygame.image.load(resource_path("Assets/Story/FRAME_27b.png")).convert_alpha()
-frame_28b=pygame.image.load(resource_path("Assets/Story/FRAME_28b.png")).convert_alpha()
-frame_29b=pygame.image.load(resource_path("Assets/Story/FRAME_29b.png")).convert_alpha()
-frame_30b=pygame.image.load(resource_path("Assets/Story/FRAME_30b.png")).convert_alpha()
-frame_31b=pygame.image.load(resource_path("Assets/Story/FRAME_31b.png")).convert_alpha()
-frame_32b=pygame.image.load(resource_path("Assets/Story/FRAME_32b.png")).convert_alpha()
-frame_33b=pygame.image.load(resource_path("Assets/Story/FRAME_33b.png")).convert_alpha()
-frame_34b=pygame.image.load(resource_path("Assets/Story/FRAME_34b.png")).convert_alpha()
-frame_35b=pygame.image.load(resource_path("Assets/Story/FRAME_35b.png")).convert_alpha()
-frame_36b=pygame.image.load(resource_path("Assets/Story/FRAME_36b.png")).convert_alpha()
-frame_37b=pygame.image.load(resource_path("Assets/Story/FRAME_37b.png")).convert_alpha()
-frame_38b=pygame.image.load(resource_path("Assets/Story/FRAME_38b.png")).convert_alpha()
-frame_39b=pygame.image.load(resource_path("Assets/Story/FRAME_39b.png")).convert_alpha()
-frame_40b=pygame.image.load(resource_path("Assets/Story/FRAME_40b.png")).convert_alpha()
-frame_41b=pygame.image.load(resource_path("Assets/Story/FRAME_41b.png")).convert_alpha()
-frame_42b=pygame.image.load(resource_path("Assets/Story/FRAME_42b.png")).convert_alpha()
 
 #License for art assets.
 pic_1=pygame.image.load(resource_path("Assets/Stage/CC_BY_NA_SA_4_enter.png")).convert_alpha()
-pic_2=pygame.image.load(resource_path("Assets/Stage/CC_BY_NA_SA_4_no_enter.png")).convert_alpha()\
+pic_2=pygame.image.load(resource_path("Assets/Stage/CC_BY_NA_SA_4_no_enter.png")).convert_alpha()
 #Mit license for code.
 pic_3=pygame.image.load(resource_path("Assets/Stage/MIT_enter.png")).convert_alpha()
 pic_4=pygame.image.load(resource_path("Assets/Stage/MIT_no_enter.png")).convert_alpha()
 
-breakdown_1=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-1.png")).convert_alpha()
-breakdown_2=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-2.png")).convert_alpha()
-breakdown_3=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-3.png")).convert_alpha()
-breakdown_4=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-4.png")).convert_alpha()
-breakdown_5=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-5.png")).convert_alpha()
-breakdown_6=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-6.png")).convert_alpha()
-breakdown_7=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-7.png")).convert_alpha()
-breakdown_8=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-8.png")).convert_alpha()
-breakdown_9=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-9.png")).convert_alpha()
-breakdown_10=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-10.png")).convert_alpha()
-breakdown_11=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-11.png")).convert_alpha()
-breakdown_12=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-12.png")).convert_alpha()
-breakdown_13=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-13.png")).convert_alpha()
-breakdown_14=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-14.png")).convert_alpha()
-breakdown_15=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-15.png")).convert_alpha()
-breakdown_16=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-16.png")).convert_alpha()
-breakdown_17=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-17.png")).convert_alpha()
-breakdown_18=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-18.png")).convert_alpha()
-breakdown_19=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-19.png")).convert_alpha()
-breakdown_20=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-20.png")).convert_alpha()
-breakdown_21=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-21.png")).convert_alpha()
-breakdown_22=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-22.png")).convert_alpha()
-breakdown_23=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-23.png")).convert_alpha()
-breakdown_24=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-24.png")).convert_alpha()
-breakdown_25=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-25.png")).convert_alpha()
-breakdown_26=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-26.png")).convert_alpha()
-breakdown_27=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-27.png")).convert_alpha()
+def pre_break(): #Reworked for less memory usage, only loaded when needed!
+      breakdown_1=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-1.png")).convert_alpha()
+      breakdown_2=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-2.png")).convert_alpha()
+      breakdown_3=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-3.png")).convert_alpha()
+      breakdown_4=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-4.png")).convert_alpha()
+      breakdown_5=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-5.png")).convert_alpha()
+      breakdown_6=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-6.png")).convert_alpha()
+      breakdown_7=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-7.png")).convert_alpha()
+      breakdown_8=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-8.png")).convert_alpha()
+      breakdown_9=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-9.png")).convert_alpha()
+      breakdown_10=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-10.png")).convert_alpha()
+      breakdown_11=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-11.png")).convert_alpha()
+      breakdown_12=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-12.png")).convert_alpha()
+      breakdown_13=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-13.png")).convert_alpha()
+      breakdown_14=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-14.png")).convert_alpha()
+      breakdown_15=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-15.png")).convert_alpha()
+      breakdown_16=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-16.png")).convert_alpha()
+      breakdown_17=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-17.png")).convert_alpha()
+      breakdown_18=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-18.png")).convert_alpha()
+      breakdown_19=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-19.png")).convert_alpha()
+      breakdown_20=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-20.png")).convert_alpha()
+      breakdown_21=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-21.png")).convert_alpha()
+      breakdown_22=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-22.png")).convert_alpha()
+      breakdown_23=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-23.png")).convert_alpha()
+      breakdown_24=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-24.png")).convert_alpha()
+      breakdown_25=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-25.png")).convert_alpha()
+      breakdown_26=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-26.png")).convert_alpha()
+      breakdown_27=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-27.png")).convert_alpha()
+      return [ breakdown_1,
+      breakdown_2,
+      breakdown_3,
+      breakdown_4,
+      breakdown_5,
+      breakdown_6,
+      breakdown_7,
+      breakdown_8,
+      breakdown_9,
+      breakdown_10,
+      breakdown_11,
+      breakdown_12,
+      breakdown_13,
+      breakdown_14,
+      breakdown_15,
+      breakdown_16,
+      breakdown_17,
+      breakdown_18,
+      breakdown_19,
+      breakdown_20,
+      breakdown_21,
+      breakdown_22,
+      breakdown_23,
+      breakdown_24,
+      breakdown_25,
+      breakdown_26,
+      breakdown_27] #List of surfaces returned.
 breakdown_28=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-28.png")).convert_alpha()
 breakdown_29=pygame.image.load(resource_path("Assets/Story/Pre-Breakdown-28-No-Text.png")).convert_alpha()
-
-ominous_1=pygame.image.load(resource_path("Assets/Story/bull-first-appearance.png")).convert_alpha()
-ominous_2=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-2.png")).convert_alpha()
-ominous_3=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-3.png")).convert_alpha()
-ominous_4=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-4.png")).convert_alpha()
-ominous_5=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-5.png")).convert_alpha()
-ominous_6=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-6.png")).convert_alpha()
-ominous_7=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-7.png")).convert_alpha()
-ominous_8=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-8.png")).convert_alpha()
-ominous_9=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-9.png")).convert_alpha()
-ominous_10=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-10.png")).convert_alpha()
-ominous_11=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-11.png")).convert_alpha()
-ominous_12=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-12.png")).convert_alpha()
-ominous_13=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-13.png")).convert_alpha()
-ominous_14=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-14.png")).convert_alpha()
-
-new_breakdown_1=pygame.image.load(resource_path("Assets/Story/new-breakdown.png")).convert_alpha()
-new_breakdown_2=pygame.image.load(resource_path("Assets/Story/new-breakdown-2.png")).convert_alpha()
-new_breakdown_3=pygame.image.load(resource_path("Assets/Story/new-breakdown-3.png")).convert_alpha()
-new_breakdown_4=pygame.image.load(resource_path("Assets/Story/new-breakdown-4.png")).convert_alpha()
-new_breakdown_5=pygame.image.load(resource_path("Assets/Story/new-breakdown-5.png")).convert_alpha()
-new_breakdown_6=pygame.image.load(resource_path("Assets/Story/new-breakdown-6.png")).convert_alpha()
-new_breakdown_7=pygame.image.load(resource_path("Assets/Story/new-breakdown-7.png")).convert_alpha()
-new_breakdown_8=pygame.image.load(resource_path("Assets/Story/new-breakdown-8.png")).convert_alpha()
-new_breakdown_9=pygame.image.load(resource_path("Assets/Story/new-breakdown-9.png")).convert_alpha()
-new_breakdown_10=pygame.image.load(resource_path("Assets/Story/new-breakdown-10.png")).convert_alpha()
-new_breakdown_11=pygame.image.load(resource_path("Assets/Story/new-breakdown-11.png")).convert_alpha()
-new_breakdown_12=pygame.image.load(resource_path("Assets/Story/new-breakdown-12.png")).convert_alpha()
-new_breakdown_13=pygame.image.load(resource_path("Assets/Story/new-breakdown-13.png")).convert_alpha()
-new_breakdown_14=pygame.image.load(resource_path("Assets/Story/new-breakdown-14.png")).convert_alpha()
-new_breakdown_15=pygame.image.load(resource_path("Assets/Story/new-breakdown-15.png")).convert_alpha()
-new_breakdown_16=pygame.image.load(resource_path("Assets/Story/new-breakdown-16.png")).convert_alpha()
-new_breakdown_17=pygame.image.load(resource_path("Assets/Story/new-breakdown-17.png")).convert_alpha()
-new_breakdown_18=pygame.image.load(resource_path("Assets/Story/new-breakdown-18.png")).convert_alpha()
-new_breakdown_19=pygame.image.load(resource_path("Assets/Story/new-breakdown-19.png")).convert_alpha()
-new_breakdown_20=pygame.image.load(resource_path("Assets/Story/new-breakdown-20.png")).convert_alpha()
-new_breakdown_21=pygame.image.load(resource_path("Assets/Story/new-breakdown-21.png")).convert_alpha()
-new_breakdown_22=pygame.image.load(resource_path("Assets/Story/new-breakdown-22.png")).convert_alpha()
-new_breakdown_23=pygame.image.load(resource_path("Assets/Story/new-breakdown-23.png")).convert_alpha()
-new_breakdown_24=pygame.image.load(resource_path("Assets/Story/new-breakdown-24.png")).convert_alpha()
-new_breakdown_25=pygame.image.load(resource_path("Assets/Story/new-breakdown-25.png")).convert_alpha()
-new_breakdown_26=pygame.image.load(resource_path("Assets/Story/new-breakdown-26.png")).convert_alpha()
-new_breakdown_27=pygame.image.load(resource_path("Assets/Story/new-breakdown-27.png")).convert_alpha()
-new_breakdown_28=pygame.image.load(resource_path("Assets/Story/new-breakdown-28.png")).convert_alpha()
-new_breakdown_29=pygame.image.load(resource_path("Assets/Story/new-breakdown-29.png")).convert_alpha()
-new_breakdown_30=pygame.image.load(resource_path("Assets/Story/new-breakdown-30.png")).convert_alpha()
-new_breakdown_31=pygame.image.load(resource_path("Assets/Story/new-breakdown-31.png")).convert_alpha()
-new_breakdown_32=pygame.image.load(resource_path("Assets/Story/new-breakdown-32.png")).convert_alpha()
-new_breakdown_32_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-32b.png")).convert_alpha()
-new_breakdown_33=pygame.image.load(resource_path("Assets/Story/new-breakdown-33.png")).convert_alpha()
-new_breakdown_34=pygame.image.load(resource_path("Assets/Story/new-breakdown-34.png")).convert_alpha()
-new_breakdown_35=pygame.image.load(resource_path("Assets/Story/new-breakdown-35.png")).convert_alpha()
-new_breakdown_35_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-35b.png")).convert_alpha()
-new_breakdown_36=pygame.image.load(resource_path("Assets/Story/new-breakdown-36.png")).convert_alpha()
-new_breakdown_37=pygame.image.load(resource_path("Assets/Story/new-breakdown-37.png")).convert_alpha()
-new_breakdown_38=pygame.image.load(resource_path("Assets/Story/new-breakdown-38.png")).convert_alpha()
-new_breakdown_39=pygame.image.load(resource_path("Assets/Story/new-breakdown-39.png")).convert_alpha()
-new_breakdown_40=pygame.image.load(resource_path("Assets/Story/new-breakdown-40.png")).convert_alpha()
-new_breakdown_41=pygame.image.load(resource_path("Assets/Story/new-breakdown-41.png")).convert_alpha()
-new_breakdown_42=pygame.image.load(resource_path("Assets/Story/new-breakdown-42.png")).convert_alpha()
-new_breakdown_43=pygame.image.load(resource_path("Assets/Story/new-breakdown-43.png")).convert_alpha()
-new_breakdown_44=pygame.image.load(resource_path("Assets/Story/new-breakdown-44.png")).convert_alpha()
-new_breakdown_45=pygame.image.load(resource_path("Assets/Story/new-breakdown-45.png")).convert_alpha()
-new_breakdown_46=pygame.image.load(resource_path("Assets/Story/new-breakdown-46.png")).convert_alpha()
-
-success_1=pygame.image.load(resource_path("Assets/Story/success.png")).convert_alpha()
-success_2=pygame.image.load(resource_path("Assets/Story/success-2.png")).convert_alpha()
-success_3=pygame.image.load(resource_path("Assets/Story/success-3.png")).convert_alpha()
-success_4=pygame.image.load(resource_path("Assets/Story/success-4.png")).convert_alpha()
-success_5=pygame.image.load(resource_path("Assets/Story/success-5.png")).convert_alpha()
-success_6=pygame.image.load(resource_path("Assets/Story/success-6.png")).convert_alpha()
-success_7=pygame.image.load(resource_path("Assets/Story/success-7.png")).convert_alpha()
-success_7b=pygame.image.load(resource_path("Assets/Story/success-7b.png")).convert_alpha()
-success_7c=pygame.image.load(resource_path("Assets/Story/success-7c.png")).convert_alpha()
-success_7d=pygame.image.load(resource_path("Assets/Story/success-7d.png")).convert_alpha()
-success_7e=pygame.image.load(resource_path("Assets/Story/success-7e.png")).convert_alpha()
-success_7f=pygame.image.load(resource_path("Assets/Story/success-7f.png")).convert_alpha()
-success_7g=pygame.image.load(resource_path("Assets/Story/success-7g.png")).convert_alpha()
-success_7h=pygame.image.load(resource_path("Assets/Story/success-7h.png")).convert_alpha()
-success_7i=pygame.image.load(resource_path("Assets/Story/success-7i.png")).convert_alpha()
-success_8=pygame.image.load(resource_path("Assets/Story/success-8.png")).convert_alpha()
-success_9=pygame.image.load(resource_path("Assets/Story/success-9.png")).convert_alpha()
-success_9b=pygame.image.load(resource_path("Assets/Story/success-9b.png")).convert_alpha()
-success_10=pygame.image.load(resource_path("Assets/Story/success-10.png")).convert_alpha()
-success_11=pygame.image.load(resource_path("Assets/Story/success-11.png")).convert_alpha()
-success_12=pygame.image.load(resource_path("Assets/Story/success-12.png")).convert_alpha()
-success_13=pygame.image.load(resource_path("Assets/Story/success-13.png")).convert_alpha()
-success_14=pygame.image.load(resource_path("Assets/Story/success-14.png")).convert_alpha()
-success_15=pygame.image.load(resource_path("Assets/Story/success-15.png")).convert_alpha()
-success_16=pygame.image.load(resource_path("Assets/Story/success-16.png")).convert_alpha()
-success_17=pygame.image.load(resource_path("Assets/Story/success-17.png")).convert_alpha()
-success_18=pygame.image.load(resource_path("Assets/Story/success-18.png")).convert_alpha()
-success_19=pygame.image.load(resource_path("Assets/Story/success-19.png")).convert_alpha()
-success_20=pygame.image.load(resource_path("Assets/Story/success-20.png")).convert_alpha()
-success_21=pygame.image.load(resource_path("Assets/Story/success-21.png")).convert_alpha()
-success_22=pygame.image.load(resource_path("Assets/Story/success-22.png")).convert_alpha()
-success_23=pygame.image.load(resource_path("Assets/Story/success-23.png")).convert_alpha()
-success_24=pygame.image.load(resource_path("Assets/Story/success-24.png")).convert_alpha()
-success_24b=pygame.image.load(resource_path("Assets/Story/success-24b.png")).convert_alpha()
-success_24c=pygame.image.load(resource_path("Assets/Story/success-24c.png")).convert_alpha()
-success_24d=pygame.image.load(resource_path("Assets/Story/success-24d.png")).convert_alpha()
-success_24e=pygame.image.load(resource_path("Assets/Story/success-24e.png")).convert_alpha()
-success_24f=pygame.image.load(resource_path("Assets/Story/success-24f.png")).convert_alpha()
-success_24g=pygame.image.load(resource_path("Assets/Story/success-24g.png")).convert_alpha()
-success_24h=pygame.image.load(resource_path("Assets/Story/success-24h.png")).convert_alpha()
-success_24i=pygame.image.load(resource_path("Assets/Story/success-24i.png")).convert_alpha()
-success_24j=pygame.image.load(resource_path("Assets/Story/success-24j.png")).convert_alpha()
-success_24k=pygame.image.load(resource_path("Assets/Story/success-24k.png")).convert_alpha()
-success_24l=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha()
-success_24m=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha() #Repeated intentionally
-success_25=pygame.image.load(resource_path("Assets/Story/success-25.png")).convert_alpha()
-success_26=pygame.image.load(resource_path("Assets/Story/success-26.png")).convert_alpha()
-success_27=pygame.image.load(resource_path("Assets/Story/success-27.png")).convert_alpha()
-success_28=pygame.image.load(resource_path("Assets/Story/success-28.png")).convert_alpha()
-success_28b=pygame.image.load(resource_path("Assets/Story/success-28b.png")).convert_alpha()
-success_28c=pygame.image.load(resource_path("Assets/Story/success-28c.png")).convert_alpha()
-success_28d=pygame.image.load(resource_path("Assets/Story/success-28d.png")).convert_alpha()
-success_28e=pygame.image.load(resource_path("Assets/Story/success-28e.png")).convert_alpha()
-success_28f=pygame.image.load(resource_path("Assets/Story/success-28f.png")).convert_alpha()
-success_28g=pygame.image.load(resource_path("Assets/Story/success-28g.png")).convert_alpha()
-success_28h=pygame.image.load(resource_path("Assets/Story/success-28h.png")).convert_alpha()
-success_28i=pygame.image.load(resource_path("Assets/Story/success-28i.png")).convert_alpha()
-success_29=pygame.image.load(resource_path("Assets/Story/success-29.png")).convert_alpha()
-success_30=pygame.image.load(resource_path("Assets/Story/success-30.png")).convert_alpha()
-success_30b=pygame.image.load(resource_path("Assets/Story/success-30b.png")).convert_alpha()
-success_31=pygame.image.load(resource_path("Assets/Story/success-31.png")).convert_alpha()
-success_31b=pygame.image.load(resource_path("Assets/Story/success-31b.png")).convert_alpha()
-success_32=pygame.image.load(resource_path("Assets/Story/success-32.png")).convert_alpha()
-success_32b=pygame.image.load(resource_path("Assets/Story/success-32b.png")).convert_alpha()
-success_33=pygame.image.load(resource_path("Assets/Story/success-33.png")).convert_alpha()
-success_33b=pygame.image.load(resource_path("Assets/Story/success-33b.png")).convert_alpha()
-success_34=pygame.image.load(resource_path("Assets/Story/success-34.png")).convert_alpha()
+def bull_appear():  #Reworked for less memory usage, only loaded when needed!
+      ominous_1=pygame.image.load(resource_path("Assets/Story/bull-first-appearance.png")).convert_alpha()
+      ominous_2=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-2.png")).convert_alpha()
+      ominous_3=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-3.png")).convert_alpha()
+      ominous_4=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-4.png")).convert_alpha()
+      ominous_5=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-5.png")).convert_alpha()
+      ominous_6=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-6.png")).convert_alpha()
+      ominous_7=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-7.png")).convert_alpha()
+      ominous_8=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-8.png")).convert_alpha()
+      ominous_9=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-9.png")).convert_alpha()
+      ominous_10=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-10.png")).convert_alpha()
+      ominous_11=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-11.png")).convert_alpha()
+      ominous_12=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-12.png")).convert_alpha()
+      ominous_13=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-13.png")).convert_alpha()
+      ominous_14=pygame.image.load(resource_path("Assets/Story/bull-first-appearance-14.png")).convert_alpha()
+      return [ominous_1, ominous_2, ominous_3, ominous_4,
+                               ominous_5, ominous_6, ominous_7, ominous_8,
+                               ominous_9, ominous_10, ominous_11, ominous_12,
+                               ominous_13, ominous_14]
+def newb_1(): #Reworked for less memory usage, only loaded when needed!
+      new_breakdown_1=pygame.image.load(resource_path("Assets/Story/new-breakdown.png")).convert_alpha()
+      new_breakdown_2=pygame.image.load(resource_path("Assets/Story/new-breakdown-2.png")).convert_alpha()
+      new_breakdown_3=pygame.image.load(resource_path("Assets/Story/new-breakdown-3.png")).convert_alpha()
+      new_breakdown_4=pygame.image.load(resource_path("Assets/Story/new-breakdown-4.png")).convert_alpha()
+      new_breakdown_5=pygame.image.load(resource_path("Assets/Story/new-breakdown-5.png")).convert_alpha()
+      new_breakdown_6=pygame.image.load(resource_path("Assets/Story/new-breakdown-6.png")).convert_alpha()
+      new_breakdown_7=pygame.image.load(resource_path("Assets/Story/new-breakdown-7.png")).convert_alpha()
+      new_breakdown_8=pygame.image.load(resource_path("Assets/Story/new-breakdown-8.png")).convert_alpha()
+      new_breakdown_9=pygame.image.load(resource_path("Assets/Story/new-breakdown-9.png")).convert_alpha()
+      new_breakdown_10=pygame.image.load(resource_path("Assets/Story/new-breakdown-10.png")).convert_alpha()
+      new_breakdown_11=pygame.image.load(resource_path("Assets/Story/new-breakdown-11.png")).convert_alpha()
+      new_breakdown_12=pygame.image.load(resource_path("Assets/Story/new-breakdown-12.png")).convert_alpha()
+      new_breakdown_13=pygame.image.load(resource_path("Assets/Story/new-breakdown-13.png")).convert_alpha()
+      new_breakdown_14=pygame.image.load(resource_path("Assets/Story/new-breakdown-14.png")).convert_alpha()
+      return [new_breakdown_1, new_breakdown_2, new_breakdown_3, new_breakdown_4, 
+                   new_breakdown_5, new_breakdown_6, new_breakdown_7, new_breakdown_8, 
+                   new_breakdown_9, new_breakdown_10, new_breakdown_11, new_breakdown_12, 
+                   new_breakdown_13, new_breakdown_14] 
+def newb_2(): #Reworked for less memory usage, only loaded when needed!
+      new_breakdown_15=pygame.image.load(resource_path("Assets/Story/new-breakdown-15.png")).convert_alpha()
+      new_breakdown_16=pygame.image.load(resource_path("Assets/Story/new-breakdown-16.png")).convert_alpha()
+      new_breakdown_17=pygame.image.load(resource_path("Assets/Story/new-breakdown-17.png")).convert_alpha()
+      new_breakdown_18=pygame.image.load(resource_path("Assets/Story/new-breakdown-18.png")).convert_alpha()
+      new_breakdown_19=pygame.image.load(resource_path("Assets/Story/new-breakdown-19.png")).convert_alpha()
+      new_breakdown_20=pygame.image.load(resource_path("Assets/Story/new-breakdown-20.png")).convert_alpha()
+      new_breakdown_21=pygame.image.load(resource_path("Assets/Story/new-breakdown-21.png")).convert_alpha()
+      new_breakdown_22=pygame.image.load(resource_path("Assets/Story/new-breakdown-22.png")).convert_alpha()
+      new_breakdown_23=pygame.image.load(resource_path("Assets/Story/new-breakdown-23.png")).convert_alpha()
+      new_breakdown_24=pygame.image.load(resource_path("Assets/Story/new-breakdown-24.png")).convert_alpha()
+      new_breakdown_25=pygame.image.load(resource_path("Assets/Story/new-breakdown-25.png")).convert_alpha()
+      new_breakdown_26=pygame.image.load(resource_path("Assets/Story/new-breakdown-26.png")).convert_alpha()
+      new_breakdown_27=pygame.image.load(resource_path("Assets/Story/new-breakdown-27.png")).convert_alpha()
+      new_breakdown_28=pygame.image.load(resource_path("Assets/Story/new-breakdown-28.png")).convert_alpha()
+      new_breakdown_29=pygame.image.load(resource_path("Assets/Story/new-breakdown-29.png")).convert_alpha()
+      return [new_breakdown_15, new_breakdown_16, 
+                        new_breakdown_17, new_breakdown_18, new_breakdown_19, new_breakdown_20, 
+                        new_breakdown_21, new_breakdown_22, new_breakdown_23, new_breakdown_24,  
+                        new_breakdown_25, new_breakdown_26, new_breakdown_27, new_breakdown_28, 
+                        new_breakdown_29] 
+def newb_3(): #Reworked for less memory usage, only loaded when needed!
+      new_breakdown_30=pygame.image.load(resource_path("Assets/Story/new-breakdown-30.png")).convert_alpha()
+      new_breakdown_31=pygame.image.load(resource_path("Assets/Story/new-breakdown-31.png")).convert_alpha()
+      new_breakdown_32=pygame.image.load(resource_path("Assets/Story/new-breakdown-32.png")).convert_alpha()
+      new_breakdown_32_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-32b.png")).convert_alpha()
+      new_breakdown_33=pygame.image.load(resource_path("Assets/Story/new-breakdown-33.png")).convert_alpha()
+      new_breakdown_34=pygame.image.load(resource_path("Assets/Story/new-breakdown-34.png")).convert_alpha()
+      new_breakdown_35=pygame.image.load(resource_path("Assets/Story/new-breakdown-35.png")).convert_alpha()
+      new_breakdown_35_b=pygame.image.load(resource_path("Assets/Story/new-breakdown-35b.png")).convert_alpha()
+      new_breakdown_36=pygame.image.load(resource_path("Assets/Story/new-breakdown-36.png")).convert_alpha()
+      return [new_breakdown_30, new_breakdown_31, new_breakdown_32, 
+                        new_breakdown_32_b, new_breakdown_33, new_breakdown_34, new_breakdown_35, 
+                        new_breakdown_35_b, new_breakdown_36]
+def newb_4(): #Reworked for less memory usage, only loaded when needed!
+      new_breakdown_37=pygame.image.load(resource_path("Assets/Story/new-breakdown-37.png")).convert_alpha()
+      new_breakdown_38=pygame.image.load(resource_path("Assets/Story/new-breakdown-38.png")).convert_alpha()
+      new_breakdown_39=pygame.image.load(resource_path("Assets/Story/new-breakdown-39.png")).convert_alpha()
+      new_breakdown_40=pygame.image.load(resource_path("Assets/Story/new-breakdown-40.png")).convert_alpha()
+      new_breakdown_41=pygame.image.load(resource_path("Assets/Story/new-breakdown-41.png")).convert_alpha()
+      new_breakdown_42=pygame.image.load(resource_path("Assets/Story/new-breakdown-42.png")).convert_alpha()
+      new_breakdown_43=pygame.image.load(resource_path("Assets/Story/new-breakdown-43.png")).convert_alpha()
+      new_breakdown_44=pygame.image.load(resource_path("Assets/Story/new-breakdown-44.png")).convert_alpha()
+      new_breakdown_45=pygame.image.load(resource_path("Assets/Story/new-breakdown-45.png")).convert_alpha()
+      new_breakdown_46=pygame.image.load(resource_path("Assets/Story/new-breakdown-46.png")).convert_alpha()
+      return [new_breakdown_37, new_breakdown_38, 
+                        new_breakdown_39, new_breakdown_40, new_breakdown_41, new_breakdown_42, 
+                        new_breakdown_43, new_breakdown_44, new_breakdown_45,new_breakdown_46]
+def newb_5(): #Reworked for less memory usage, only loaded when needed!
+      success_1=pygame.image.load(resource_path("Assets/Story/success.png")).convert_alpha() #16, 31, 36, 40, 44, 57, rest
+      success_2=pygame.image.load(resource_path("Assets/Story/success-2.png")).convert_alpha()
+      success_3=pygame.image.load(resource_path("Assets/Story/success-3.png")).convert_alpha()
+      success_4=pygame.image.load(resource_path("Assets/Story/success-4.png")).convert_alpha()
+      success_5=pygame.image.load(resource_path("Assets/Story/success-5.png")).convert_alpha()
+      success_6=pygame.image.load(resource_path("Assets/Story/success-6.png")).convert_alpha()
+      success_7=pygame.image.load(resource_path("Assets/Story/success-7.png")).convert_alpha()
+      success_7b=pygame.image.load(resource_path("Assets/Story/success-7b.png")).convert_alpha()
+      success_7c=pygame.image.load(resource_path("Assets/Story/success-7c.png")).convert_alpha()
+      success_7d=pygame.image.load(resource_path("Assets/Story/success-7d.png")).convert_alpha()
+      success_7e=pygame.image.load(resource_path("Assets/Story/success-7e.png")).convert_alpha()
+      success_7f=pygame.image.load(resource_path("Assets/Story/success-7f.png")).convert_alpha()
+      success_7g=pygame.image.load(resource_path("Assets/Story/success-7g.png")).convert_alpha()
+      success_7h=pygame.image.load(resource_path("Assets/Story/success-7h.png")).convert_alpha()
+      success_7i=pygame.image.load(resource_path("Assets/Story/success-7i.png")).convert_alpha()
+      success_8=pygame.image.load(resource_path("Assets/Story/success-8.png")).convert_alpha()
+      success_9=pygame.image.load(resource_path("Assets/Story/success-9.png")).convert_alpha()
+      return [success_1, success_2, success_3, success_4, success_5, success_6, success_7,
+              success_7b, success_7c, success_7d, success_7e, success_7f, success_7g, success_7h,
+              success_7i, success_8, success_8, success_9]
+def newb_6(): #Reworked for less memory usage, only loaded when needed!
+      success_9b=pygame.image.load(resource_path("Assets/Story/success-9b.png")).convert_alpha()
+      success_10=pygame.image.load(resource_path("Assets/Story/success-10.png")).convert_alpha()
+      success_11=pygame.image.load(resource_path("Assets/Story/success-11.png")).convert_alpha()
+      success_12=pygame.image.load(resource_path("Assets/Story/success-12.png")).convert_alpha()
+      success_13=pygame.image.load(resource_path("Assets/Story/success-13.png")).convert_alpha()
+      success_14=pygame.image.load(resource_path("Assets/Story/success-14.png")).convert_alpha()
+      success_15=pygame.image.load(resource_path("Assets/Story/success-15.png")).convert_alpha()
+      success_16=pygame.image.load(resource_path("Assets/Story/success-16.png")).convert_alpha()
+      success_17=pygame.image.load(resource_path("Assets/Story/success-17.png")).convert_alpha()
+      success_18=pygame.image.load(resource_path("Assets/Story/success-18.png")).convert_alpha()
+      success_19=pygame.image.load(resource_path("Assets/Story/success-19.png")).convert_alpha()
+      success_20=pygame.image.load(resource_path("Assets/Story/success-20.png")).convert_alpha()
+      success_21=pygame.image.load(resource_path("Assets/Story/success-21.png")).convert_alpha()
+      success_22=pygame.image.load(resource_path("Assets/Story/success-22.png")).convert_alpha()
+      success_23=pygame.image.load(resource_path("Assets/Story/success-23.png")).convert_alpha()
+      return [success_9b, success_10, success_11, success_12, success_13, success_14, success_15,
+              success_16, success_17, success_18, success_19, success_20, success_21, success_22,
+              success_23] 
+def newb_7(): #Reworked for less memory usage, only loaded when needed!
+      success_24=pygame.image.load(resource_path("Assets/Story/success-24.png")).convert_alpha()
+      success_24b=pygame.image.load(resource_path("Assets/Story/success-24b.png")).convert_alpha()
+      success_24c=pygame.image.load(resource_path("Assets/Story/success-24c.png")).convert_alpha()
+      success_24d=pygame.image.load(resource_path("Assets/Story/success-24d.png")).convert_alpha()
+      success_24e=pygame.image.load(resource_path("Assets/Story/success-24e.png")).convert_alpha()
+      return [success_24,
+      success_24b,
+      success_24c,
+      success_24d,
+      success_24e]
+def newb_8(): #Reworked for less memory usage, only loaded when needed!
+      success_24f=pygame.image.load(resource_path("Assets/Story/success-24f.png")).convert_alpha()
+      success_24g=pygame.image.load(resource_path("Assets/Story/success-24g.png")).convert_alpha()
+      success_24h=pygame.image.load(resource_path("Assets/Story/success-24h.png")).convert_alpha()
+      success_24i=pygame.image.load(resource_path("Assets/Story/success-24i.png")).convert_alpha()
+      return [success_24f, success_24g, success_24h, success_24i]
+def newb_9(): #Reworked for less memory usage, only loaded when needed!
+      success_24j=pygame.image.load(resource_path("Assets/Story/success-24j.png")).convert_alpha()
+      success_24k=pygame.image.load(resource_path("Assets/Story/success-24k.png")).convert_alpha()
+      success_24l=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha()
+      success_24m=pygame.image.load(resource_path("Assets/Story/success-24l.png")).convert_alpha() #Repeated intentionally
+      return [success_24j, success_24k, success_24l, success_24m]
+def newb_10(): #Reworked for less memory usage, only loaded when needed!
+      success_25=pygame.image.load(resource_path("Assets/Story/success-25.png")).convert_alpha()
+      success_26=pygame.image.load(resource_path("Assets/Story/success-26.png")).convert_alpha()
+      success_27=pygame.image.load(resource_path("Assets/Story/success-27.png")).convert_alpha()
+      success_28=pygame.image.load(resource_path("Assets/Story/success-28.png")).convert_alpha()
+      success_28b=pygame.image.load(resource_path("Assets/Story/success-28b.png")).convert_alpha()
+      success_28c=pygame.image.load(resource_path("Assets/Story/success-28c.png")).convert_alpha()
+      success_28d=pygame.image.load(resource_path("Assets/Story/success-28d.png")).convert_alpha()
+      success_28e=pygame.image.load(resource_path("Assets/Story/success-28e.png")).convert_alpha()
+      success_28f=pygame.image.load(resource_path("Assets/Story/success-28f.png")).convert_alpha()
+      success_28g=pygame.image.load(resource_path("Assets/Story/success-28g.png")).convert_alpha()
+      success_28h=pygame.image.load(resource_path("Assets/Story/success-28h.png")).convert_alpha()
+      success_28i=pygame.image.load(resource_path("Assets/Story/success-28i.png")).convert_alpha()
+      success_29=pygame.image.load(resource_path("Assets/Story/success-29.png")).convert_alpha()
+      return [success_25,
+      success_26,
+      success_27,
+      success_28,
+      success_28b,
+      success_28c,
+      success_28d,
+      success_28e,
+      success_28f,
+      success_28g,
+      success_28h,
+      success_28i,
+      success_29]
+def newb_11(): #Reworked for less memory usage, only loaded when needed!
+      success_30=pygame.image.load(resource_path("Assets/Story/success-30.png")).convert_alpha()
+      success_30b=pygame.image.load(resource_path("Assets/Story/success-30b.png")).convert_alpha()
+      success_31=pygame.image.load(resource_path("Assets/Story/success-31.png")).convert_alpha()
+      success_31b=pygame.image.load(resource_path("Assets/Story/success-31b.png")).convert_alpha()
+      success_32=pygame.image.load(resource_path("Assets/Story/success-32.png")).convert_alpha()
+      success_32b=pygame.image.load(resource_path("Assets/Story/success-32b.png")).convert_alpha()
+      success_33=pygame.image.load(resource_path("Assets/Story/success-33.png")).convert_alpha()
+      success_33b=pygame.image.load(resource_path("Assets/Story/success-33b.png")).convert_alpha()
+      success_34=pygame.image.load(resource_path("Assets/Story/success-34.png")).convert_alpha()
+      return [success_30,
+      success_30b,
+      success_31,
+      success_31b,
+      success_32,
+      success_32b,
+      success_33,
+      success_33b,
+      success_34]
+     
 success_35=pygame.image.load(resource_path("Assets/Story/success-35.png")).convert_alpha()
 success_35b=pygame.image.load(resource_path("Assets/Story/success-35b.png")).convert_alpha()
 success_36=pygame.image.load(resource_path("Assets/Story/success-36.png")).convert_alpha()
@@ -341,98 +350,151 @@ credits_2=pygame.image.load(resource_path("Assets/Story/credits-2.png")).convert
 credits_3=pygame.image.load(resource_path("Assets/Story/thanks.png")).convert_alpha()
 credits_4=pygame.image.load(resource_path("Assets/Story/credits-3.png")).convert_alpha()
 
+#Reworked for a smoother experience.
+py_made=pygame.image.load(resource_path('Assets/Stage/pygame_powered.png')).convert_alpha() # loads pygame powered image
+startup_rolling=[py_made, pic_2, pic_4]
+startup_index=0
+startup=startup_rolling[startup_index]
+startup_location=startup.get_rect(topleft=(0,0))
 #For initial intro sequence
-background_rolling=[frame_1, frame_2, frame_3, 
-                    frame_4, frame_5, frame_6, 
-                    frame_7, frame_8, frame_9, 
-                    frame_10, frame_11, frame_12, 
-                    frame_13, frame_14, frame_15, 
-                    frame_16, frame_17, frame_18, 
-                    frame_19, frame_20, frame_21, 
-                    frame_22, frame_23, frame_24, 
-                    frame_25, frame_26, frame_27, 
-                    frame_28, frame_29, frame_30,
-                    frame_31, frame_32, frame_33,
-                    frame_34, frame_35, frame_36,
-                    frame_37, frame_38, frame_39,
-                    frame_40, frame_41, frame_42, frame_1b, frame_2b, frame_3b, 
-                    frame_4b, frame_5b, frame_6b, 
-                    frame_7b, frame_8b, frame_9b, 
-                    frame_10b, frame_11b, frame_12b, 
-                    frame_13b, frame_14b, frame_15b, 
-                    frame_16b, frame_17b, frame_18b, 
-                    frame_19b, frame_20b, frame_21b, 
-                    frame_22b, frame_23b, frame_24b, 
-                    frame_25b, frame_26b, frame_27b, 
-                    frame_28b, frame_29b, frame_30b,
-                    frame_31b, frame_32b, frame_33b,
-                    frame_34b, frame_35b, frame_36b,
-                    frame_37b, frame_38b, frame_39b,
-                    frame_40b, frame_41b, frame_42b] # I need a totaL minimum  of 16 for smooth animation.
+def initial():  #Reworked for less memory usage, only loaded when needed!
+   frame_1=pygame.image.load(resource_path("Assets/Story/FRAME_1.png")).convert_alpha()
+   frame_2=pygame.image.load(resource_path("Assets/Story/FRAME_2.png")).convert_alpha()
+   frame_3=pygame.image.load(resource_path("Assets/Story/FRAME_3.png")).convert_alpha()
+   frame_4=pygame.image.load(resource_path("Assets/Story/FRAME_4.png")).convert_alpha()
+   frame_5=pygame.image.load(resource_path("Assets/Story/FRAME_5.png")).convert_alpha()
+   frame_6=pygame.image.load(resource_path("Assets/Story/FRAME_6.png")).convert_alpha()
+   frame_7=pygame.image.load(resource_path("Assets/Story/FRAME_7.png")).convert_alpha()
+   frame_8=pygame.image.load(resource_path("Assets/Story/FRAME_8.png")).convert_alpha()
+   frame_9=pygame.image.load(resource_path("Assets/Story/FRAME_9.png")).convert_alpha()
+   frame_10=pygame.image.load(resource_path("Assets/Story/FRAME_10.png")).convert_alpha()
+   frame_11=pygame.image.load(resource_path("Assets/Story/FRAME_11.png")).convert_alpha()
+   frame_12=pygame.image.load(resource_path("Assets/Story/FRAME_12.png")).convert_alpha()
+   frame_13=pygame.image.load(resource_path("Assets/Story/FRAME_13.png")).convert_alpha()
+   frame_14=pygame.image.load(resource_path("Assets/Story/FRAME_14.png")).convert_alpha()
+   frame_15=pygame.image.load(resource_path("Assets/Story/FRAME_15.png")).convert_alpha()
+   frame_16=pygame.image.load(resource_path("Assets/Story/FRAME_16.png")).convert_alpha()
+   frame_17=pygame.image.load(resource_path("Assets/Story/FRAME_17.png")).convert_alpha()
+   frame_18=pygame.image.load(resource_path("Assets/Story/FRAME_18.png")).convert_alpha()
+   frame_19=pygame.image.load(resource_path("Assets/Story/FRAME_19.png")).convert_alpha()
+   frame_20=pygame.image.load(resource_path("Assets/Story/FRAME_20.png")).convert_alpha()
+   frame_21=pygame.image.load(resource_path("Assets/Story/FRAME_21.png")).convert_alpha()
+   frame_22=pygame.image.load(resource_path("Assets/Story/FRAME_22.png")).convert_alpha()
+   frame_23=pygame.image.load(resource_path("Assets/Story/FRAME_23.png")).convert_alpha()
+   frame_24=pygame.image.load(resource_path("Assets/Story/FRAME_24.png")).convert_alpha()
+   frame_25=pygame.image.load(resource_path("Assets/Story/FRAME_25.png")).convert_alpha()
+   frame_26=pygame.image.load(resource_path("Assets/Story/FRAME_26.png")).convert_alpha()
+   frame_27=pygame.image.load(resource_path("Assets/Story/FRAME_27.png")).convert_alpha()
+   frame_28=pygame.image.load(resource_path("Assets/Story/FRAME_28.png")).convert_alpha()
+   frame_29=pygame.image.load(resource_path("Assets/Story/FRAME_29.png")).convert_alpha()
+   frame_30=pygame.image.load(resource_path("Assets/Story/FRAME_30.png")).convert_alpha()
+   frame_31=pygame.image.load(resource_path("Assets/Story/FRAME_31.png")).convert_alpha()
+   frame_32=pygame.image.load(resource_path("Assets/Story/FRAME_32.png")).convert_alpha()
+   frame_33=pygame.image.load(resource_path("Assets/Story/FRAME_33.png")).convert_alpha()
+   frame_34=pygame.image.load(resource_path("Assets/Story/FRAME_34.png")).convert_alpha()
+   frame_35=pygame.image.load(resource_path("Assets/Story/FRAME_35.png")).convert_alpha()
+   frame_36=pygame.image.load(resource_path("Assets/Story/FRAME_36.png")).convert_alpha()
+   frame_37=pygame.image.load(resource_path("Assets/Story/FRAME_37.png")).convert_alpha()
+   frame_38=pygame.image.load(resource_path("Assets/Story/FRAME_38.png")).convert_alpha()
+   frame_39=pygame.image.load(resource_path("Assets/Story/FRAME_39.png")).convert_alpha()
+   frame_40=pygame.image.load(resource_path("Assets/Story/FRAME_40.png")).convert_alpha()
+   frame_41=pygame.image.load(resource_path("Assets/Story/FRAME_41.png")).convert_alpha()
+   frame_42=pygame.image.load(resource_path("Assets/Story/FRAME_42.png")).convert_alpha()
+
+   frame_1b=pygame.image.load(resource_path("Assets/Story/FRAME_1b.png")).convert_alpha()
+   frame_2b=pygame.image.load(resource_path("Assets/Story/FRAME_2b.png")).convert_alpha()
+   frame_3b=pygame.image.load(resource_path("Assets/Story/FRAME_3b.png")).convert_alpha()
+   frame_4b=pygame.image.load(resource_path("Assets/Story/FRAME_4b.png")).convert_alpha()
+   frame_5b=pygame.image.load(resource_path("Assets/Story/FRAME_5b.png")).convert_alpha()
+   frame_6b=pygame.image.load(resource_path("Assets/Story/FRAME_6b.png")).convert_alpha()
+   frame_7b=pygame.image.load(resource_path("Assets/Story/FRAME_7b.png")).convert_alpha()
+   frame_8b=pygame.image.load(resource_path("Assets/Story/FRAME_8b.png")).convert_alpha()
+   frame_9b=pygame.image.load(resource_path("Assets/Story/FRAME_9b.png")).convert_alpha()
+   frame_10b=pygame.image.load(resource_path("Assets/Story/FRAME_10b.png")).convert_alpha()
+   frame_11b=pygame.image.load(resource_path("Assets/Story/FRAME_11b.png")).convert_alpha()
+   frame_12b=pygame.image.load(resource_path("Assets/Story/FRAME_12b.png")).convert_alpha()
+   frame_13b=pygame.image.load(resource_path("Assets/Story/FRAME_13b.png")).convert_alpha()
+   frame_14b=pygame.image.load(resource_path("Assets/Story/FRAME_14b.png")).convert_alpha()
+   frame_15b=pygame.image.load(resource_path("Assets/Story/FRAME_15b.png")).convert_alpha()
+   frame_16b=pygame.image.load(resource_path("Assets/Story/FRAME_16b.png")).convert_alpha()
+   frame_17b=pygame.image.load(resource_path("Assets/Story/FRAME_17b.png")).convert_alpha()
+   frame_18b=pygame.image.load(resource_path("Assets/Story/FRAME_18b.png")).convert_alpha()
+   frame_19b=pygame.image.load(resource_path("Assets/Story/FRAME_19b.png")).convert_alpha()
+   frame_20b=pygame.image.load(resource_path("Assets/Story/FRAME_20b.png")).convert_alpha()
+   frame_21b=pygame.image.load(resource_path("Assets/Story/FRAME_21b.png")).convert_alpha()
+   frame_22b=pygame.image.load(resource_path("Assets/Story/FRAME_22b.png")).convert_alpha()
+   frame_23b=pygame.image.load(resource_path("Assets/Story/FRAME_23b.png")).convert_alpha()
+   frame_24b=pygame.image.load(resource_path("Assets/Story/FRAME_24b.png")).convert_alpha()
+   frame_25b=pygame.image.load(resource_path("Assets/Story/FRAME_25b.png")).convert_alpha()
+   frame_26b=pygame.image.load(resource_path("Assets/Story/FRAME_26b.png")).convert_alpha()
+   frame_27b=pygame.image.load(resource_path("Assets/Story/FRAME_27b.png")).convert_alpha()
+   frame_28b=pygame.image.load(resource_path("Assets/Story/FRAME_28b.png")).convert_alpha()
+   frame_29b=pygame.image.load(resource_path("Assets/Story/FRAME_29b.png")).convert_alpha()
+   frame_30b=pygame.image.load(resource_path("Assets/Story/FRAME_30b.png")).convert_alpha()
+   frame_31b=pygame.image.load(resource_path("Assets/Story/FRAME_31b.png")).convert_alpha()
+   frame_32b=pygame.image.load(resource_path("Assets/Story/FRAME_32b.png")).convert_alpha()
+   frame_33b=pygame.image.load(resource_path("Assets/Story/FRAME_33b.png")).convert_alpha()
+   frame_34b=pygame.image.load(resource_path("Assets/Story/FRAME_34b.png")).convert_alpha()
+   frame_35b=pygame.image.load(resource_path("Assets/Story/FRAME_35b.png")).convert_alpha()
+   frame_36b=pygame.image.load(resource_path("Assets/Story/FRAME_36b.png")).convert_alpha()
+   frame_37b=pygame.image.load(resource_path("Assets/Story/FRAME_37b.png")).convert_alpha()
+   frame_38b=pygame.image.load(resource_path("Assets/Story/FRAME_38b.png")).convert_alpha()
+   frame_39b=pygame.image.load(resource_path("Assets/Story/FRAME_39b.png")).convert_alpha()
+   frame_40b=pygame.image.load(resource_path("Assets/Story/FRAME_40b.png")).convert_alpha()
+   frame_41b=pygame.image.load(resource_path("Assets/Story/FRAME_41b.png")).convert_alpha()
+   frame_42b=pygame.image.load(resource_path("Assets/Story/FRAME_42b.png")).convert_alpha()
+   return [frame_1, frame_2, frame_3, 
+                     frame_4, frame_5, frame_6, 
+                     frame_7, frame_8, frame_9, 
+                     frame_10, frame_11, frame_12, 
+                     frame_13, frame_14, frame_15, 
+                     frame_16, frame_17, frame_18, 
+                     frame_19, frame_20, frame_21, 
+                     frame_22, frame_23, frame_24, 
+                     frame_25, frame_26, frame_27, 
+                     frame_28, frame_29, frame_30,
+                     frame_31, frame_32, frame_33,
+                     frame_34, frame_35, frame_36,
+                     frame_37, frame_38, frame_39,
+                     frame_40, frame_41, frame_42, frame_1b, frame_2b, frame_3b, 
+                     frame_4b, frame_5b, frame_6b, 
+                     frame_7b, frame_8b, frame_9b, 
+                     frame_10b, frame_11b, frame_12b, 
+                     frame_13b, frame_14b, frame_15b, 
+                     frame_16b, frame_17b, frame_18b, 
+                     frame_19b, frame_20b, frame_21b, 
+                     frame_22b, frame_23b, frame_24b, 
+                     frame_25b, frame_26b, frame_27b, 
+                     frame_28b, frame_29b, frame_30b,
+                     frame_31b, frame_32b, frame_33b,
+                     frame_34b, frame_35b, frame_36b,
+                     frame_37b, frame_38b, frame_39b,
+                     frame_40b, frame_41b, frame_42b] # I need a totaL minimum  of 16 for smooth animation.
+   
 background_index=0 #The index for which frame to pick is set to 0.
-background=background_rolling[background_index] #The background is set to be the index position of the background index withing the background rolling list.
-background_location=background.get_rect(topleft=(0,0)) #Draws the background at this location.
 flashing_rolling=[pic_1, pic_2] #Contains the pictures for the CC BY NA SA 4 Disclaimer
 flashing_index=0 #Contains the index for the disclaimer cc.
 flashing=flashing_rolling[flashing_index] #Picks which picture to display depending on the index.
 flashing_location=flashing.get_rect(topleft=(0,0)) #Displays the CC disclaimer on the screen.
-
+new_breakdown_rolling=None
 flashing_rolling_2=[pic_3, pic_4] #Contains the pictures for the MIT Disclaimer
 flashing_index_2=0 #Contains the index for the disclaimer MIT.
 flashing_2=flashing_rolling_2[flashing_index_2] #Picks which picture to display depending on the index.
 flashing_location_2=flashing_2.get_rect(topleft=(0,0)) #Displays the MIT disclaimer on the screen.
 
-breakdown_rolling=[breakdown_1, breakdown_2, breakdown_3, breakdown_4, 
-                   breakdown_5, breakdown_6, breakdown_7, breakdown_8, 
-                   breakdown_9, breakdown_10, breakdown_11,breakdown_12, 
-                   breakdown_13, breakdown_14, breakdown_15, breakdown_16, 
-                   breakdown_17, breakdown_18, breakdown_19, breakdown_20, breakdown_21,
-                   breakdown_22, breakdown_23, breakdown_24, breakdown_25, 
-                   breakdown_26, breakdown_27, breakdown_28]
+
 breakdown_index=0 #The index for which frame to pick is set to 0.
-breakdown=breakdown_rolling[breakdown_index] #The background is set to be the index position of the breakdown index within the breakdown rolling list.
-breakdown_location=breakdown.get_rect(topleft=(0,0)) #Draws the background at this locatio
 breakdown_warning_rolling=[breakdown_28, breakdown_29] #Contains the pictures for the breakdown warning.
 breakdown_warning_index=0  #The index for which frame to pick is set to 0.
 breakdown_warning=breakdown_warning_rolling[breakdown_warning_index] #The background is set to be the index position of the breakdown warning index within the breakdown warning rolling list.
 breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #Draws the background at this locatio
-bull_first_appearance_rolling=[ominous_1, ominous_2, ominous_3, ominous_4,
-                               ominous_5, ominous_6, ominous_7, ominous_8,
-                               ominous_9, ominous_10, ominous_11, ominous_12,
-                               ominous_13, ominous_14]
 bull_first_appearance_index=0 #The index for which frame to pick is set to 0.
-bull_first_appearance=bull_first_appearance_rolling[bull_first_appearance_index] #picks an image to display
-bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #Places the image on the screen.
-new_breakdown_rolling=[new_breakdown_1, new_breakdown_2, new_breakdown_3, new_breakdown_4, 
-                   new_breakdown_5, new_breakdown_6, new_breakdown_8, 
-                   new_breakdown_9, new_breakdown_10, new_breakdown_11, new_breakdown_12, 
-                   new_breakdown_13, new_breakdown_14] 
-new_breakdown_rolling_2=[new_breakdown_15, new_breakdown_16, 
-                   new_breakdown_17, new_breakdown_18, new_breakdown_19, new_breakdown_20, 
-                   new_breakdown_21, new_breakdown_22, new_breakdown_23, new_breakdown_24,  
-                   new_breakdown_25, new_breakdown_26, new_breakdown_27, new_breakdown_28, 
-                   new_breakdown_29] 
-new_breakdown_rolling_3=[new_breakdown_30, new_breakdown_31, new_breakdown_32, 
-                   new_breakdown_32_b, new_breakdown_33, new_breakdown_34, new_breakdown_35, 
-                   new_breakdown_35_b, new_breakdown_36]
-new_breakdown_rolling_4=[new_breakdown_37, new_breakdown_38, 
-                   new_breakdown_39, new_breakdown_40, new_breakdown_41, new_breakdown_42, 
-                   new_breakdown_43, new_breakdown_44, new_breakdown_45,new_breakdown_46]
+
 new_breakdown_index=0
-new_breakdown=new_breakdown_rolling[new_breakdown_index]
-new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
-
 new_breakdown_index_2=0
-new_breakdown_2=new_breakdown_rolling_2[new_breakdown_index_2]
-new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
-
 new_breakdown_index_3=0
-new_breakdown_3=new_breakdown_rolling_3[new_breakdown_index_3]
-new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
-
 new_breakdown_index_4=0
-new_breakdown_4=new_breakdown_rolling_4[new_breakdown_index_4]
-new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
+
 
 #Shop countdown.
 shop_count_5=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-5.png")).convert_alpha()
@@ -443,25 +505,7 @@ shop_count_1=pygame.image.load(resource_path("Assets/Stage/jewel-shop-countdown-
 fade=False #Handles the fading at the end of the animation.
 
 #For final scenes and credits.
-success_rolling=[success_1, success_2, success_3, success_4, 
-                 success_5, success_6, success_7, success_7b, 
-                 success_7c, success_7d, success_7e, success_7f, 
-                 success_7g, success_7h, success_7i, success_8, 
-                 success_9, success_9b, success_10, success_11, success_12, 
-                 success_13, success_14, success_15, success_16, 
-                 success_17, success_18, success_19, success_20,
-                 success_21, success_22, success_23, success_24, 
-                 success_24b, success_24c, success_24d, success_24e, 
-                 success_24f, success_24g, success_24h, success_24i, 
-                 success_24j, success_24k, success_24l, success_24m,
-                 success_25, success_26, success_27, success_28, 
-                 success_28b, success_28c, success_28d, success_28e, success_28f,
-                 success_28g, success_28h, success_28i, 
-                 success_29, success_30, success_30b, success_31, success_31b, success_32, 
-                 success_32b, success_33, success_33b, success_34]
 success_index=0
-success_a=success_rolling[success_index]
-success_location=success_a.get_rect(topleft=(0,0))
 
 success_b_rolling=[success_35, success_36]
 success_b_index=0
@@ -472,6 +516,13 @@ success_c_rolling=[success_35b, success_36b] #For mode b
 success_c_index=0
 success_c=success_c_rolling[success_c_index]
 success_c_location=success_c.get_rect(topleft=(0,0))
+ready=False
+ready_2=False
+ready_3=False
+ready_4=False
+ready_5=True
+ready_6=False
+ready_7=False
 
 credits_rolling=[credits_1, credits_2, credits_3, credits_4]
 credits_index=0
@@ -532,7 +583,7 @@ bull=pygame.image.load(resource_path('Assets/Bull/bull_256.png')) #Loads the bul
 bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH-129, SCREEN_HEIGHT-45)) #Bull is placed at specific location on the screen.
 bull_starting_pos=bull_hitbox.y #Bull's starting position is stored for later gravitational calculations.
 bull_last_seen=pygame.time.get_ticks() #the last time the bull was seen is set to this time.
-bull_movement_cooldown=random.randint(1000,2000) #The default cooldown 
+bull_movement_cooldown=random.randint(1500,2500) #The default cooldown 
 bull_speed=0 #The default bull speed is set to 0.
 bull_gravity=0 #The default bull gravity is set to 0.
 inner_loop_x=False #inner_loop_x is set to false as a default, but will be changed later.
@@ -582,8 +633,6 @@ warning_checked=0 #Warning checked is used to check the time once, against the w
 #Reworked, allows for story to be drawn in.
 special=font_6.render("Dashes remaining: " + str(special_speed_counter), True, 'Black') #Tells how many dashes the player has to use.
 special_location=special.get_rect(topleft=(700,0)) #Draws the amount of dashes to the screen.
-py_made=pygame.image.load(resource_path('Assets/Stage/pygame_powered.png')).convert_alpha() # loads pygame powered image
-py_location=py_made.get_rect(topleft=(0,0)) #Draws the powered by pygame image on screen.
 name_input="" #Stores the user's name.
 attempted_score="" #Stores the user's attempted score.
 success=False #By default, the user did not succeed.
@@ -595,77 +644,99 @@ bonus=0 #Bonus, set to 0.
 mode="" #Mode, currently null by default.
 mode_selection=True #Mode selection is set to true by default.
 phase=pygame.mixer.Sound(resource_path("AudioSFX/scott-buckley-phase-shift.mp3")) #Loaded as a sound to allow song to coexist with main story sequence.
-
+background_rolling=None
+new_breakdown_rolling=None
+new_breakdown_rolling_2=None
+new_breakdown_rolling_3=None
+new_breakdown_rolling_4=None
+bull_first_appearance_rolling=None
+breakdown_rolling=None
+success_rolling_1, success_rolling_2, success_rolling_3, success_rolling_4, success_rolling_5, success_rolling_6, success_rolling_7=(None, None, None, None, None, None, None)
 def finale(): #This function handles the finale sequence.
     global game_active, score, game_over, credits, credits_index, credits_rolling, credits_location, success_c, success_c_index, success_c_rolling
     global return_finale_pressed, final_time, score_success, score_success_location, items_obtained, success_c_location, alloted_time, count, items_to_prove
-    global success, success_rolling, success_index, success_location, finale_active, items_picked_up, items_obtained_location, alloted_time_location
+    global success, success_rolling_1, success_rolling_2, success_rolling_3, success_rolling_4, success_rolling_5, success_rolling_6, success_rolling_7, success_index, success_location, finale_active, items_picked_up, items_obtained_location, alloted_time_location
     global success_a, success_b, success_b_index, success_b_location, success_b_rolling, bonus_to_render, bonus_to_render_location, mode_selection
     if return_finale_pressed==0:
+        if success_rolling_1 is None:
+           success_index=0
+           success_rolling_1=newb_5()
         success_index+=0.001
-        if success_index>=16:
-            success_index=16
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_1):
+            success_index=len(success_rolling_1)-1
+        success_a=success_rolling_1[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==1:
-        if success_index < 16: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=16
+        if success_rolling_2 is None:
+           success_index=0
+           success_rolling_2=newb_6()
         success_index+=0.02
-        if success_index>=31:
-            success_index=31
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_2):
+           success_index=len(success_rolling_2)-1
+        success_a=success_rolling_2[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==2:
-        if success_index < 31: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=31
+        success_rolling_1=None
+        if success_rolling_3 is None:
+           success_index=0
+           success_rolling_3=newb_7()
         success_index+=0.02
-        if success_index>=36:
-            success_index=36
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_3):
+            success_index=len(success_rolling_3)-1
+        success_a=success_rolling_3[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==3:
-        if success_index < 36: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=36
+        success_rolling_2=None
+        if success_rolling_4 is None:
+           success_index=0
+           success_rolling_4=newb_8()
         success_index+=0.001
-        if success_index>=40:
-           success_index=40
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_4):
+           success_index=len(success_rolling_4)-1
+        success_a=success_rolling_4[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==4:
-        if success_index < 40: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=40
+        success_rolling_3=None
+        if success_rolling_5 is None:
+           success_index=0
+           success_rolling_5=newb_9()
         success_index+=0.001
-        if success_index>=44:
-            success_index=44
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_5):
+            success_index=len(success_rolling_5)-1
+        success_a=success_rolling_5[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==5:
-        if success_index < 44: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=44
+        success_rolling_4=None
+        if success_rolling_6 is None:
+           success_index=0
+           success_rolling_6=newb_10()
         success_index+=0.001
-        if success_index>=57:
-            success_index=57
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_6):
+           success_index=len(success_rolling_6)-1
+        success_a=success_rolling_6[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
     elif return_finale_pressed==6:
-        if success_index < 57: #Forces the index to be at the previous frame to avoid having to wait for the animation to catch up.
-           success_index=57
+        success_rolling_5=None
+        if success_rolling_7 is None:
+           success_index=0
+           success_rolling_7=newb_11()
         success_index+=0.01
-        if success_index>=len(success_rolling):
-           success_index=len(success_rolling) - 1
-        success_a=success_rolling[int(success_index)]
+        if success_index>=len(success_rolling_7):
+           success_index=len(success_rolling_7) - 1
+        success_a=success_rolling_7[int(success_index)]
         success_location=success_a.get_rect(topleft=(0,0))
         screen.blit(success_a, success_location)
         mixer.music.load(resource_path("AudioSFX/crowd-cheer.wav")) #A cheering sound is played when the user succeeds
         mixer.music.play() #The cheer is played
    #If return pressed is equal to 7, its time for the mode screen to show up again.
     elif return_finale_pressed==7:
+         success_rolling_6=None
          if mode.upper()=='A': #For mode A, credit sequence.
             success_b_index+=0.005
             if success_b_index>=len(success_b_rolling):
@@ -705,6 +776,7 @@ def finale(): #This function handles the finale sequence.
             screen.blit(bonus_to_render, bonus_to_render_location)
             screen.blit(items_obtained, items_obtained_location)
     elif return_finale_pressed==8: 
+        success_rolling_7=None
         credits_index+=1
         if credits_index>=0:
             credits_index=0
@@ -735,59 +807,45 @@ def finale(): #This function handles the finale sequence.
     elif return_finale_pressed >=12:
         return_finale_pressed=0
         success_index=0
-        success_a=success_rolling[int(success_index)]
-        success_location=success_a.get_rect(topleft=(0,0))
-        success_b_index=0  
-        success_b=success_b_rolling[int(success_b_index)]
-        success_b_location=success_b.get_rect(topleft=(0,0))
-        success_c_index=0  
-        success_c=success_c_rolling[int(success_c_index)]
-        success_c_location=success_c.get_rect(topleft=(0,0))
-        credits_index=0
-        credits=credits_rolling[int(credits_index)]
-        credits_location=credits.get_rect(topleft=(0,0))
         finale_active=False
         success=False
         mode_selection=True
     pygame.display.update() #Screen is refreshed.
 def screen_to_take_you_to(): #A function handles which screen is drawn.
       global set_name, controls, controls_location, breakdown_location, breakdown_warning_location, breakdown_warning, breakdown_warning_index #set score is set at the global level.
-      global background, background_index, flashing_index, flashing, breakdown, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
-      global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2
-      global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4
-      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, phase, enter, flashing_index_2, flashing_2, flashing_location_2, flashing_rolling_2
+      global background, background_index, background_rolling, flashing_index, flashing, breakdown, breakdown_rolling, breakdown_index, bull_first_appearance, bull_first_appearance_index, bull_first_appearance_location #background, background_index, flashing, and flashing index also declared  globally.
+      global new_breakdown_location, new_breakdown_index, new_breakdown, new_breakdown_location_2, new_breakdown_index_2, new_breakdown_2, ready, ready_2, ready_3, ready_4, ready_5, ready_6, ready_7
+      global fade, new_breakdown_location_3, new_breakdown_index_3, new_breakdown_3, new_breakdown_location_4, new_breakdown_index_4, new_breakdown_4, startup_rolling
+      global main_menu_location, main_menu, main_menu_index, main_menu_rolling, bull_first_appearance_rolling, new_breakdown_rolling, new_breakdown_rolling_2, new_breakdown_rolling_3, new_breakdown_rolling_4, phase, enter, flashing_index_2, flashing_2, flashing_location_2, flashing_rolling_2, startup_index, startup_rolling, startup, startup_location
       if return_pressed == 0: #If return pressed is less than 0, then this will run.
-         screen.fill((0,0,0)) #Screen filled with black
-         screen.blit(py_made, py_location) #pygame screen drawn to the screen.
-      elif return_pressed==1: #If return pressed is equal to 1, then this will run.
-         screen.fill((0,0,0)) #Screen filled with black to get rid of previous input.
-         screen.blit(disclaimer,disclaimer_location) #Disclaimer drawn to screen.
-      elif return_pressed==2: #If return pressed is equal to two, then this will run.
-         flashing_index+=0.005 #Flashes the CC BY NA SA 4 disclaimer text.
-         if flashing_index >= len(flashing_rolling): #If the index goes over the length of the list, this will happen.
-             flashing_index=0 #Flashing index is set to 0.
-         flashing=flashing_rolling[int(flashing_index)] #gets the disclaimer image.
-         flashing_location=flashing.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
-         screen.blit(flashing, flashing_location) #Draws the disclaimer on the screen.
-      elif return_pressed==3: #If return pressed is equal to three, then this will run.
-         flashing_index_2+=0.005 #Flashes the MIT disclaimer text.
-         if flashing_index_2 >= len(flashing_rolling_2): #If the index goes over the length of the list, this will happen.
-             flashing_index_2=0 #Flashing index is set to 0.
-         flashing_2=flashing_rolling_2[int(flashing_index_2)] #gets the disclaimer image.
-         flashing_location_2=flashing_2.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
-         screen.blit(flashing_2, flashing_location_2) #Draws the disclaimer on the screen.
-      elif return_pressed==4: #If return pressed is equal to four, then this will run.
-         phase.play() #Required to avoid sound conflict.
-         main_menu_index+=0.003 #Main menu shown.
-         if main_menu_index >= len(main_menu_rolling): #If the index goes over the length of the list, this will happen.
-             main_menu_index=0 #Flashing index is set to 0.
-         main_menu=main_menu_rolling[int(main_menu_index)] #gets the disclaimer image.
-         main_menu_location=main_menu.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
-         screen.blit(main_menu, main_menu_location) #Draws the disclaimer on the screen.
          mixer.music.load(resource_path("AudioSFX/fsm-team-escp-downtown-walk.mp3")) #Music loaded in, will play on the next screen.
          mixer.music.play(-1) #Loops the track.
-      elif return_pressed==5: #If the enter key is pressed 5 times, then this will run.
+         if not ready:
+            startup_index+=0.0007  
+            screen.fill((0,0,0)) #Screen filled with black
+            if startup_index >= len(startup_rolling): #If the index goes over the length of the list, this will happen.
+               startup_index=0
+               ready=True 
+            startup=startup_rolling[int(startup_index)]
+            startup_location=startup.get_rect(topleft=(0,0))
+            screen.blit(startup, startup_location)
+         elif ready:
+            startup_rolling=None
+            #If return pressed is equal to 0, then this will run.
+            phase.play() #Required to avoid sound conflict.
+            main_menu_index+=0.003 #Main menu shown.
+            if main_menu_index >= len(main_menu_rolling): #If the index goes over the length of the list, this will happen.
+               main_menu_index=0 #Flashing index is set to 0.
+            main_menu=main_menu_rolling[int(main_menu_index)] #gets the disclaimer image.
+            main_menu_location=main_menu.get_rect(topleft=(0,0)) #Places the disclaimer image at this location.
+            screen.blit(main_menu, main_menu_location) #Draws the disclaimer on the screen.
+      elif return_pressed==1: #If the enter key is pressed 5 times, then this will run.
+         main_menu_rolling=None
+         screen.fill((255,255,255))
+         ready_2=True
          phase.stop()
+         if background_rolling is None:
+            background_rolling=initial()
          if not enter: #if the enter button is not ready to be displayed, the original frames are shown.
             background_index += 0.07  # A scroll across the frames will be applied using the index.
             if background_index >= 41: # if the index is greater than the amount of frames, then it must be reset.
@@ -802,71 +860,105 @@ def screen_to_take_you_to(): #A function handles which screen is drawn.
             background = background_rolling[int(background_index)] #The background is set to the frame chosen using the list.
             background_location = background.get_rect(topleft=(0, 0)) #background placed at this location.
             screen.blit(background, background_location) #Background is drawn. 
-      elif return_pressed==6: #If the enter key is pressed 6 times, then this will run.
-          breakdown_index+=0.03 #Breakdown index goes up bu this number.
-          if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
-             breakdown_index=27 #Index set to 27.
-          breakdown = breakdown_rolling[int(breakdown_index)] #The background is set to the frame chosen using the list.
-          breakdown_location=breakdown.get_rect(topleft=(0,0)) 
-          screen.blit(breakdown, breakdown_location) #Background is drawn.
-      elif return_pressed==7: #If enter is pressed 7 times, this will run.
-          bull_first_appearance_index+=0.025  # A scroll across the frames will be applied using the index.
-          if bull_first_appearance_index >= len(bull_first_appearance_rolling): # if the index is greater than the amount of frames, then it must be reset.
-              bull_first_appearance_index=13 #Index set to 13.
-          bull_first_appearance=bull_first_appearance_rolling[int(bull_first_appearance_index)] #The background is set to the frame chosen using the list.
-          bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #background placed at this location.
-          screen.blit(bull_first_appearance, bull_first_appearance_location)
-      elif return_pressed==8: #If enter is pressed 8 times, this will run.
-          breakdown_warning_index+=0.005 # A scroll across the frames will be applied using the index.
-          if breakdown_warning_index >= len(breakdown_warning_rolling): # if the index is greater than the amount of frames, then it must be reset.
-              breakdown_warning_index=0 #Index reset.
-          breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
-          breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
-          screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
-      elif return_pressed==9:
-          new_breakdown_index+=0.002
-          if new_breakdown_index >= len(new_breakdown_rolling):
-             new_breakdown_index=12
-          new_breakdown=new_breakdown_rolling[int(new_breakdown_index)]
-          new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
-          screen.blit(new_breakdown, new_breakdown_location)
-      elif return_pressed==10:
-          new_breakdown_index_2+=0.015
-          if new_breakdown_index_2 >= len(new_breakdown_rolling_2):
-             new_breakdown_index_2=14
-          new_breakdown_2=new_breakdown_rolling_2[int(new_breakdown_index_2)]
-          new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
-          screen.blit(new_breakdown_2, new_breakdown_location_2)
-      elif return_pressed==11:
-          if not fade:
-            new_breakdown_index_3+=0.001
-            if new_breakdown_index_3 >= len(new_breakdown_rolling_3):
-               new_breakdown_index_3=8
-               fade=True
-            new_breakdown_3=new_breakdown_rolling_3[int(new_breakdown_index_3)]
-            new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
-            screen.blit(new_breakdown_3, new_breakdown_location_3)
-          elif fade:
-            new_breakdown_index_4+=0.02
-            if new_breakdown_index_4 >= len(new_breakdown_rolling_4):
-               new_breakdown_index_4=9
-            new_breakdown_4=new_breakdown_rolling_4[int(new_breakdown_index_4)]
-            new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
-            screen.blit(new_breakdown_4, new_breakdown_location_4)  
-      elif return_pressed==12: #If the enter key is pressed 11 times, this will be drawn.
+      elif return_pressed==2: #If the enter key is pressed 6 times, then this will run.
+          background_rolling=None
+          if ready_2:
+            if breakdown_rolling is None:
+                breakdown_rolling=pre_break()
+            breakdown_index+=0.03 #Breakdown index goes up bu this number.
+            if breakdown_index >= len(breakdown_rolling): # if the index is greater than the amount of frames, then it must be reset.
+               breakdown_index=26 #Index set to 26.
+               ready_2=False
+               ready_3=True
+            breakdown = breakdown_rolling[int(breakdown_index)] #The background is set to the frame chosen using the list.
+            breakdown_location=breakdown.get_rect(topleft=(0,0)) 
+            screen.blit(breakdown, breakdown_location) #Background is drawn.
+          elif ready_3:
+            screen.fill((255,255,255))
+            bull_first_appearance_index+=0.02  # A scroll across the frames will be applied using the index.
+            if bull_first_appearance_rolling==None:
+               bull_first_appearance_rolling=bull_appear()
+            if bull_first_appearance_index >= len(bull_first_appearance_rolling): # if the index is greater than the amount of frames, then it must be reset.
+               bull_first_appearance_index=13 #Index set to 13.
+               ready_3=False
+               ready_4=True
+            bull_first_appearance=bull_first_appearance_rolling[int(bull_first_appearance_index)] #The background is set to the frame chosen using the list.
+            bull_first_appearance_location=bull_first_appearance.get_rect(topleft=(0,0)) #background placed at this location.
+            screen.blit(bull_first_appearance, bull_first_appearance_location)
+          elif ready_4:
+            breakdown_warning_index+=0.005 # A scroll across the frames will be applied using the index.
+            if breakdown_warning_index >= len(breakdown_warning_rolling): # if the index is greater than the amount of frames, then it must be reset.
+               breakdown_warning_index=0 #Index reset.
+            breakdown_warning=breakdown_warning_rolling[int(breakdown_warning_index)] #The background is set to the frame chosen using the list.
+            breakdown_warning_location=breakdown_warning.get_rect(topleft=(0,0)) #background placed at this location.
+            screen.blit(breakdown_warning, breakdown_warning_location)#Background is drawn.
+      elif return_pressed==3:
+          ready_4=False
+          if new_breakdown_rolling is None:
+             new_breakdown_rolling=newb_1()
+          if ready_5:
+            new_breakdown_index+=0.002
+            if new_breakdown_index >= len(new_breakdown_rolling):
+               new_breakdown_index=12
+               ready_5=False
+               ready_6=True
+            new_breakdown=new_breakdown_rolling[int(new_breakdown_index)]
+            new_breakdown_location=new_breakdown.get_rect(topleft=(0,0))
+            screen.blit(new_breakdown, new_breakdown_location)
+          elif ready_6:
+               #new_breakdown_rolling=None Implemented at another stage of animation since it causes the animation to break
+               if new_breakdown_rolling_2 is None:
+                   new_breakdown_rolling_2=newb_2()
+               new_breakdown_index_2+=0.015
+               if new_breakdown_index_2 >= len(new_breakdown_rolling_2):
+                  new_breakdown_index_2=14
+                  ready_6=False
+                  ready_7=True
+               new_breakdown_2=new_breakdown_rolling_2[int(new_breakdown_index_2)]
+               new_breakdown_location_2=new_breakdown_2.get_rect(topleft=(0,0))
+               screen.blit(new_breakdown_2, new_breakdown_location_2)
+          elif ready_7:
+               new_breakdown_rolling_2=None
+               if new_breakdown_rolling_3 is None:
+                   gc.collect()
+                   new_breakdown_rolling_3=newb_3()
+               if not fade:
+                  new_breakdown_index_3+=0.001
+                  if new_breakdown_index_3 >= len(new_breakdown_rolling_3):
+                     new_breakdown_index_3=8
+                     fade=True
+                  new_breakdown_3=new_breakdown_rolling_3[int(new_breakdown_index_3)]
+                  new_breakdown_location_3=new_breakdown_3.get_rect(topleft=(0,0))
+                  screen.blit(new_breakdown_3, new_breakdown_location_3)
+               elif fade:
+                  #new_breakdown_rolling_3=None, Implemented at end of animation since it causes the animation to break
+                  if new_breakdown_rolling_4 is None:
+                     gc.collect()
+                     new_breakdown_rolling_4=newb_4()
+                  new_breakdown_index_4+=0.02
+                  if new_breakdown_index_4 >= len(new_breakdown_rolling_4):
+                     new_breakdown_index_4=9
+                  new_breakdown_4=new_breakdown_rolling_4[int(new_breakdown_index_4)]
+                  new_breakdown_location_4=new_breakdown_4.get_rect(topleft=(0,0))
+                  screen.blit(new_breakdown_4, new_breakdown_location_4)  
+      elif return_pressed==4: #If the enter key is pressed 11 times, this will be drawn.
+         new_breakdown_rolling=None
+         new_breakdown_rolling_3=None
+         new_breakdown_rolling_4=None
+         ready_7=False
          screen.fill((255,255,255)) #Clears screen of previous screen.
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==13: #If enter pressed is 11 then this will happen.
+      elif return_pressed==5: #If enter pressed is 11 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          controls=pygame.image.load(resource_path('Assets/Stage/Controls_KBM_2.png')).convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.
-      elif return_pressed==14: #If enter pressed is 12 then this will happen.
+      elif return_pressed==6: #If enter pressed is 12 then this will happen.
          screen.fill((255,255,255)) #Clears screen of previous screen.
          controls=pygame.image.load(resource_path('Assets/Stage/Mode-Explained.png')).convert_alpha() #Screen showing the controls is loaded in.
          controls_location=controls.get_rect(topleft=(0,0)) #The location of the controls
          screen.blit(controls, controls_location) #The controls are displayed on the screen.   
-      elif return_pressed>=15: #Otherwise, this will run.
+      elif return_pressed>=7: #Otherwise, this will run.
          set_name=True #set score is set to true.
       pygame.display.update() #Screen is refreshed.
 while splash_screen: #While the splash screen is true, this runs.
@@ -1142,7 +1234,7 @@ while main_game: #Handles the game loop.
                         player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                         bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
                         bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
-                        bull_movement_cooldown = random.randint(1000, 2000) #The cooldwon is reset.
+                        bull_movement_cooldown = random.randint(1500, 2500) #The cooldown is reset.
                         bull_speed = 0 #The bulls speed is set to 0
                         bull_gravity = 0 #The bulls gravity is set to 0
                         inner_loop_x = False # Innerr_loop_x is set to false.
@@ -1220,7 +1312,7 @@ while main_game: #Handles the game loop.
                         player_hitbox.x=(SCREEN_WIDTH / 2) #The player is placed at the specified location.
                         bull_hitbox=bull.get_rect(midbottom=(SCREEN_WIDTH / 2 + SCREEN_WIDTH / 3, SCREEN_HEIGHT - 75)) #Bull is placed at specific location on the screen.
                         bull_last_seen = pygame.time.get_ticks() #When the bull was last seen is reset
-                        bull_movement_cooldown = random.randint(1000, 2000) #The cooldwon is reset.
+                        bull_movement_cooldown = random.randint(1500, 2500) #The cooldwon is reset.
                         bull_speed = 0 #The bulls speed is set to 0
                         bull_gravity = 0 #The bulls gravity is set to 0
                         inner_loop_x = False # Innerr_loop_x is set to false.
@@ -1360,12 +1452,12 @@ while main_game: #Handles the game loop.
          if bull_dice_roll < 4: #If the bull dice roll is less than 4, this will run. Reworked to force the bull to chase the player more.
             inner_loop_x=True #The inner loop for x movement is set to true.
             bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
-            bull_movement_cooldown=random.randint(1000,2000) #A cooldown of between 1 and 2 seconds is made.
+            bull_movement_cooldown=random.randint(1500,2500) #A cooldown of between 1.5 and 2.5 seconds is made.
          else: #Otherwise, this happens
             inner_loop_y=True #inner loop y is set to true, which allows the bull to chase the player up and down.
             bull_charging=True #Bull charging is set to true. Which prevents janky movement.
             bull_last_seen=pygame.time.get_ticks() #Bull last seen updates its time to what it is now.
-            bull_movement_cooldown=random.randint(1000,2000) #A cooldown of between 1 and 2 seconds is made.
+            bull_movement_cooldown=random.randint(1500,2500) #A cooldown of between 1.5 and 2.5 seconds is made.
      #if bull_hitbox.x >=1675: #If the bull attempts to go off the screen, this will happen.
         #bull_speed=0 #Bull speed is set to 0.
         #bull_hitbox.x=1674 #The bull is placed back within the dimensions. Scrapped as it made it too easy for the player to camp, practicaility > looks.
@@ -1685,6 +1777,7 @@ while main_game: #Handles the game loop.
      pygame.display.update() #Screen is refreshed
      clock.tick(60) #Frame rate is set to a max of 60.
    
+
 
 
 
