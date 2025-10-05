@@ -652,7 +652,7 @@ def successful_entry(nameUser, modeUser, scoreItem):
     }
     try: #Will atttempt to submit the scores using a post request.
         response = requests.post( #Attempts to post the values to my webapp, using json and payload.
-            "Null",
+             "Null",
             json=payload,
             timeout=5
         )
@@ -1279,6 +1279,7 @@ while splash_screen: #While the splash screen is true, this runs.
                         special_2_location=special.get_rect(topleft=(700,40)) #Draws the amount of dashes to the screen.
                         mixer.music.load(resource_path('AudioSFX/surf-house-productions-ethereal-pulse.mp3'))
                         mixer.music.play(-1)
+                        line_last_seen=pygame.time.get_ticks()
                         clock_last_seen=pygame.time.get_ticks()
                         goal=int(goal_input) #Converts the goal string to an int for a later comparison.
                         splash_screen=False #The spalsh screen is false.
@@ -1409,6 +1410,7 @@ while main_game: #Handles the game loop.
             clock_x=1795
             clock_y=random.randint(0, 815)
             clock_location=clock_item.get_rect(topleft=(clock_x, clock_y))
+            start_firing=False
             if (not success and not mode_selection): #If its not mode selection this runs.
                if mode.upper()=='A': #If mode is A.
                   special_speed_counter=3  #Special dashes is reset to 3.
@@ -1609,6 +1611,7 @@ while main_game: #Handles the game loop.
                         special_location=special.get_rect(topleft=(700,0)) #Dashes drawn at this location.
                         countdown_timer=pygame.time.get_ticks() #obtains time for mode b.     
             elif (not success and mode_selection): #Asks user for mode.
+                  start_firing=False
                   mode_display=font_4.render(f"Enter 'A' for mode a or 'B' for mode b - {mode}", True, "Green") 
                   mode_display_location=mode_display.get_rect(topleft=(0,100))
                   name_display_2 = font_2.render("Press enter to continue", True, "Green") #When the user is done, they can proced by pressing enter.
@@ -1653,7 +1656,39 @@ while main_game: #Handles the game loop.
                            pygame.display.update()
                 
       else: #This took an extremely long time to figure out, but I cracked it after two days.
-               line_cycle=0 #Line cycle is reset to 0.
+               treasure_x=random.randint(1920,10000)
+               treasure_y=815
+               treasure_location=treasure.get_rect(topleft=(treasure_x, treasure_y))
+               line_warning=False
+               x_component=0
+               y_location_chosen=random.randint(300, 800)
+               cannon_x_location=random.choice(cannon_option_1)
+               cannon_x_location_2=random.choice(cannon_option_2)
+               cannon_x_1=0
+               cannon_1_location.topleft=(cannon_x_1, y_location_chosen - 150)
+               cannon_x_2=0
+               cannon_2_location.topleft=(cannon_x_2, y_location_chosen - 150) 
+               first_cannon_ready=False
+               second_cannon_ready=False
+               show_cannons=False
+               start_firing=False
+               line_cycle=0
+               spike_x_1=cannon_1_location.left 
+               spike_y_1=cannon_1_location.top 
+               spike_x_2=cannon_1_location.right
+               spike_y_2=cannon_1_location.top 
+               spike_x_3=cannon_1_location.left 
+               spike_y_3=cannon_1_location.bottom
+               spike_x_4=cannon_1_location.right  
+               spike_y_4=cannon_1_location.bottom
+               spike_x_5=cannon_2_location.left 
+               spike_y_5=cannon_2_location.top 
+               spike_x_6=cannon_2_location.right
+               spike_y_6=cannon_2_location.top 
+               spike_x_7=cannon_2_location.left 
+               spike_y_7=cannon_2_location.bottom
+               spike_x_8=cannon_2_location.right
+               spike_y_8=cannon_2_location.bottom
                if mode.upper()=='A': #If mode is set to A.
                   success=False #Success is set to false.
                   #Literally, just draw the game over screen here instead of using a function and if the user presses enter then set the game_over flag to false which
@@ -1956,6 +1991,7 @@ while main_game: #Handles the game loop.
         fake_event = pygame.event.Event(pygame.KEYDOWN, {'key': pygame.K_e, 'unicode': '\r'}) #Like above, this is needed because the game over screen wouldnt show without input
         #so i used the same method I discovered before again and it works properly.
         pygame.event.post(fake_event) #Tells the event handler that this key was pressed
+        
      if player_hitbox.colliderect(water_puddle_location): #If the player collides with the water hazard, then they must be slowed down. They can stil jump normally as gravity is not affected here.
         keys=pygame.key.get_pressed() #Keys needed because otherwise it cannot detect it, I believe it is due to the event handler interfering.
         if (keys[pygame.K_a]) or (keys[pygame.K_LEFT]): #If left or a is pressed, then the player speed will be adjusted in this way.
